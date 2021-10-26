@@ -1,0 +1,6 @@
+module.exports = {
+  CREATED: 201,
+  CONFLICT: 409,
+  UNAUTHORIZED: 403,
+  INTERNAL_SERVER_ERROR: 500,
+};

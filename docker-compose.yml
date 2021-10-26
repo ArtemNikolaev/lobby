@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: mysql
+    container_name: mysqldb
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: lobby
+      MYSQL_ROOT_PASSWORD: 123123
+    ports:
+      - 3307:3306
+    networks:
+      - lobby
+    volumes:
+      - db:/var/lib/mysql
+      - ./app:/docker-entrypoint-initdb.d
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    restart: unless-stopped
+    volumes:
+      - ./app:/app
+    ports:
+      - "3000:3000"
+    networks:
+      - lobby
+    depends_on:
+      - mysqldb
+volumes:
+  db:
+networks:
+  lobby:
+    driver: bridge
