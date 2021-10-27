@@ -4,7 +4,7 @@ import jumpToStartPage from "../utils/jumpToStartPage.js";
 class User {
   constructor({ host, port } = app) {
     this.url = `http://${host}:${port}`;
-    this.jwt = localStorage.getItem("jwt-token");
+    this.jwt = localStorage.getItem("lobby-token");
   }
 
   async sendData(data, action) {
@@ -43,7 +43,7 @@ class User {
       },
     });
 
-    localStorage.removeItem("jwt-token");
+    localStorage.removeItem("lobby-token");
   }
 }
 

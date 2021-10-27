@@ -30,7 +30,7 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    localStorage.setItem("jwt-token", data.token);
+    localStorage.setItem("lobby-token", data.token);
     location.href = `http://${host}:${port}/lobby`;
   } catch (error) {
     showError(error);

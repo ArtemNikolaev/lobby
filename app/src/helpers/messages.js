@@ -5,4 +5,5 @@ module.exports = {
   WRONG_CREDENTIALS: "Wrong credentials",
   TOKEN_REQUIRED: "A token is required for authentication",
   AUTHORIZATION_FAILED: "Authorization error occurred",
+  VALIDATION_FAILED: "Validation error occurred",
 };

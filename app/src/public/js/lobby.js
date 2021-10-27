@@ -23,5 +23,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 logout.addEventListener("click", async () => {
-  await user.logout();
+  try {
+    await user.logout();
+  } catch (error) {
+    showError(error);
+  }
 });
