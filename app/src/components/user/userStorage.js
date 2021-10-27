@@ -7,6 +7,12 @@ class UserStorage {
     return { id: data[0].insertId, ...userData };
   }
 
+  async findById(id) {
+    const [data] = await pool.query("SELECT * FROM users WHERE id = ?", id);
+
+    return data[0];
+  }
+
   async findByEmail(email) {
     const [data] = await pool.query(
       "SELECT * FROM users WHERE email = ?",

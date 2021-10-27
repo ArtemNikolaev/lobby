@@ -8,8 +8,8 @@ class TokenService {
     });
   }
 
-  verify(token, tokenSecret) {
-    return jwt.verify(token, tokenSecret);
+  verify(token) {
+    return jwt.verify(token, accessSecret);
   }
 }
 

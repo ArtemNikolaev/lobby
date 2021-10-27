@@ -22,13 +22,13 @@ class AuthController {
     }
   }
 
-  //   async logout(req, res, next) {
-  //     try {
-  //       return res.send();
-  //     } catch (error) {
-  //       return next(error);
-  //     }
-  //   }
+  async logout(req, res, next) {
+    try {
+      return res.send("logout was successful");
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 module.exports = new AuthController();

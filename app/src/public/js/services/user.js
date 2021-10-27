@@ -1,14 +1,14 @@
-// import config from "../../config/config.js";
-// import { jumpToStartPage } from "../utils/index.js";
+import app from "../config.js";
+import jumpToStartPage from "../utils/jumpToStartPage.js";
 
 class User {
-  //   constructor({ protocol, host, port } = config) {
-  //     this.url = `${protocol}://${host}:${port}/api`;
-  //     this.jwt = localStorage.getItem("jwt");
-  //   }
+  constructor({ host, port } = app) {
+    this.url = `http://${host}:${port}`;
+    this.jwt = localStorage.getItem("jwt-token");
+  }
 
   async sendData(data, action) {
-    return fetch("http://localhost:3000/auth/" + action, {
+    return fetch(`${this.url}/auth/` + action, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,14 +17,34 @@ class User {
     });
   }
 
-  //   async logout(jwt) {
-  //     await fetch(this.url + "/auth/logout", {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: `Bearer ${jwt}`,
-  //       },
-  //     });
-  //   }
+  async getUser() {
+    if (!this.jwt) return null;
+
+    const response = await fetch(this.url + "/my-lobby", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${this.jwt}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.status === 401) return jumpToStartPage();
+    if (response.status >= 400) throw new Error(data.message);
+
+    return data;
+  }
+
+  async logout() {
+    await fetch(this.url + "/auth/logout", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${this.jwt}`,
+      },
+    });
+
+    localStorage.removeItem("jwt-token");
+  }
 }
 
 export default new User();
