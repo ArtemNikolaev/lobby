@@ -13,6 +13,7 @@ const db = {
 const token = {
   accessSecret: "ushgf873hsjvyd8173gifhsdg",
   accessTokenTTL: "3h",
+  linkTTL: "15m",
 };
 
 module.exports = { app, db, token };

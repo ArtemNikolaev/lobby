@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
 const lobbyRouter = require("./components/lobby/lobbyRouter");
+const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
 const checkAuth = require("./middlewares/checkAuth.js");
 
@@ -23,14 +24,20 @@ app.use(
   "/auth/login",
   express.static(path.join(__dirname, "public", "login.html"))
 );
+app.use(
+  "/auth/password-reset",
+  express.static(path.join(__dirname, "public", "resetPassword.html"))
+);
 app.use("/auth", authRouter);
 
 /**
  *  Lobby
  */
 app.use("/lobby", express.static(path.join(__dirname, "public", "lobby.html")));
-app.use("/", checkAuth);
+app.use("/my-lobby", checkAuth);
 app.use("/my-lobby", lobbyRouter);
+
+app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
 
 app.use(APIErrorsHandler);
 

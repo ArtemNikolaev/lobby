@@ -38,6 +38,18 @@
     .register {
       margin-right: 1rem;
     }
+    .reset-pw-link {
+      margin-left: 23rem;
+      margin-top: 0.5rem;
+      font-size: small;
+    }
+    .reset-pw-div,
+    .check-message {
+      display: none;
+    }
+    .check-message {
+      color: red;
+    }
   </style>
 
   <body>
@@ -85,15 +97,42 @@
                 required
               />
             </div>
+            <div class="reset-pw-link">
+              <a href="">Reset password</a>
+            </div>
           </div>
 
-          <div class="control-group">
+          <div class="control-group login-btn">
             <div class="controls">
               <button class="btn btn-info">Login</button>
             </div>
           </div>
         </fieldset>
       </form>
+
+      <div class="reset-pw-div">
+        <form class="form-horizontal pw-reset-form" action="">
+          <div class="control-group">
+            <div class="control-label">Your register email</div>
+            <div class="controls">
+              <input
+                type="text"
+                id="pw-reset-input"
+                name=""
+                class="input-xlarge"
+                required
+              />
+              <p class="help-block check-message"></p>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button class="btn btn-info">Send</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
     <script type="module" src="/js/login.js"></script>

@@ -4,9 +4,8 @@ import app from "./config.js";
 import showError from "./utils/showError.js";
 
 const { host, port } = app;
-const errMessage = document.querySelector(".fail-msg");
-const form = document.querySelector(".register-form");
-const name = document.querySelector("#name");
+const successMessage = document.querySelector(".success-msg");
+const form = document.querySelector(".reset-pw-form");
 const email = document.querySelector("#email");
 const password = document.querySelector("#password");
 const passwordConfirm = document.querySelector("#password_confirm");
@@ -23,27 +22,23 @@ form.addEventListener("submit", async (e) => {
 
   const requestData = {
     body: {
-      username: formatter(name.value),
       email: formatter(email.value),
       password: formatter(password.value),
     },
-    path: "register",
-    method: "POST",
+    path: "password-reset",
+    method: "PATCH",
   };
 
   try {
     const response = await user.send(requestData);
-    const data = await response.json();
 
-    if (response.status >= 400) {
-      errMessage.innerText = data.message;
-      errMessage.style.display = "block";
+    if (response.status === 204) {
+      successMessage.innerText = "Password successfully updated!";
+      successMessage.style.display = "block";
 
       setTimeout(() => {
-        errMessage.style.display = "none";
-      }, 4000);
-    } else {
-      location.href = `http://${host}:${port}/auth/login`;
+        location.href = `http://${host}:${port}/auth/login`;
+      }, 2000);
     }
   } catch (error) {
     showError(error);

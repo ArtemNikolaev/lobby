@@ -7,13 +7,14 @@ class User {
     this.jwt = localStorage.getItem("lobby-token");
   }
 
-  async sendData(data, action) {
-    return fetch(`${this.url}/auth/` + action, {
-      method: "POST",
+  async send(data) {
+    const { body, path, method } = data;
+    return fetch(`${this.url}/auth/` + path, {
+      method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     });
   }
 

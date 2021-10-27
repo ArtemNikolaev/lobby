@@ -7,11 +7,15 @@ module.exports = (req, res, next) => {
     const accessToken = req.headers.authorization;
     if (!accessToken) throw new UnauthorizedError(TOKEN_REQUIRED);
 
-    const payload = tokenService.verify(accessToken.split(" ")[1]);
+    try {
+      const payload = tokenService.verify(accessToken.split(" ")[1]);
 
-    req.user = payload;
-    return next();
+      req.user = payload;
+      return next();
+    } catch (error) {
+      throw new UnauthorizedError(AUTHORIZATION_FAILED);
+    }
   } catch (error) {
-    throw new UnauthorizedError(AUTHORIZATION_FAILED);
+    return next(error);
   }
 };

@@ -25,4 +25,16 @@ router.post("/logout", checkAuth, async (req, res, next) => {
   await authController.logout(req, res, next);
 });
 
+router.post("/password-reset-link", async (req, res, next) => {
+  await authController.sendResetLink(req, res, next);
+});
+
+router.get("/password-reset-link-verify/:id/:token", async (req, res, next) => {
+  await authController.verifyResetLink(req, res, next);
+});
+
+router.patch("/password-reset", async (req, res, next) => {
+  await authController.resetPassword(req, res, next);
+});
+
 module.exports = router;

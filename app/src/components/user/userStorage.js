@@ -39,6 +39,14 @@ class UserStorage {
 
     return data[0];
   }
+
+  async updatePassword(userData) {
+    const { email, password } = userData;
+    await pool.query("UPDATE users SET password = ? WHERE email = ?", [
+      password,
+      email,
+    ]);
+  }
 }
 
 module.exports = new UserStorage();
