@@ -50,10 +50,10 @@ class AuthService {
 
       const token = tokenService.generateToken(payload, secret, linkTTL);
 
-      const link = `http://localhost:${port}/auth/password-reset-link-verify/${user.id}/${token}`;
+      const link = `http://localhost:${port}/auth/password-reset-link/${user.id}/${token}`;
 
       // TODO: Logic with sending the link to user email
-      console.log({ link });
+      console.log("Click to reset password ", link);
     } catch (error) {
       throw new CatchError(error);
     }
@@ -69,9 +69,7 @@ class AuthService {
       const secret = accessSecret + user.password;
 
       try {
-        const payload = tokenService.verify(token, secret);
-
-        return payload;
+        tokenService.verify(token, secret);
       } catch (error) {
         throw new GoneError(IVALID_LINK);
       }
