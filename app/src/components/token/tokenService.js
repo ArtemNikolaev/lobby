@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { accessSecret, accessTokenTTL } = require("../../../config").token;
+const UnauthorizedError = require("../../errors/unauthorizedError");
+const { AUTHORIZATION_FAILED } = require("../../helpers/messages");
 
 class TokenService {
   generateToken(data, secret, expiryTerm) {
@@ -11,8 +13,11 @@ class TokenService {
 
   verify(token, secret) {
     const secretInUse = secret || accessSecret;
-
-    return jwt.verify(token, secretInUse);
+    try {
+      return jwt.verify(token, secretInUse);
+    } catch (error) {
+      throw new UnauthorizedError(AUTHORIZATION_FAILED);
+    }
   }
 }
 

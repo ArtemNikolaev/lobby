@@ -3,7 +3,7 @@ import showError from "./utils/showError.js";
 import formatter from "./utils/formatter.js";
 import app from "./config.js";
 
-const { host, port } = app;
+const { host, port, token } = app;
 const failMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".login-form");
 const login = document.querySelector("#login");
@@ -37,8 +37,11 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    localStorage.setItem("lobby-token", data.token);
-    location.href = `http://${host}:${port}/lobby`;
+    localStorage.setItem(token, data.token);
+    location.href =
+      data.user.role === "user"
+        ? `http://${host}:${port}/lobby`
+        : `http://${host}:${port}/admin`;
   } catch (error) {
     showError(error);
   }
@@ -73,6 +76,10 @@ resetPWLink.addEventListener("click", (e) => {
 
           checkMessage.innerText = data.message;
           checkMessage.style.display = "block";
+
+          setTimeout(() => {
+            checkMessage.style.display = "none";
+          }, 2000);
         } catch (error) {
           showError(error);
         }

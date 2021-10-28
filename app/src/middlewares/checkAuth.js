@@ -1,20 +1,18 @@
 const tokenService = require("../components/token/tokenService");
-const { TOKEN_REQUIRED, AUTHORIZATION_FAILED } = require("../helpers/messages");
+const { TOKEN_REQUIRED, ACCESS_DENIED } = require("../helpers/messages");
 const UnauthorizedError = require("../errors/unauthorizedError");
+const ForbiddenError = require("../errors/forbiddenError");
 
-module.exports = (req, res, next) => {
+module.exports = (role) => (req, res, next) => {
   try {
     const accessToken = req.headers.authorization;
     if (!accessToken) throw new UnauthorizedError(TOKEN_REQUIRED);
 
-    try {
-      const payload = tokenService.verify(accessToken.split(" ")[1]);
+    const payload = tokenService.verify(accessToken.split(" ")[1]);
+    if (payload.role !== role) throw new ForbiddenError(ACCESS_DENIED);
 
-      req.user = payload;
-      return next();
-    } catch (error) {
-      throw new UnauthorizedError(AUTHORIZATION_FAILED);
-    }
+    req.user = payload;
+    return next();
   } catch (error) {
     return next(error);
   }

@@ -5,6 +5,7 @@ module.exports = {
   WRONG_CREDENTIALS: "Wrong credentials",
   TOKEN_REQUIRED: "A token is required for authentication",
   AUTHORIZATION_FAILED: "Authorization error occurred",
+  ACCESS_DENIED: "Access is denied",
   VALIDATION_FAILED: "Validation error occurred",
   CHECK_EMAIL: "Check your email, please!",
   IVALID_LINK: "This link is no longer valid",

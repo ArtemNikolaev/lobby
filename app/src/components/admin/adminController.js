@@ -1,7 +1,7 @@
 const UserDto = require("../../dtos/userDto");
 const userService = require("../user/userService");
 
-class LobbyController {
+class AdminController {
   async getProfile(req, res, next) {
     try {
       const user = await userService.getUser(req.user.id);
@@ -14,4 +14,4 @@ class LobbyController {
   }
 }
 
-module.exports = new LobbyController();
+module.exports = new AdminController();

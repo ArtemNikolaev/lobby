@@ -42,10 +42,12 @@ class UserStorage {
 
   async updatePassword(userData) {
     const { email, password } = userData;
-    await pool.query("UPDATE users SET password = ? WHERE email = ?", [
-      password,
-      email,
-    ]);
+    const [data] = await pool.query(
+      "UPDATE users SET password = ? WHERE email = ?",
+      [password, email]
+    );
+
+    return data;
   }
 }
 

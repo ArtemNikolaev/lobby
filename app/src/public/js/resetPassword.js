@@ -32,8 +32,18 @@ form.addEventListener("submit", async (e) => {
   try {
     const response = await user.send(requestData);
 
-    if (response.status === 204) {
-      successMessage.innerText = "Password successfully updated!";
+    if (response.status === 400 || response.status === 404) {
+      const data = await response.json();
+      successMessage.innerText = data.message;
+      successMessage.style.color = "red";
+      successMessage.style.display = "block";
+
+      setTimeout(() => {
+        successMessage.style.color = "green";
+        successMessage.style.display = "none";
+      }, 2000);
+    } else if (response.status === 204) {
+      successMessage.innerText = "Password updated successfully!";
       successMessage.style.display = "block";
 
       setTimeout(() => {

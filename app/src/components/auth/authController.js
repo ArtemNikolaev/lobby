@@ -1,6 +1,7 @@
 const { CHECK_EMAIL } = require("../../helpers/messages");
 const { CREATED, NO_CONTENT } = require("../../helpers/statusCodes");
 const authService = require("./authService");
+const UserDto = require("../../dtos/userDto");
 
 class AuthController {
   async register(req, res, next) {
@@ -15,9 +16,10 @@ class AuthController {
 
   async login(req, res, next) {
     try {
-      const data = await authService.login(req.body);
+      const { user, token } = await authService.login(req.body);
+      const userDto = new UserDto(user);
 
-      return res.json(data);
+      return res.json({ user: userDto, token });
     } catch (error) {
       return next(error);
     }

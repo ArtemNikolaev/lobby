@@ -3,6 +3,8 @@ const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
 const lobbyRouter = require("./components/lobby/lobbyRouter");
+const adminRouter = require("./components/admin/adminRouter");
+adminRouter;
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
 const checkAuth = require("./middlewares/checkAuth.js");
@@ -33,10 +35,26 @@ app.use("/auth", authRouter);
 /**
  *  Lobby
  */
-app.use("/lobby", express.static(path.join(__dirname, "public", "lobby.html")));
-app.use("/my-lobby", checkAuth);
-app.use("/my-lobby", lobbyRouter);
+app.use(
+  "/lobby",
+  express.static(path.join(__dirname, "public", "lobbyRoom.html"))
+);
+app.use("/lobby-room", checkAuth("user"));
+app.use("/lobby-room", lobbyRouter);
 
+/**
+ *  Admin Room
+ */
+app.use(
+  "/admin",
+  express.static(path.join(__dirname, "public", "adminRoom.html"))
+);
+app.use("/admin-room", checkAuth("admin"));
+app.use("/admin-room", adminRouter);
+
+/**
+ *  Other
+ */
 app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
 
 app.use(APIErrorsHandler);

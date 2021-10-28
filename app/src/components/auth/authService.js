@@ -30,11 +30,11 @@ class AuthService {
   async login(body) {
     try {
       const user = await userService.checkCredential(body);
+      const { id, role } = user;
 
-      const token = tokenService.generateToken({ id: user.id });
-      const { username } = user;
+      const token = tokenService.generateToken({ id, role });
 
-      return { username, token };
+      return { user, token };
     } catch (error) {
       throw new CatchError(error);
     }
@@ -53,7 +53,7 @@ class AuthService {
       const link = `http://localhost:${port}/auth/password-reset-link/${user.id}/${token}`;
 
       // TODO: Logic with sending the link to user email
-      console.log("Click to reset password ", link);
+      console.log("\n\nClick to reset password:\n\n", link, "\n\n");
     } catch (error) {
       throw new CatchError(error);
     }
@@ -83,10 +83,12 @@ class AuthService {
       const { email, password } = body;
 
       const hashedPassword = await hash(password);
-      await userStorage.updatePassword({
+      const data = await userStorage.updatePassword({
         email,
         password: hashedPassword,
       });
+
+      if (!data.affectedRows) throw new NotFoundError(USER_NOT_FOUND);
     } catch (error) {
       throw new CatchError(error);
     }
