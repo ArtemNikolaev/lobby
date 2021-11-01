@@ -1,4 +1,5 @@
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users, games;
+
 
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT,
@@ -11,6 +12,17 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX email_index ON users(email);
 CREATE INDEX username_index ON users(username);
 CREATE INDEX role_index ON users(role);
+
+
+CREATE TABLE IF NOT EXISTS games (
+    id INT AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    PRIMARY KEY(id)
+);
+CREATE INDEX title_index ON games(title);
+
 
 INSERT INTO users (
     username, 

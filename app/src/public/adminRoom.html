@@ -9,7 +9,13 @@
       rel="stylesheet"
       id="bootstrap-css"
     />
-    <title>Admin Panel</title>
+    <!-- <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  /> -->
+    <title>Admin Room</title>
   </head>
 
   <style>
@@ -21,23 +27,44 @@
         rgba(255, 252, 244, 1) 44%,
         rgba(247, 254, 255, 1) 100%
       );
-      margin: 5rem 5rem;
+      margin: 2rem 3rem;
     }
-    .head {
+    .nav {
       display: flex;
-      justify-content: flex-end;
-      margin-bottom: 6rem;
+      justify-content: space-between;
+      margin-bottom: 2rem;
     }
-    .admin-room {
-      margin-right: 1rem;
+    .admin-btn {
+      margin-right: 0.5rem;
+    }
+    .main {
+      display: flex;
+      justify-content: space-between;
+    }
+    .admin-photo {
+      width: 120px;
+      height: 160px;
+      margin-bottom: 1rem;
+    }
+    .control-body {
+      display: flex;
+      width: 70vw;
+    }
+    .control-head {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 
   <body>
-    <div class="head">
+    <div class="nav">
       <div class="title">
-        <a class="admin-room" href="/admin"
-          ><button class="btn btn-info">Administration Room</button></a
+        <a class="admin-btn" href="/admin"
+          ><button class="btn btn-info">Admin Room</button></a
         >
       </div>
       <div>
@@ -47,15 +74,88 @@
       </div>
     </div>
 
-    <div class="body">
-      <h5>My role:</h5>
-      <div id="role"></div>
-      <h5>My id:</h5>
-      <div id="id"></div>
-      <h5>My nickname:</h5>
-      <div id="username"></div>
-      <h5>My email:</h5>
-      <div id="email"></div>
+    <div class="main">
+      <div class="info">
+        <div class="admininfo">
+          <div class="admin-photo">
+            <img src="./img/admin.jpg" alt="" />
+          </div>
+
+          <div id="role"></div>
+          <div id="id"></div>
+          <div id="username"></div>
+          <div id="email"></div>
+        </div>
+      </div>
+
+      <div class="control-panel">
+        <div class="control-head">
+          <div>
+            <h4>Control Panel</h4>
+          </div>
+        </div>
+
+        <div class="control-body">
+          <div class="actions">
+            <div>
+              <button class="btn btn-info show-add-game-btn">New Game</button>
+            </div>
+          </div>
+
+          <div class="add-game hidden">
+            <form class="form-horizontal add-game-form">
+              <fieldset>
+                <div class="control-group">
+                  <label class="control-label" for="title">Title</label>
+                  <div class="controls">
+                    <input
+                      type="text"
+                      id="title"
+                      name="title"
+                      class="input-xlarge"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label" for="description"
+                    >Description</label
+                  >
+                  <div class="controls">
+                    <input
+                      type="text"
+                      id="description"
+                      name="description"
+                      class="input-xlarge"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="control-group">
+                  <label class="control-label" for="image">Image</label>
+                  <div class="controls">
+                    <input
+                      type="file"
+                      id="image"
+                      name="image"
+                      class="input-xlarge"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="control-group login-btn">
+                  <div class="controls">
+                    <button class="btn btn-info">Send</button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script type="module" src="/js/adminRoom.js"></script>

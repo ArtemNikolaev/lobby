@@ -3,7 +3,7 @@ import showError from "./utils/showError.js";
 import formatter from "./utils/formatter.js";
 import app from "./config.js";
 
-const { host, port, token } = app;
+const { token } = app;
 const failMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".login-form");
 const login = document.querySelector("#login");
@@ -38,10 +38,7 @@ form.addEventListener("submit", async (e) => {
     }
 
     localStorage.setItem(token, data.token);
-    location.href =
-      data.user.role === "user"
-        ? `http://${host}:${port}/lobby`
-        : `http://${host}:${port}/admin`;
+    location.href = data.user.role === "user" ? "/lobby" : "/admin";
   } catch (error) {
     showError(error);
   }
@@ -49,10 +46,10 @@ form.addEventListener("submit", async (e) => {
 
 resetPWLink.addEventListener("click", (e) => {
   e.preventDefault();
-  [];
-  if (resetPWDiv.style.display === "none") {
-    resetPWDiv.style.display = "block";
-    loginBtn.style.display = "none";
+  resetPWDiv.classList.toggle("hidden");
+
+  if (!resetPWDiv.classList.contains("hidden")) {
+    loginBtn.classList.add("hidden");
 
     const PWResetInput = document.querySelector("#pw-reset-input");
     const checkMessage = document.querySelector(".check-message");
@@ -85,7 +82,6 @@ resetPWLink.addEventListener("click", (e) => {
         }
       });
   } else {
-    resetPWDiv.style.display = "none";
-    loginBtn.style.display = "block";
+    loginBtn.classList.remove("hidden");
   }
 });

@@ -4,7 +4,7 @@ const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
 const lobbyRouter = require("./components/lobby/lobbyRouter");
 const adminRouter = require("./components/admin/adminRouter");
-adminRouter;
+const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
 const checkAuth = require("./middlewares/checkAuth.js");
@@ -51,6 +51,7 @@ app.use(
 );
 app.use("/admin-room", checkAuth("admin"));
 app.use("/admin-room", adminRouter);
+app.use("/games", gameRouter);
 
 /**
  *  Other

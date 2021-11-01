@@ -13,15 +13,13 @@ class AuthService {
   async registration(body) {
     try {
       const { username, email, password } = body;
-
       const hashedPassword = await hash(password);
-      const user = await userStorage.create({
+
+      return userStorage.create({
         username,
         email,
         password: hashedPassword,
       });
-
-      return user;
     } catch (error) {
       throw new CatchError(error);
     }

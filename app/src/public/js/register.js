@@ -1,9 +1,7 @@
 import user from "./services/user.js";
 import formatter from "./utils/formatter.js";
-import app from "./config.js";
 import showError from "./utils/showError.js";
 
-const { host, port } = app;
 const errMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".register-form");
 const name = document.querySelector("#name");
@@ -43,7 +41,7 @@ form.addEventListener("submit", async (e) => {
         errMessage.style.display = "none";
       }, 4000);
     } else {
-      location.href = `http://${host}:${port}/auth/login`;
+      location.href = "/auth/login";
     }
   } catch (error) {
     showError(error);
