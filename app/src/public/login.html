@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Login</title>
+  </head>
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+    }
+
+    .login {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: end;
+      margin: 4rem;
+    }
+    .register {
+      margin-right: 1rem;
+    }
+    .reset-pw-link {
+      margin-left: 23rem;
+      margin-top: 0.5rem;
+      font-size: small;
+    }
+    .reset-pw-div,
+    .check-message {
+      display: none;
+    }
+    .check-message {
+      color: red;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <div>
+        <a class="register" href="/auth/register"
+          ><button class="btn btn-info">Registration</button></a
+        >
+      </div>
+
+      <div>
+        <a href="/lobby"><button class="btn btn-info">Lobby</button></a>
+      </div>
+    </div>
+
+    <div class="login">
+      <div style="color: red; display: none" class="fail-msg"></div>
+      <form class="form-horizontal login-form" action="" method="POST">
+        <fieldset>
+          <div id="legend">
+            <legend class="">Log In</legend>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="login">E-mail or Username</label>
+            <div class="controls">
+              <input
+                type="text"
+                id="login"
+                name="login"
+                class="input-xlarge"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="input-xlarge"
+                required
+              />
+            </div>
+            <div class="reset-pw-link">
+              <a href="">Reset password</a>
+            </div>
+          </div>
+
+          <div class="control-group login-btn">
+            <div class="controls">
+              <button class="btn btn-info">Login</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <div class="reset-pw-div">
+        <form class="form-horizontal pw-reset-form" action="">
+          <div class="control-group">
+            <div class="control-label">Your register email</div>
+            <div class="controls">
+              <input
+                type="text"
+                id="pw-reset-input"
+                name=""
+                class="input-xlarge"
+                required
+              />
+              <p class="help-block check-message"></p>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button class="btn btn-info">Send</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/login.js"></script>
+  </body>
+</html>

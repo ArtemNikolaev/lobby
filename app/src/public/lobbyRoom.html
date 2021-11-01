@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Lobby</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 5rem 5rem;
+    }
+    .head {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 6rem;
+    }
+    .lobby {
+      margin-right: 1rem;
+    }
+  </style>
+
+  <body>
+    <div class="head">
+      <div class="title">
+        <a class="lobby" href="/lobby"
+          ><button class="btn btn-info">Lobby</button></a
+        >
+      </div>
+      <div>
+        <a class="logout" href=""
+          ><button class="btn btn-info">Logout</button></a
+        >
+      </div>
+    </div>
+
+    <div class="body">
+      <h5>My role:</h5>
+      <div id="role"></div>
+      <h5>My id:</h5>
+      <div id="id"></div>
+      <h5>My nickname:</h5>
+      <div id="username"></div>
+      <h5>My email:</h5>
+      <div id="email"></div>
+    </div>
+
+    <script type="module" src="/js/lobbyRoom.js"></script>
+  </body>
+</html>
