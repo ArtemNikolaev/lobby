@@ -16,11 +16,11 @@ const deleteGameForm = document.querySelector(".delete-game");
 const message = document.querySelector(".response-msg");
 const gameCards = document.querySelector(".game-cards");
 
-async function getPlayerLobby() {
+async function getRoom(room) {
   try {
     const jwt = localStorage.getItem(token);
 
-    const data = await lobby.getRoom("lobby-room", jwt);
+    const data = await lobby.getRoom(room, jwt);
     if (!data) return jumpToStartPage();
 
     const {
@@ -34,37 +34,10 @@ async function getPlayerLobby() {
       gameCards.insertAdjacentHTML("afterbegin", html);
     }
 
-    myRole.innerText = role;
-    myId.innerText = id;
-    myUsername.innerText = username;
-    myEmail.innerText = email;
-  } catch (error) {
-    showError(error);
-  }
-}
-
-async function getAdminLobby() {
-  try {
-    const jwt = localStorage.getItem(token);
-
-    const data = await lobby.getRoom("admin-room", jwt);
-    if (!data) return jumpToStartPage();
-
-    const {
-      user: { role, id, username, email },
-      games,
-    } = data;
-
-    if (games.length) {
-      const html = games.map(createGameCardHtml).join("\n");
-
-      gameCards.insertAdjacentHTML("afterbegin", html);
-    }
-
-    myRole.innerText = role;
-    myId.innerText = id;
-    myUsername.innerText = username;
-    myEmail.innerText = email;
+    // myId.innerText = id;
+    myRole.innerText = `Role: ${role}`;
+    myUsername.innerText = `Nickname: ${username}`;
+    myEmail.innerText = `Email: ${email}`;
   } catch (error) {
     showError(error);
   }
@@ -133,9 +106,9 @@ function addNewGameListener() {
   const ws = new WebSocket(wsUrl);
 
   ws.onopen = () => console.log("WS: Listen 'addGame' event...");
-  ws.onclose = () => console.log("Connection closed...");
+  ws.onclose = () => console.log("WS: Connection closed...");
   ws.onerror = (error) => showError(error);
-  ws.onmessage = async (response) => {
+  ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 
     if (data.event === "addGame") {
@@ -149,9 +122,9 @@ function deleteGameListener() {
   const ws = new WebSocket(wsUrl);
 
   ws.onopen = () => console.log("WS: Listen 'deleteGame' event...");
-  ws.onclose = () => console.log("Connection closed...");
+  ws.onclose = () => console.log("WS: Connection closed...");
   ws.onerror = (error) => showError(error);
-  ws.onmessage = async (response) => {
+  ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 
     if (data.event === "deleteGame") {
@@ -174,8 +147,7 @@ async function logout() {
 }
 
 export {
-  getPlayerLobby,
-  getAdminLobby,
+  getRoom,
   logout,
   createGame,
   deleteGame,

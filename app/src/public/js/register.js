@@ -1,19 +1,18 @@
 import user from "./services/user.js";
-import formatter from "./utils/formatter.js";
 import showError from "./utils/showError.js";
 
 const errMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".register-form");
-const name = document.querySelector("#name");
-const email = document.querySelector("#email");
-const password = document.querySelector("#password");
-const passwordConfirm = document.querySelector("#password_confirm");
 const confimMessage = document.querySelector(".confirm-message");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const body = new FormData(form);
 
-  if (password.value !== passwordConfirm.value) {
+  const password = body.get("password");
+  const confirmPassword = body.get("confirm-password");
+
+  if (password !== confirmPassword) {
     confimMessage.innerText = "Password mismatch!";
     confimMessage.style.color = "red";
     return;
@@ -21,9 +20,9 @@ form.addEventListener("submit", async (e) => {
 
   const requestData = {
     body: {
-      username: formatter(name.value),
-      email: formatter(email.value),
-      password: formatter(password.value),
+      username: body.get("username"),
+      email: body.get("email"),
+      password,
     },
     path: "register",
     method: "POST",

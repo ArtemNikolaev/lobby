@@ -12,14 +12,11 @@ const GoneError = require("../../errors/goneError");
 class AuthService {
   async registration(body) {
     try {
-      const { username, email, password } = body;
-      const hashedPassword = await hash(password);
+      const userData = { ...body, password: await hash(body.password) };
 
-      return userStorage.create({
-        username,
-        email,
-        password: hashedPassword,
-      });
+      const data = await userStorage.create(userData);
+
+      return { id: data[0].insertId, ...userData };
     } catch (error) {
       throw new CatchError(error);
     }
@@ -40,8 +37,9 @@ class AuthService {
 
   async sendResetLinkToEmail(email) {
     try {
-      const user = await userStorage.findByEmail(email);
-      if (!user) throw new NotFoundError(USER_NOT_FOUND);
+      const [data] = await userStorage.findByEmail(email);
+      if (!data.length) throw new NotFoundError(USER_NOT_FOUND);
+      const user = data[0];
 
       const payload = { id: user.id, email: user.email };
       const secret = accessSecret + user.password;
@@ -61,10 +59,10 @@ class AuthService {
     try {
       const { id, token } = params;
 
-      const user = await userStorage.findById(id);
-      if (!user) throw new NotFoundError(USER_NOT_FOUND);
+      const [data] = await userStorage.findById(id);
+      if (!data.length) throw new NotFoundError(USER_NOT_FOUND);
 
-      const secret = accessSecret + user.password;
+      const secret = accessSecret + data[0].password;
 
       try {
         tokenService.verify(token, secret);
@@ -80,10 +78,9 @@ class AuthService {
     try {
       const { email, password } = body;
 
-      const hashedPassword = await hash(password);
-      const data = await userStorage.updatePassword({
+      const [data] = await userStorage.updatePassword({
         email,
-        password: hashedPassword,
+        password: await hash(password),
       });
 
       if (!data.affectedRows) throw new NotFoundError(USER_NOT_FOUND);

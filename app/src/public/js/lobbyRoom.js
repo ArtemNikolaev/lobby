@@ -1,12 +1,12 @@
 import {
-  getPlayerLobby,
+  getRoom,
   logout,
   addNewGameListener,
   deleteGameListener,
 } from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await getPlayerLobby();
+  await getRoom("lobby-room");
   addNewGameListener();
   deleteGameListener();
 });

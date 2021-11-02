@@ -9,6 +9,10 @@ class GameStorage {
     return pool.query("SELECT * FROM games");
   }
 
+  async findById(id) {
+    return pool.query("SELECT * FROM games WHERE id = ?", id);
+  }
+
   async deleteById(id) {
     return pool.query("DELETE FROM games WHERE id = ?", id);
   }

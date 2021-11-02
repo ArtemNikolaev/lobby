@@ -23,4 +23,4 @@ docker-compose up -d
 
 3. Click http://localhost:3000
 
-4. Admin creds: login - `admin`/`admin@gmail.com`, password - `123123`
+4. Admin creds: login - `Jason Statham`/`admin@gmail.com`, password - `123123`

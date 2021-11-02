@@ -1,5 +1,5 @@
 import {
-  getAdminLobby,
+  getRoom,
   logout,
   createGame,
   deleteGame,
@@ -8,7 +8,7 @@ import {
 } from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await getAdminLobby();
+  await getRoom("admin-room");
   addNewGameListener();
   deleteGameListener();
 });

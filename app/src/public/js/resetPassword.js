@@ -1,20 +1,18 @@
 import user from "./services/user.js";
-import formatter from "./utils/formatter.js";
-import app from "./config.js";
 import showError from "./utils/showError.js";
 
-const { host, port } = app;
 const successMessage = document.querySelector(".success-msg");
 const form = document.querySelector(".reset-pw-form");
-const email = document.querySelector("#email");
-const password = document.querySelector("#password");
-const passwordConfirm = document.querySelector("#password_confirm");
 const confimMessage = document.querySelector(".confirm-message");
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const data = new FormData(form);
 
-  if (password.value !== passwordConfirm.value) {
+  const password = data.get("password");
+  const confirmPassword = data.get("confirm-password");
+
+  if (password !== confirmPassword) {
     confimMessage.innerText = "Password mismatch!";
     confimMessage.style.color = "red";
     return;
@@ -22,8 +20,8 @@ form.addEventListener("submit", async (e) => {
 
   const requestData = {
     body: {
-      email: formatter(email.value),
-      password: formatter(password.value),
+      email: data.get("email"),
+      password,
     },
     path: "password-reset",
     method: "PATCH",
@@ -47,7 +45,7 @@ form.addEventListener("submit", async (e) => {
       successMessage.style.display = "block";
 
       setTimeout(() => {
-        location.href = `http://${host}:${port}/auth/login`;
+        location.href = `/auth/login`;
       }, 2000);
     }
   } catch (error) {

@@ -6,11 +6,11 @@ module.exports = async (req, res, next) => {
   const { username, email } = req.body;
 
   try {
-    const userByEmail = await userStorage.findByEmail(email);
-    if (userByEmail) throw new ConflictError(EMAIL_REGISTERED);
+    const [dataByEmail] = await userStorage.findByEmail(email);
+    if (dataByEmail.length) throw new ConflictError(EMAIL_REGISTERED);
 
-    const userByUsername = await userStorage.findByUsername(username);
-    if (userByUsername) throw new ConflictError(USERNAME_TAKEN);
+    const [dataByUsername] = await userStorage.findByUsername(username);
+    if (dataByUsername.length) throw new ConflictError(USERNAME_TAKEN);
 
     return next();
   } catch (error) {

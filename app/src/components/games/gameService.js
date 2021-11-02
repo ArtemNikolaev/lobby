@@ -1,3 +1,4 @@
+const { promises: fs, existsSync } = require("fs");
 const gameStorage = require("./gameStorage");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
@@ -32,8 +33,11 @@ class GameService {
 
   async delete(id) {
     try {
-      const data = await gameStorage.deleteById(id);
-      if (!data[0].affectedRows) throw new NotFoundError(GAME_NOT_FOUND);
+      const [data] = await gameStorage.findById(id);
+      if (!data.length) throw new NotFoundError(GAME_NOT_FOUND);
+
+      await gameStorage.deleteById(id);
+      if (existsSync(data[0].url)) await fs.unlink(data[0].url);
     } catch (error) {
       throw new CatchError(error);
     }

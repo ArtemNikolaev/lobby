@@ -10,13 +10,13 @@ class UserService {
     try {
       const { login, password } = credential;
 
-      const user = await userStorage.find(login);
-      if (!user) throw new UnauthorizedError(WRONG_CREDENTIALS);
+      const [data] = await userStorage.find(login);
+      if (!data.length) throw new UnauthorizedError(WRONG_CREDENTIALS);
 
-      const isMatch = await verify(user.password, password);
+      const isMatch = await verify(data[0].password, password);
       if (!isMatch) throw new UnauthorizedError(WRONG_CREDENTIALS);
 
-      return user;
+      return data[0];
     } catch (error) {
       throw new CatchError(error);
     }
@@ -24,10 +24,10 @@ class UserService {
 
   async getUser(id) {
     try {
-      const user = await userStorage.findById(id);
-      if (!user) throw new NotFoundError(USER_NOT_FOUND);
+      const [data] = await userStorage.findById(id);
+      if (!data.length) throw new NotFoundError(USER_NOT_FOUND);
 
-      return user;
+      return data[0];
     } catch (error) {
       throw new CatchError(error);
     }

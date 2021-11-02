@@ -2,52 +2,34 @@ const pool = require("../../db");
 
 class UserStorage {
   async create(userData) {
-    const data = await pool.query("INSERT INTO users SET ?", userData);
-
-    return { id: data[0].insertId, ...userData };
+    return pool.query("INSERT INTO users SET ?", userData);
   }
 
   async findById(id) {
-    const [data] = await pool.query("SELECT * FROM users WHERE id = ?", id);
-
-    return data[0];
+    return pool.query("SELECT * FROM users WHERE id = ?", id);
   }
 
   async findByEmail(email) {
-    const [data] = await pool.query(
-      "SELECT * FROM users WHERE email = ?",
-      email
-    );
-
-    return data[0];
+    return pool.query("SELECT * FROM users WHERE email = ?", email);
   }
 
   async findByUsername(username) {
-    const [data] = await pool.query(
-      "SELECT * FROM users WHERE username = ?",
-      username
-    );
-
-    return data[0];
+    return pool.query("SELECT * FROM users WHERE username = ?", username);
   }
 
   async find(login) {
-    const [data] = await pool.query(
-      "SELECT * FROM users WHERE email = ? OR username = ?",
-      [login, login]
-    );
-
-    return data[0];
+    return pool.query("SELECT * FROM users WHERE email = ? OR username = ?", [
+      login,
+      login,
+    ]);
   }
 
   async updatePassword(userData) {
     const { email, password } = userData;
-    const [data] = await pool.query(
-      "UPDATE users SET password = ? WHERE email = ?",
-      [password, email]
-    );
-
-    return data;
+    return pool.query("UPDATE users SET password = ? WHERE email = ?", [
+      password,
+      email,
+    ]);
   }
 }
 
