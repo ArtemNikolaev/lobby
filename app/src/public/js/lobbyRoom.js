@@ -1,9 +1,10 @@
-import { contentLoader, logout } from "./handler.js";
+import { getPlayerLobby, logout, addNewGameListener } from "./handler.js";
 
 const logoutBtn = document.querySelector(".logout");
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await contentLoader("lobby-room");
+  await getPlayerLobby();
+  addNewGameListener();
 });
 
 logoutBtn.addEventListener("click", async () => {

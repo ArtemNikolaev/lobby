@@ -1,3 +1,3 @@
-export default function formatter(data) {
+export default (data) => {
   return data.toLowerCase().trim();
-}
+};

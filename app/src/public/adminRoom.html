@@ -58,6 +58,11 @@
     .hidden {
       display: none;
     }
+    .response-msg {
+      color: green;
+      margin-bottom: 1rem;
+      margin-left: 12rem;
+    }
   </style>
 
   <body>
@@ -103,6 +108,8 @@
           </div>
 
           <div class="add-game hidden">
+            <div class="response-msg"></div>
+
             <form class="form-horizontal add-game-form">
               <fieldset>
                 <div class="control-group">
@@ -148,7 +155,7 @@
 
                 <div class="control-group login-btn">
                   <div class="controls">
-                    <button class="btn btn-info">Send</button>
+                    <button class="btn btn-info">Create</button>
                   </div>
                 </div>
               </fieldset>

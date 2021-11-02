@@ -6,12 +6,13 @@ const { uploadsFolder } = require("../../config").app;
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     try {
-      if (!existsSync(uploadsFolder)) mkdirSync(uploadsFolder);
+      if (!existsSync(`./src/public/${uploadsFolder}`))
+        mkdirSync(`./src/public/${uploadsFolder}`);
     } catch (err) {
       throw new Error(err);
     }
 
-    cb(null, `./${uploadsFolder}`);
+    cb(null, `./src/public/${uploadsFolder}`);
   },
   filename: (req, file, cb) => {
     const arr = file.originalname.split(".");

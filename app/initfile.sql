@@ -19,9 +19,9 @@ CREATE TABLE IF NOT EXISTS games (
     title VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
     url VARCHAR(255) NOT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(id),
+    UNIQUE (title)
 );
-CREATE INDEX title_index ON games(title);
 
 
 INSERT INTO users (
@@ -31,8 +31,25 @@ INSERT INTO users (
     role
 ) 
 VALUES (
-    'adminosaurus', 
+    'Jason Statham', 
     'admin@gmail.com', 
     '86a4f287407159d20efa2e0682f6525c:8fac330a91d8ce4b52196980', 
     'admin'
+);
+
+
+INSERT INTO games (
+    title, 
+    description, 
+    url
+) 
+VALUES (
+    'GTA 6', 
+    'The cool game with cars and guns', 
+    '/uploads/e28cd1eb-7ba2-4698-a76e-c26584bee1db.jpg'
+),
+(
+    'The Witcher III', 
+    'The cool game based on Slavic mythology', 
+    '/uploads/f9a34e23-ff7e-49ff-b475-72a640ddd5d3.jpg'
 );

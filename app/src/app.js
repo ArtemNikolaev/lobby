@@ -1,4 +1,6 @@
+const http = require("http");
 const express = require("express");
+const WebSocket = require("ws");
 const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
@@ -10,6 +12,18 @@ const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
 const checkAuth = require("./middlewares/checkAuth.js");
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+wss.on("connection", (ws) => {
+  ws.on("message", (data) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
+});
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -60,4 +74,4 @@ app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
 
 app.use(APIErrorsHandler);
 
-module.exports = app;
+module.exports = server;

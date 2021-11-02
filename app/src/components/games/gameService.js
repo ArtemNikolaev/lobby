@@ -9,8 +9,18 @@ class GameService {
       return gameStorage.create({
         title,
         description,
-        url: data.file.path,
+        url: data.file.path.split("public")[1],
       });
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async getAll() {
+    try {
+      const [games, _] = await gameStorage.getAll();
+
+      return games;
     } catch (error) {
       throw new CatchError(error);
     }
