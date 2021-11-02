@@ -9,12 +9,6 @@
       rel="stylesheet"
       id="bootstrap-css"
     />
-    <!-- <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-    crossorigin="anonymous"
-  /> -->
     <title>Admin Room</title>
   </head>
 
@@ -46,14 +40,20 @@
       height: 160px;
       margin-bottom: 1rem;
     }
-    .control-body {
+
+    .games-controls {
       display: flex;
-      width: 70vw;
+      width: 80vw;
     }
-    .control-head {
+    .controls-body {
       display: flex;
-      justify-content: center;
-      margin-bottom: 2rem;
+      width: 40vw;
+    }
+    .controls-section,
+    .games-section {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
     }
     .hidden {
       display: none;
@@ -62,6 +62,31 @@
       color: green;
       margin-bottom: 1rem;
       margin-left: 12rem;
+    }
+    .game-cards {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .card {
+      margin: 0.5rem;
+      width: 150px;
+    }
+    .card img {
+      width: 150px;
+      height: 180px;
+    }
+    .games-title,
+    .controls-title {
+      margin-bottom: 1rem;
+    }
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      margin-right: 5rem;
+    }
+    .action-btns div {
+      margin-bottom: 1rem;
     }
   </style>
 
@@ -93,75 +118,118 @@
         </div>
       </div>
 
-      <div class="control-panel">
-        <div class="control-head">
-          <div>
+      <div class="games-controls">
+        <!--  -->
+        <div class="controls-section">
+          <div class="controls-title">
             <h4>Control Panel</h4>
           </div>
-        </div>
 
-        <div class="control-body">
-          <div class="actions">
-            <div>
-              <button class="btn btn-info show-add-game-btn">New Game</button>
+          <div class="controls-body">
+            <!-- action BTNs -->
+            <div class="action-btns">
+              <div>
+                <button class="btn btn-info show-add-game-btn">New Game</button>
+              </div>
+              <div>
+                <button class="btn btn-info show-delete-game-btn">
+                  Delete Game
+                </button>
+              </div>
+            </div>
+
+            <!-- Action FORMs -->
+            <div class="action-forms">
+              <div class="add-game hidden">
+                <div class="response-msg"></div>
+
+                <form class="form-row add-game-form">
+                  <div class="col-md-4">
+                    <label class="control-label" for="title">Title</label>
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="control-label" for="description"
+                      >Description</label
+                    >
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="control-label" for="image">Image</label>
+                    <div class="controls">
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="controls">
+                      <button class="btn btn-info">Create</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!--  -->
+              <div class="delete-game hidden">
+                <div class="response-msg"></div>
+
+                <form class="form-row delete-game-form">
+                  <div class="col-md-4">
+                    <label class="control-label" for="id">Game ID</label>
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="id"
+                        name="id"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="controls">
+                      <button class="btn btn-info">Delete</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!--  -->
             </div>
           </div>
-
-          <div class="add-game hidden">
-            <div class="response-msg"></div>
-
-            <form class="form-horizontal add-game-form">
-              <fieldset>
-                <div class="control-group">
-                  <label class="control-label" for="title">Title</label>
-                  <div class="controls">
-                    <input
-                      type="text"
-                      id="title"
-                      name="title"
-                      class="input-xlarge"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div class="control-group">
-                  <label class="control-label" for="description"
-                    >Description</label
-                  >
-                  <div class="controls">
-                    <input
-                      type="text"
-                      id="description"
-                      name="description"
-                      class="input-xlarge"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div class="control-group">
-                  <label class="control-label" for="image">Image</label>
-                  <div class="controls">
-                    <input
-                      type="file"
-                      id="image"
-                      name="image"
-                      class="input-xlarge"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div class="control-group login-btn">
-                  <div class="controls">
-                    <button class="btn btn-info">Create</button>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
         </div>
+        <!--  -->
+
+        <div class="games-section">
+          <div class="games-title">
+            <h4>Games</h4>
+          </div>
+          <div class="game-cards"></div>
+        </div>
+        <!--  -->
       </div>
     </div>
 

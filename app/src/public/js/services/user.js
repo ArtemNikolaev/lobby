@@ -1,6 +1,7 @@
 class User {
   async send(data) {
     const { body, path, method } = data;
+
     return fetch("/auth/" + path, {
       method,
       headers: {

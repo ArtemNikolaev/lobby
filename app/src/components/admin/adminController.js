@@ -1,4 +1,5 @@
 const UserDto = require("../../dtos/userDto");
+const gameService = require("../games/gameService");
 const userService = require("../user/userService");
 
 class AdminController {
@@ -7,7 +8,9 @@ class AdminController {
       const user = await userService.getUser(req.user.id);
       const userDto = new UserDto(user);
 
-      return res.json(userDto);
+      const games = await gameService.getAll();
+
+      return res.json({ user: userDto, games });
     } catch (error) {
       return next(error);
     }

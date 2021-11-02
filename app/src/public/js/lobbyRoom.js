@@ -1,12 +1,16 @@
-import { getPlayerLobby, logout, addNewGameListener } from "./handler.js";
-
-const logoutBtn = document.querySelector(".logout");
+import {
+  getPlayerLobby,
+  logout,
+  addNewGameListener,
+  deleteGameListener,
+} from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await getPlayerLobby();
   addNewGameListener();
+  deleteGameListener();
 });
 
-logoutBtn.addEventListener("click", async () => {
+document.querySelector(".logout").addEventListener("click", async () => {
   await logout();
 });

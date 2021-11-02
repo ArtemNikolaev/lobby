@@ -9,6 +9,7 @@ module.exports = {
   VALIDATION_FAILED: "Validation error occurred",
   CHECK_EMAIL: "Check your email, please!",
   IVALID_LINK: "This link is no longer valid",
+  GAME_NOT_FOUND: "Game with this ID is not found",
   PAGE_NOT_FOUND:
     `<h1>Error!</h1>` +
     `<h2>404. Not Found.</h2>` +

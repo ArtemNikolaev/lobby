@@ -2,13 +2,15 @@ const pool = require("../../db");
 
 class GameStorage {
   async create(gameData) {
-    const data = await pool.query("INSERT INTO games SET ?", gameData);
-
-    return { id: data[0].insertId, ...gameData };
+    return pool.query("INSERT INTO games SET ?", gameData);
   }
 
   async getAll() {
     return pool.query("SELECT * FROM games");
+  }
+
+  async deleteById(id) {
+    return pool.query("DELETE FROM games WHERE id = ?", id);
   }
 }
 

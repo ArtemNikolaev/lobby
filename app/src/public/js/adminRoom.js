@@ -1,16 +1,30 @@
-import { getAdminLobby, logout, createGame } from "./handler.js";
-
-const logoutBtn = document.querySelector(".logout");
-const showAddGameForm = document.querySelector(".show-add-game-btn");
+import {
+  getAdminLobby,
+  logout,
+  createGame,
+  deleteGame,
+  addNewGameListener,
+  deleteGameListener,
+} from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   await getAdminLobby();
+  addNewGameListener();
+  deleteGameListener();
 });
 
-logoutBtn.addEventListener("click", async () => {
+document.querySelector(".logout").addEventListener("click", async () => {
   await logout();
 });
 
-showAddGameForm.addEventListener("click", async () => {
-  await createGame();
-});
+document
+  .querySelector(".show-add-game-btn")
+  .addEventListener("click", async () => {
+    await createGame();
+  });
+
+document
+  .querySelector(".show-delete-game-btn")
+  .addEventListener("click", async () => {
+    await deleteGame();
+  });
