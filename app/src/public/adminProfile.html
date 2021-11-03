@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Admin Profile</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 2rem 3rem;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .admin-btn {
+      margin-right: 0.5rem;
+    }
+    .main {
+      display: flex;
+      justify-content: space-between;
+    }
+    .admin-photo {
+      width: 120px;
+      height: 160px;
+      margin-bottom: 1rem;
+    }
+
+    .games-controls {
+      display: flex;
+      width: 80vw;
+    }
+    .controls-body {
+      display: flex;
+      width: 40vw;
+    }
+    .controls-section,
+    .games-section {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    .hidden {
+      display: none;
+    }
+    .response-msg {
+      color: green;
+      margin-bottom: 1rem;
+    }
+    .game-cards {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .card {
+      margin: 0.5rem;
+      width: 150px;
+    }
+    .card img {
+      width: 150px;
+      height: 180px;
+    }
+    .games-title,
+    .controls-title {
+      margin-bottom: 1rem;
+    }
+    .action-btns {
+      display: flex;
+      flex-direction: column;
+      margin-right: 5rem;
+    }
+    .action-btns div {
+      margin-bottom: 1rem;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <div class="title">
+        <a class="admin-btn" href="/admin-profile"
+          ><button class="btn btn-info">Admin Profile</button></a
+        >
+      </div>
+      <div>
+        <a class="logout" href=""
+          ><button class="btn btn-info">Logout</button></a
+        >
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="info">
+        <div class="admininfo">
+          <div class="admin-photo">
+            <img src="./img/admin.jpg" alt="" />
+          </div>
+
+          <div id="role"></div>
+          <div id="id"></div>
+          <div id="username"></div>
+          <div id="email"></div>
+        </div>
+      </div>
+
+      <div class="games-controls">
+        <!--  -->
+        <div class="controls-section">
+          <div class="controls-title">
+            <h4>Control Panel</h4>
+          </div>
+
+          <div class="controls-body">
+            <!-- action BTNs -->
+            <div class="action-btns">
+              <div>
+                <button class="btn btn-info show-add-game-btn">New Game</button>
+              </div>
+              <div>
+                <button class="btn btn-info show-delete-game-btn">
+                  Delete Game
+                </button>
+              </div>
+            </div>
+
+            <!-- Action FORMs -->
+            <div class="action-forms">
+              <div class="add-game hidden">
+                <div class="response-msg"></div>
+
+                <form class="form-row add-game-form">
+                  <div class="col-md-4">
+                    <label class="control-label" for="title">Title</label>
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="control-label" for="description"
+                      >Description</label
+                    >
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="description"
+                        name="description"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="control-label" for="image">Image</label>
+                    <div class="controls">
+                      <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="controls">
+                      <button class="btn btn-info">Create</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!--  -->
+              <div class="delete-game hidden">
+                <div class="response-msg"></div>
+
+                <form class="form-row delete-game-form">
+                  <div class="col-md-4">
+                    <label class="control-label" for="id">Game ID</label>
+                    <div class="controls">
+                      <input
+                        type="text"
+                        id="id"
+                        name="id"
+                        class="input-xlarge"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="controls">
+                      <button class="btn btn-info">Delete</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <!--  -->
+            </div>
+          </div>
+        </div>
+        <!--  -->
+
+        <div class="games-section">
+          <div class="games-title">
+            <h4>Games</h4>
+          </div>
+          <div class="game-cards"></div>
+        </div>
+        <!--  -->
+      </div>
+    </div>
+
+    <script type="module" src="/js/adminProfile.js"></script>
+  </body>
+</html>
