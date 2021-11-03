@@ -4,8 +4,23 @@ const { WRONG_CREDENTIALS, USER_NOT_FOUND } = require("../../helpers/messages");
 const UnauthorizedError = require("../../errors/unauthorizedError");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
+const UserDto = require("../../dtos/userDto");
+const gameService = require("../games/gameService");
 
 class UserService {
+  async getRoom(id) {
+    try {
+      const user = await this.getUser(id);
+      const userDto = new UserDto(user);
+
+      const games = await gameService.getAll();
+
+      return { user: userDto, games };
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
   async checkCredential(credential) {
     try {
       const { login, password } = credential;

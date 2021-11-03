@@ -4,7 +4,7 @@ const WebSocket = require("ws");
 const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
-const lobbyRouter = require("./components/lobby/lobbyRouter");
+const userRouter = require("./components/user/userRouter");
 const adminRouter = require("./components/admin/adminRouter");
 const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
@@ -49,24 +49,29 @@ app.use(
 app.use("/auth", authRouter);
 
 /**
- *  Lobby
+ *  User-room
  */
 app.use(
-  "/lobby",
-  express.static(path.join(__dirname, "public", "lobbyRoom.html"))
+  "/profile",
+  express.static(path.join(__dirname, "public", "userProfile.html"))
 );
-app.use("/lobby-room", checkAuth("user"));
-app.use("/lobby-room", lobbyRouter);
+app.use("/user", checkAuth("user"));
+app.use("/user", userRouter);
 
 /**
- *  Admin Room
+ *  Admin-room
  */
 app.use(
-  "/admin",
-  express.static(path.join(__dirname, "public", "adminRoom.html"))
+  "/admin-profile",
+  express.static(path.join(__dirname, "public", "adminProfile.html"))
 );
-app.use("/admin-room", checkAuth("admin"));
-app.use("/admin-room", adminRouter);
+app.use("/admin", checkAuth("admin"));
+app.use("/admin", adminRouter);
+
+/**
+ *  Games
+ */
+app.use("/games", checkAuth("admin"));
 app.use("/games", gameRouter);
 
 /**

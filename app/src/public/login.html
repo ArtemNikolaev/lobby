@@ -35,7 +35,8 @@
       align-items: end;
       margin: 4rem;
     }
-    .register {
+    .register,
+    .profile {
       margin-right: 1rem;
     }
     .reset-pw-link {
@@ -56,14 +57,21 @@
 
   <body>
     <div class="nav">
-      <div>
-        <a class="register" href="/auth/register"
+      <div class="register">
+        <a href="/auth/register"
           ><button class="btn btn-info">Registration</button></a
         >
       </div>
 
+      <div class="profile">
+        <a href="/profile"
+          ><button class="btn btn-info">User Profile</button></a
+        >
+      </div>
       <div>
-        <a href="/lobby"><button class="btn btn-info">Lobby</button></a>
+        <a href="/admin-profile"
+          ><button class="btn btn-info">Admin Profile</button></a
+        >
       </div>
     </div>
 

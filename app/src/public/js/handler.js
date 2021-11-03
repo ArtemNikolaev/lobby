@@ -1,6 +1,6 @@
 import user from "../js/services/user.js";
 import game from "../js/services/game.js";
-import lobby from "./services/lobby.js";
+import fetchProfileInfo from "./services/fetchProfileInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
@@ -20,7 +20,7 @@ async function getRoom(room) {
   try {
     const jwt = localStorage.getItem(token);
 
-    const data = await lobby.getRoom(room, jwt);
+    const data = await fetchProfileInfo(room, jwt);
     if (!data) return jumpToStartPage();
 
     const {

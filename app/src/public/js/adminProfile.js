@@ -1,12 +1,14 @@
 import {
   getRoom,
   logout,
+  createGame,
+  deleteGame,
   addNewGameListener,
   deleteGameListener,
 } from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await getRoom("lobby-room");
+  await getRoom("admin");
   addNewGameListener();
   deleteGameListener();
 });
@@ -14,3 +16,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.querySelector(".logout").addEventListener("click", async () => {
   await logout();
 });
+
+document
+  .querySelector(".show-add-game-btn")
+  .addEventListener("click", async () => {
+    await createGame();
+  });
+
+document
+  .querySelector(".show-delete-game-btn")
+  .addEventListener("click", async () => {
+    await deleteGame();
+  });
