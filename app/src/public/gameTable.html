@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Game Room</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 2rem 3rem;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .main {
+      display: flex;
+    }
+    .game-table-section {
+      display: flex;
+      flex-direction: column;
+      width: 70vw;
+      margin-right: 3rem;
+      height: 80vh;
+      border: 1px solid black;
+    }
+    .chat-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 25vw;
+    }
+    .chat {
+      width: 22vw;
+      height: 65vh;
+      padding: 5px;
+      border: 1px solid black;
+      background: #e6f6ff;
+    }
+    .send-msg-form {
+      width: 22vw;
+      display: flex;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <div style="display: flex">
+        <a style="margin-right: 2rem" href="/profile"><h5>User Profile</h5></a>
+        <a href="/lobby-room"><h5>Lobby Room</h5></a>
+      </div>
+      <div>
+        <a class="logout" href=""><h4>LOGOUT</h4></a>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- table-section -->
+      <div class="game-table-section"></div>
+
+      <!-- chat section -->
+      <div class="chat-section">
+        <div class="chat-title">
+          <h3>Chat</h3>
+        </div>
+        <div class="chat">
+          <p>Lorem ipsum dolor sit amet.</p>
+          <p>Lorem ipsum dolor sit amet.</p>
+          <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <form class="form-row send-msg-form">
+          <div class="col-md-4">
+            <div class="controls">
+              <input
+                style="width: 260px"
+                type="text"
+                id="message"
+                name="message"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="controls delete-btn">
+              <button class="btn btn-info">SEND</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/gameTable.js"></script>
+  </body>
+</html>

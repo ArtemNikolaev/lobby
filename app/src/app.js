@@ -75,6 +75,22 @@ app.use("/games", checkAuth("admin"));
 app.use("/games", gameRouter);
 
 /**
+ *  Lobby Room
+ */
+app.use(
+  "/lobby-room",
+  express.static(path.join(__dirname, "public", "gameLobby.html"))
+);
+
+/**
+ *  Table Room
+ */
+app.use(
+  "/table-room",
+  express.static(path.join(__dirname, "public", "gameTable.html"))
+);
+
+/**
  *  Other
  */
 app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));

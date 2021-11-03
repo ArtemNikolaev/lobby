@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Lobby Room</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 2rem 3rem;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .main {
+      display: flex;
+    }
+    .tables-section {
+      display: flex;
+      flex-direction: column;
+      width: 70vw;
+      margin-right: 3rem;
+    }
+    .table-btns {
+      display: flex;
+    }
+    .delete-table-form {
+      display: flex;
+    }
+    .tables {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .table-card {
+      width: 110px;
+      height: 150px;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #e6f6ff;
+    }
+    .chat-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 25vw;
+    }
+    .chat {
+      width: 22vw;
+      height: 60vh;
+      padding: 5px;
+      border: 1px solid black;
+      background: #e6f6ff;
+    }
+    .send-msg-form {
+      width: 22vw;
+      display: flex;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <div>
+        <a href="/profile"><h5>User Profile</h5></a>
+      </div>
+      <div>
+        <a class="logout" href=""><h4>LOGOUT</h4></a>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- tables-section -->
+      <div class="tables-section">
+        <!-- btns -->
+        <div class="table-btns">
+          <!-- create btn -->
+          <div style="margin-right: 2rem">
+            <button class="btn btn-info">Create New Table</button>
+          </div>
+          <!-- delete btn -->
+          <div class="delete-table">
+            <div class="response-msg"></div>
+
+            <form class="form-row delete-table-form">
+              <div style="margin-right: 0.5rem" class="col-md-4">
+                <div class="controls delete-btn">
+                  <button class="btn btn-info">Delete Table</button>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <div class="controls">
+                  <input
+                    style="width: 50px"
+                    type="text"
+                    id="id"
+                    name="id"
+                    placeholder="ID..."
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <p style="border: 1px solid black"></p>
+        <!-- tables cards -->
+        <div class="tables">
+          <div class="table-card" id="tableId-7">
+            <h6>GameTable ID: 7</h6>
+            <p>creator: "alex69"</p>
+            <p>players: 0</p>
+            <p>viewers: 0</p>
+            <a href=""
+              ><button class="btn btn-success play-btn">Play</button></a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- chat section -->
+      <div class="chat-section">
+        <div class="chat-title">
+          <h3>Chat</h3>
+        </div>
+        <div class="chat">
+          <p>Lorem ipsum dolor sit amet.</p>
+          <p>Lorem ipsum dolor sit amet.</p>
+          <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <form class="form-row send-msg-form">
+          <div class="col-md-4">
+            <div class="controls">
+              <input
+                style="width: 260px"
+                type="text"
+                id="message"
+                name="message"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="controls delete-btn">
+              <button class="btn btn-info">SEND</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="/js/gameLobby.js"></script>
+  </body>
+</html>
