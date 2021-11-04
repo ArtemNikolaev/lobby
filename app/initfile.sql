@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS games (
 );
 
 
+CREATE TABLE IF NOT EXISTS gametables (
+    id INT AUTO_INCREMENT,
+    game_id INT NOT NULL,
+    user_id INT NOT NULL,
+    players INT NOT NULL,
+    viewers INT NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (game_id) REFERENCES games(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
 INSERT INTO users (
     username, 
     email, 
