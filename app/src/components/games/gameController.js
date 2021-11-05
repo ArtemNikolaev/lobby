@@ -41,7 +41,12 @@ class GameController {
   async createTable(req, res, next) {
     try {
       const table = await gameService.createTable(req);
-      // ws.send(JSON.stringify({ table, event: "createTable" }));
+      ws.send(
+        JSON.stringify({
+          table,
+          event: "createTable",
+        })
+      );
 
       return res.status(CREATED).json(table);
     } catch (error) {

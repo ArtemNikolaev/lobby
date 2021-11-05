@@ -19,6 +19,18 @@ const gameCards = document.querySelector(".game-cards");
 const lobbyTitle = document.querySelector("#lobby-title");
 const tables = document.querySelector(".tables");
 
+async function logout() {
+  try {
+    const response = await user.logout(getToken());
+
+    if (response.status !== 200) throw new Error("Logout Error");
+
+    localStorage.removeItem(token);
+  } catch (error) {
+    showError(error);
+  }
+}
+
 async function getRoom(room) {
   try {
     const data = await fetchProfileInfo(room, getToken());
@@ -37,26 +49,25 @@ async function getRoom(room) {
 
     const html = games.map(createGameCardHtml).join("\n");
     gameCards.insertAdjacentHTML("afterbegin", html);
-
-    document.querySelectorAll(".card-links").forEach((cardLink) => {
-      cardLink.addEventListener("click", async (e) => {
-        e.preventDefault();
-        const id = e.target.id.split("-")[1];
-        const title =
-          e.target.parentElement.previousElementSibling.previousElementSibling
-            .previousElementSibling.innerText;
-
-        const tables = await game.getTables(id, getToken());
-        localStorage.setItem(gameTablesKey, JSON.stringify(tables));
-        localStorage.setItem(gameIdKey, id);
-        localStorage.setItem(gameTitleKey, title);
-
-        document.location = "/lobby-room";
-      });
-    });
   } catch (error) {
     showError(error);
   }
+}
+
+async function enterToGameLobby(e) {
+  if (e.target.className !== "card-links") return;
+
+  const id = e.target.id.split("-")[1];
+  const title =
+    e.target.parentElement.previousElementSibling.previousElementSibling
+      .previousElementSibling.innerText;
+
+  const tables = await game.getTables(id, getToken());
+  localStorage.setItem(gameTablesKey, JSON.stringify(tables));
+  localStorage.setItem(gameIdKey, id);
+  localStorage.setItem(gameTitleKey, title);
+
+  document.location = "/lobby-room";
 }
 
 async function createGame() {
@@ -147,25 +158,13 @@ function deleteGameListener() {
   };
 }
 
-async function logout() {
-  try {
-    const response = await user.logout(getToken());
-
-    if (response.status !== 200) throw new Error("Logout Error");
-
-    localStorage.removeItem(token);
-  } catch (error) {
-    showError(error);
-  }
-}
-
-async function getLobbyRoom() {
+async function getLobbyRoom(gameId) {
   let gameTables = getTables();
 
   if (gameTables) {
     localStorage.removeItem(gameTablesKey);
   } else {
-    gameTables = await game.getTables(getId(), getToken());
+    gameTables = await game.getTables(gameId, getToken());
   }
 
   lobbyTitle.innerText = `You are in the lobby of ${getTitle()}`;
@@ -184,19 +183,31 @@ async function createNewGameTable() {
   }
 }
 
-function createNewGameTableListener() {
-  //TODO: WS
-  // const html = createTableCardHtml(data)
-  // {id: 5, game_id: 2, creator: 2, players: 0, viewers: 0}
+function createNewGameTableListener(gameId) {
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => console.log("WS: Listen 'createTable' event...");
+  ws.onclose = () => console.log("WS: Connection closed...");
+  ws.onerror = (error) => showError(error);
+  ws.onmessage = (response) => {
+    const data = JSON.parse(response.data);
+
+    if (data.event === "createTable" && data.table.game_id === gameId) {
+      const html = createTableCardHtml(data.table);
+      tables.insertAdjacentHTML("beforeend", html);
+    }
+  };
 }
 
 export {
   getRoom,
   logout,
   createGame,
+  enterToGameLobby,
   deleteGame,
   addNewGameListener,
   deleteGameListener,
   getLobbyRoom,
   createNewGameTable,
+  createNewGameTableListener,
 };

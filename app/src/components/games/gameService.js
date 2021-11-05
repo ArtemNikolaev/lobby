@@ -1,6 +1,7 @@
 const { promises: fs, existsSync } = require("fs");
 const gameStorage = require("./gameStorage");
 const tableStorage = require("./tableStorage");
+const userStorage = require("../user/userStorage");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { GAME_NOT_FOUND } = require("../../helpers/messages");
@@ -55,12 +56,19 @@ class GameService {
   }
 
   async createTable(data) {
+    const [user] = await userStorage.findById(data.user.id);
     const tableData = { game_id: +data.params.id, user_id: data.user.id };
 
     try {
       const data = await tableStorage.create(tableData);
 
-      return { id: data[0].insertId, ...tableData, players: 0, viewers: 0 };
+      return {
+        id: data[0].insertId,
+        creator: user[0].username,
+        ...tableData,
+        players: 0,
+        viewers: 0,
+      };
     } catch (error) {
       throw new CatchError(error);
     }
