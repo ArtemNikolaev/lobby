@@ -24,6 +24,7 @@
       margin: 2rem 3rem;
     }
     .nav {
+      display: block;
       margin-bottom: 1rem;
     }
     .main {
@@ -48,13 +49,16 @@
     .table-card {
       width: 110px;
       height: 150px;
-      padding: 0.5rem 1rem 1rem;
+      padding: 0.5rem 1rem;
       margin: 0.5rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       background: #e6f6ff;
       border: 1px solid #e0e0e0;
+    }
+    .table-card p {
+      margin: 0;
     }
     .chat-section {
       display: flex;
@@ -91,9 +95,9 @@
 
   <body>
     <div class="nav">
-      <div>
+      <p>
         <a href="/profile"><h5>User Profile</h5></a>
-      </div>
+      </p>
     </div>
 
     <div style="display: block; text-align: center">
@@ -107,7 +111,7 @@
         <div class="table-btns">
           <!-- create btn -->
           <div style="margin-right: 2rem">
-            <a class="btn btn-info">Create New Table</a>
+            <a class="btn btn-info create-table-btn">Create New Table</a>
           </div>
           <!-- delete btn -->
           <div class="delete-table">
@@ -137,15 +141,7 @@
         </div>
         <p style="border: 1px solid black"></p>
         <!-- tables cards -->
-        <div class="tables">
-          <div class="table-card" id="tableId-7">
-            <h5>Table ID: 7</h5>
-            <p>creator: "alex69"</p>
-            <p>players: 0</p>
-            <p>viewers: 0</p>
-            <a class="btn btn-success play-btn" href="/table-room">Play</a>
-          </div>
-        </div>
+        <div class="tables"></div>
       </div>
 
       <!-- chat section -->
@@ -155,7 +151,7 @@
         </div>
         <div class="chat">
           <div class="chat-msg-you">
-            <p class="chat-username" id="username">giga88 in 18:27</p>
+            <p class="chat-username" id="username">alex69 in 18:27</p>
             <p class="chat-message">Wazzzaa!</p>
           </div>
 

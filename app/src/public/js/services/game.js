@@ -1,5 +1,3 @@
-import jumpToStartPage from "../utils/jumpToStartPage.js";
-
 class Game {
   constructor() {
     this.url = "/games";
@@ -29,6 +27,36 @@ class Game {
     });
 
     if (response.status !== 204) {
+      const data = await response.json();
+      throw new Error(data.message);
+    }
+  }
+
+  async getTables(id, jwt) {
+    const response = await fetch(this.url + `/${id}/tables`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    const data = await response.json();
+    if (response.status !== 200) {
+      throw new Error(data.message);
+    }
+
+    return data;
+  }
+
+  async createTable(id, jwt) {
+    const response = await fetch(this.url + `/${id}/tables`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    if (response.status !== 201) {
       const data = await response.json();
       throw new Error(data.message);
     }

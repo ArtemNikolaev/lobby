@@ -26,6 +26,28 @@ class GameController {
       return next(error);
     }
   }
+
+  async getTablesByGameId(req, res, next) {
+    const { id } = req.params;
+    try {
+      let tables = await gameService.findTablesByGameId(id);
+
+      return res.json(tables);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async createTable(req, res, next) {
+    try {
+      const table = await gameService.createTable(req);
+      // ws.send(JSON.stringify({ table, event: "createTable" }));
+
+      return res.status(CREATED).json(table);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 module.exports = new GameController();

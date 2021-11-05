@@ -71,7 +71,6 @@ app.use("/admin", adminRouter);
 /**
  *  Games
  */
-app.use("/games", checkAuth("admin"));
 app.use("/games", gameRouter);
 
 /**
