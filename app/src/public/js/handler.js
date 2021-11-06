@@ -1,5 +1,6 @@
 import user from "../js/services/user.js";
 import game from "../js/services/game.js";
+import table from "../js/services/table.js";
 import fetchProfileInfo from "./services/fetchProfileInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
@@ -14,10 +15,13 @@ const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
 const addGameForm = document.querySelector(".add-game");
 const deleteGameForm = document.querySelector(".delete-game");
-const message = document.querySelector(".response-msg");
+const addResponseMessage = document.querySelector("#add-response-msg");
+const delResponseMessage = document.querySelector("#del-response-msg");
 const gameCards = document.querySelector(".game-cards");
 const lobbyTitle = document.querySelector("#lobby-title");
 const tables = document.querySelector(".tables");
+const createTableBtn = document.querySelector(".create-table-btn");
+const deleteTableForm = document.querySelector(".delete-table-form");
 
 async function logout() {
   try {
@@ -25,6 +29,7 @@ async function logout() {
 
     if (response.status !== 200) throw new Error("Logout Error");
 
+    jumpToStartPage();
     localStorage.removeItem(token);
   } catch (error) {
     showError(error);
@@ -62,7 +67,7 @@ async function enterToGameLobby(e) {
     e.target.parentElement.previousElementSibling.previousElementSibling
       .previousElementSibling.innerText;
 
-  const tables = await game.getTables(id, getToken());
+  const tables = await table.getAll(id, getToken());
   localStorage.setItem(gameTablesKey, JSON.stringify(tables));
   localStorage.setItem(gameIdKey, id);
   localStorage.setItem(gameTitleKey, title);
@@ -73,58 +78,54 @@ async function enterToGameLobby(e) {
 async function createGame() {
   addGameForm.classList.toggle("hidden");
 
-  if (!addGameForm.classList.contains("hidden")) {
-    const form = document.querySelector(".add-game-form");
+  const form = document.querySelector(".add-game-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const gameData = new FormData(form);
+    form.reset();
 
-      const gameData = new FormData(form);
-      form.reset();
+    try {
+      await game.create(gameData, getToken());
 
-      try {
-        await game.create(gameData, getToken());
+      addResponseMessage.innerText = "Game successfully added to the GameLobby";
+      addResponseMessage.style.display = "block";
 
-        message.innerText = "Game successfully added to the GameLobby";
-        message.style.display = "block";
-
-        setTimeout(() => {
-          message.style.display = "none";
-        }, 2000);
-      } catch (error) {
-        showError(error);
-      }
-    });
-  }
+      setTimeout(() => {
+        addResponseMessage.style.display = "none";
+        addGameForm.classList.toggle("hidden");
+      }, 2000);
+    } catch (error) {
+      showError(error);
+    }
+  });
 }
 
 async function deleteGame() {
   deleteGameForm.classList.toggle("hidden");
 
-  if (!deleteGameForm.classList.contains("hidden")) {
-    const form = document.querySelector(".delete-game-form");
+  const form = document.querySelector(".delete-game-form");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+    const gameData = new FormData(form);
+    const id = gameData.get("id");
+    form.reset();
 
-      const gameData = new FormData(form);
-      const id = gameData.get("id");
-      form.reset();
+    try {
+      await game.delete(id, getToken());
 
-      try {
-        await game.delete(id, getToken());
+      delResponseMessage.innerText = "Game successfully deleted!";
+      delResponseMessage.style.display = "block";
 
-        message.innerText = "Game successfully deleted!";
-        message.style.display = "block";
-
-        setTimeout(() => {
-          message.style.display = "none";
-        }, 2000);
-      } catch (error) {
-        showError(error);
-      }
-    });
-  }
+      setTimeout(() => {
+        delResponseMessage.style.display = "none";
+        deleteGameForm.classList.toggle("hidden");
+      }, 2000);
+    } catch (error) {
+      showError(error);
+    }
+  });
 }
 
 function addNewGameListener() {
@@ -164,7 +165,7 @@ async function getLobbyRoom(gameId) {
   if (gameTables) {
     localStorage.removeItem(gameTablesKey);
   } else {
-    gameTables = await game.getTables(gameId, getToken());
+    gameTables = await table.getAll(gameId, getToken());
   }
 
   lobbyTitle.innerText = `You are in the lobby of ${getTitle()}`;
@@ -176,11 +177,27 @@ async function getLobbyRoom(gameId) {
 }
 
 async function createNewGameTable() {
-  try {
-    await game.createTable(getId(), getToken());
-  } catch (error) {
-    showError(error);
-  }
+  createTableBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    try {
+      await table.create(getId(), getToken());
+    } catch (error) {
+      showError(error);
+    }
+  });
+}
+
+async function deleteGameTable() {
+  deleteTableForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(deleteTableForm);
+    const tableId = formData.get("id");
+    deleteTableForm.reset();
+
+    await table.delete(getId(), tableId, getToken());
+  });
 }
 
 function createNewGameTableListener(gameId) {
@@ -192,9 +209,24 @@ function createNewGameTableListener(gameId) {
   ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 
-    if (data.event === "createTable" && data.table.game_id === gameId) {
+    if (data.event === "createTable" && data.table.game_id === +gameId) {
       const html = createTableCardHtml(data.table);
       tables.insertAdjacentHTML("beforeend", html);
+    }
+  };
+}
+
+function deleteGameTableListener(gameId) {
+  const ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => console.log("WS: Listen 'deleteTable' event...");
+  ws.onclose = () => console.log("WS: Connection closed...");
+  ws.onerror = (error) => showError(error);
+  ws.onmessage = (response) => {
+    const data = JSON.parse(response.data);
+
+    if (data.event === "deleteTable" && data.gameId === gameId) {
+      document.querySelector(`#tableId-${data.tableId}`).remove();
     }
   };
 }
@@ -209,5 +241,7 @@ export {
   deleteGameListener,
   getLobbyRoom,
   createNewGameTable,
+  deleteGameTable,
   createNewGameTableListener,
+  deleteGameTableListener,
 };

@@ -58,7 +58,8 @@
     .hidden {
       display: none;
     }
-    .response-msg {
+    #add-response-msg,
+    #del-response-msg {
       color: green;
       margin-bottom: 1rem;
     }
@@ -136,7 +137,7 @@
             <!-- Action FORMs -->
             <div class="action-forms">
               <div class="add-game hidden">
-                <div class="response-msg"></div>
+                <div id="add-response-msg"></div>
 
                 <form class="form-row add-game-form">
                   <div class="col-md-4">
@@ -189,7 +190,7 @@
               </div>
               <!--  -->
               <div class="delete-game hidden">
-                <div class="response-msg"></div>
+                <div id="del-response-msg"></div>
 
                 <form class="form-row delete-game-form">
                   <div class="col-md-4">

@@ -2,19 +2,18 @@ import {
   getLobbyRoom,
   createNewGameTable,
   createNewGameTableListener,
+  deleteGameTable,
+  deleteGameTableListener,
 } from "./handler.js";
 import { getId } from "./utils/localStorage.js";
 
-const createTableBtn = document.querySelector(".create-table-btn");
-const deleteTableForm = document.querySelector(".delete-table-form");
-
 document.addEventListener("DOMContentLoaded", async () => {
-  const gameId = +getId();
-  await getLobbyRoom(gameId);
-  createNewGameTableListener(gameId);
-});
+  const gameId = getId();
 
-createTableBtn.addEventListener("click", async (e) => {
-  e.preventDefault();
+  await getLobbyRoom(gameId);
   await createNewGameTable();
+  createNewGameTableListener(gameId); // WebSocket
+  deleteGameTableListener(gameId); // WebSocket
+
+  await deleteGameTable();
 });

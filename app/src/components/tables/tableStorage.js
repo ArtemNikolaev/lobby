@@ -15,6 +15,14 @@ class TableStorage {
   async create(tableData) {
     return pool.query("INSERT INTO gametables SET ?", tableData);
   }
+
+  async deleteById(id) {
+    return pool.query("DELETE FROM gametables WHERE id = ?", id);
+  }
+
+  async findById(id) {
+    return pool.query("SELECT * FROM gametables WHERE id = ?", id);
+  }
 }
 
 module.exports = new TableStorage();

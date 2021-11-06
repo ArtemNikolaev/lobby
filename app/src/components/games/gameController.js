@@ -1,6 +1,7 @@
 const gameService = require("./gameService");
 const { CREATED, NO_CONTENT } = require("../../helpers/statusCodes");
 const WebSocket = require("ws");
+const tableService = require("../tables/tableService");
 const ws = new WebSocket(`ws://localhost:3000`);
 
 class GameController {
@@ -30,7 +31,7 @@ class GameController {
   async getTablesByGameId(req, res, next) {
     const { id } = req.params;
     try {
-      let tables = await gameService.findTablesByGameId(id);
+      let tables = await tableService.findByGameId(id);
 
       return res.json(tables);
     } catch (error) {
@@ -40,7 +41,7 @@ class GameController {
 
   async createTable(req, res, next) {
     try {
-      const table = await gameService.createTable(req);
+      const table = await tableService.create(req);
       ws.send(
         JSON.stringify({
           table,
@@ -49,6 +50,25 @@ class GameController {
       );
 
       return res.status(CREATED).json(table);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  async deleteTable(req, res, next) {
+    try {
+      const { gameId, tableId } = req.params;
+
+      await tableService.delete(tableId, gameId, req.user.id);
+      ws.send(
+        JSON.stringify({
+          gameId,
+          tableId,
+          event: "deleteTable",
+        })
+      );
+
+      return res.status(NO_CONTENT).send();
     } catch (error) {
       return next(error);
     }

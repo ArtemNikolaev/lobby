@@ -26,4 +26,12 @@ router.post("/:id/tables", checkAuth("user"), async (req, res, next) => {
   await gameController.createTable(req, res, next);
 });
 
+router.delete(
+  "/:gameId/tables/:tableId",
+  checkAuth("user"),
+  async (req, res, next) => {
+    await gameController.deleteTable(req, res, next);
+  }
+);
+
 module.exports = router;

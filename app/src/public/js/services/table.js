@@ -1,0 +1,49 @@
+import {
+  noContentInterceptor,
+  createdInterceptor,
+  okInterceptor,
+} from "../utils/interceptors.js";
+
+class Table {
+  constructor() {
+    this.url = "/games";
+  }
+
+  async getAll(id, jwt) {
+    const response = await fetch(this.url + `/${id}/tables`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    const data = await response.json();
+    okInterceptor(response, data);
+
+    return data;
+  }
+
+  async create(id, jwt) {
+    const response = await fetch(this.url + `/${id}/tables`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    await createdInterceptor(response);
+  }
+
+  async delete(gameId, tableId, jwt) {
+    const response = await fetch(this.url + `/${gameId}/tables/${tableId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+
+    await noContentInterceptor(response);
+  }
+}
+
+export default new Table();
