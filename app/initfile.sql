@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS gametables (
     id INT AUTO_INCREMENT,
     game_id INT NOT NULL,
     user_id INT NOT NULL,
-    players INT DEFAULT (0) NOT NULL,
+    players INT DEFAULT (1) NOT NULL,
     viewers INT DEFAULT (0) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (game_id) REFERENCES games(id),

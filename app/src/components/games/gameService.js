@@ -13,9 +13,9 @@ class GameService {
     };
 
     try {
-      const data = await gameStorage.create(gameData);
+      const id = await gameStorage.create(gameData);
 
-      return { id: data[0].insertId, ...gameData };
+      return { id, ...gameData };
     } catch (error) {
       throw new CatchError(error);
     }
@@ -23,9 +23,7 @@ class GameService {
 
   async getAll() {
     try {
-      const [games, _] = await gameStorage.getAll();
-
-      return games;
+      return gameStorage.getAll();
     } catch (error) {
       throw new CatchError(error);
     }
@@ -33,11 +31,11 @@ class GameService {
 
   async delete(id) {
     try {
-      const [data] = await gameStorage.findById(id);
-      if (!data.length) throw new NotFoundError(GAME_NOT_FOUND);
+      const game = await gameStorage.findById(id);
+      if (!game) throw new NotFoundError(GAME_NOT_FOUND);
 
       await gameStorage.deleteById(id);
-      if (existsSync(data[0].url)) await fs.unlink(data[0].url);
+      if (existsSync(game.url)) await fs.unlink(game.url);
     } catch (error) {
       throw new CatchError(error);
     }

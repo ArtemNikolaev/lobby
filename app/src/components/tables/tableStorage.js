@@ -13,7 +13,9 @@ class TableStorage {
   }
 
   async create(tableData) {
-    return pool.query("INSERT INTO gametables SET ?", tableData);
+    const [data] = await pool.query("INSERT INTO gametables SET ?", tableData);
+
+    return data.insertId;
   }
 
   async deleteById(id) {
@@ -21,7 +23,12 @@ class TableStorage {
   }
 
   async findById(id) {
-    return pool.query("SELECT * FROM gametables WHERE id = ?", id);
+    const [table] = await pool.query(
+      "SELECT * FROM gametables WHERE id = ?",
+      id
+    );
+
+    return table[0];
   }
 }
 

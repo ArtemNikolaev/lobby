@@ -32,16 +32,23 @@ form.addEventListener("submit", async (e) => {
     const response = await user.send(requestData);
     const data = await response.json();
 
-    if (response.status >= 400) {
-      errMessage.innerText = data.message;
+    if (response.status === 409) {
+      errMessage.innerText = "Something went wrong";
       errMessage.style.display = "block";
 
       setTimeout(() => {
         errMessage.style.display = "none";
       }, 4000);
-    } else {
-      location.href = "/auth/login";
+      console.log(data.message);
+
+      return;
+    } else if (response.status >= 409) {
+      console.log(data.message);
+
+      return;
     }
+
+    location.href = "/auth/login";
   } catch (error) {
     showError(error);
   }

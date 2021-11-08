@@ -4,12 +4,10 @@ const WebSocket = require("ws");
 const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
-const userRouter = require("./components/user/userRouter");
-const adminRouter = require("./components/admin/adminRouter");
+const pageRouter = require("./components/pages/pageRouter");
 const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
-const checkAuth = require("./middlewares/checkAuth.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -49,24 +47,17 @@ app.use(
 app.use("/auth", authRouter);
 
 /**
- *  User-room
+ *  Main Pages (admin/user)
  */
 app.use(
   "/profile",
   express.static(path.join(__dirname, "public", "userProfile.html"))
 );
-app.use("/user", checkAuth("user"));
-app.use("/user", userRouter);
-
-/**
- *  Admin-room
- */
 app.use(
   "/admin-profile",
   express.static(path.join(__dirname, "public", "adminProfile.html"))
 );
-app.use("/admin", checkAuth("admin"));
-app.use("/admin", adminRouter);
+app.use("/", pageRouter);
 
 /**
  *  Games
