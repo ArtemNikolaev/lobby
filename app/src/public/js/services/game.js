@@ -16,8 +16,10 @@ class Game {
       },
       body,
     });
+    const data = await response.json();
 
-    await createdInterceptor(response);
+    await createdInterceptor(response, data);
+    return data;
   }
 
   async delete(id, jwt) {
@@ -29,6 +31,8 @@ class Game {
     });
 
     await noContentInterceptor(response);
+
+    return true;
   }
 }
 

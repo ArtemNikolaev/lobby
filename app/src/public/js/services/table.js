@@ -30,8 +30,11 @@ class Table {
         Authorization: `Bearer ${jwt}`,
       },
     });
+    const data = await response.json();
 
-    await createdInterceptor(response);
+    await createdInterceptor(response, data);
+
+    return data;
   }
 
   async delete(gameId, tableId, jwt) {
@@ -43,6 +46,8 @@ class Table {
     });
 
     await noContentInterceptor(response);
+
+    return true;
   }
 }
 

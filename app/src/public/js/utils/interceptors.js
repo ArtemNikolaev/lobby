@@ -9,13 +9,10 @@ export async function noContentInterceptor(response) {
   }
 }
 
-export async function createdInterceptor(response) {
+export async function createdInterceptor(response, data) {
   if (response.status === 401 || response.status === 403) jumpToStartPage();
 
-  if (response.status !== 201) {
-    const data = await response.json();
-    throw new Error(data.message);
-  }
+  if (response.status !== 201) throw new Error(data.message);
 }
 
 export function okInterceptor(response, data) {
