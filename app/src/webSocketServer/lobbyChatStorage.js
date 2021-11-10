@@ -1,11 +1,9 @@
-class WSStorage {
+class LobbyChatStorage {
   constructor() {
     this.storage = new Map();
   }
 
-  async save(message) {
-    const { id, chatData } = message;
-
+  async save({ id, chatData }) {
     const chat = this.storage.get(id);
     if (!chat) {
       this.storage.set(id, [chatData]);
@@ -20,4 +18,4 @@ class WSStorage {
   }
 }
 
-module.exports = new WSStorage();
+module.exports = new LobbyChatStorage();

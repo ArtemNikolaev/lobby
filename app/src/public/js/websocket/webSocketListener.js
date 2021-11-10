@@ -1,6 +1,7 @@
 import createChatMessageHtml from "../utils/createChatMessageHtml.js";
 import createGameCardHtml from "../utils/createGameCardHtml.js";
 import createTableCardHtml from "../utils/createTableCardHtml.js";
+import { getUserData } from "../utils/localStorage.js";
 
 const gameCards = document.querySelector(".game-cards");
 const tables = document.querySelector(".tables");
@@ -32,7 +33,7 @@ export default (ws, gameId) => {
       (data.event === "getChat" && data.id === gameId) ||
       (data.event === "chat" && data.id === gameId)
     ) {
-      const { username } = JSON.parse(localStorage.getItem("userData"));
+      const { username } = getUserData();
 
       const html = data.chatData
         .map((msg) => {

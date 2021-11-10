@@ -1,3 +1,4 @@
+import { okInterceptor } from "../utils/interceptors.js";
 import jumpToStartPage from "../utils/jumpToStartPage.js";
 
 export default async (path, jwt, id) => {
@@ -12,11 +13,8 @@ export default async (path, jwt, id) => {
     },
   });
 
-  if (response.status === 401 || response.status === 403)
-    return jumpToStartPage();
-
   const data = await response.json();
-  if (response.status >= 400) throw new Error(data.message);
+  okInterceptor(response, data);
 
   return data;
 };

@@ -1,13 +1,13 @@
-import user from "../js/services/user.js";
+import auth from "../js/services/auth.js";
 import game from "../js/services/game.js";
 import table from "../js/services/table.js";
-import fetchProfileInfo from "./services/fetchProfileInfo.js";
+import fetchPageInfo from "./services/fetchPageInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
 import app from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import { getId, getToken } from "./utils/localStorage.js";
+import { getToken, setUserData } from "./utils/localStorage.js";
 
 const { token, gameIdKey } = app;
 const myUsername = document.querySelector("#username");
@@ -26,7 +26,7 @@ const chatForm = document.querySelector("#chat-form");
 
 async function logout() {
   try {
-    const response = await user.logout(getToken());
+    const response = await auth.logout(getToken());
 
     if (response.status !== 200) throw new Error("Logout Error");
 
@@ -39,7 +39,7 @@ async function logout() {
 
 async function getPage(page) {
   try {
-    const data = await fetchProfileInfo(page, getToken());
+    const data = await fetchPageInfo(page, getToken());
     if (!data) return jumpToStartPage();
 
     const {
@@ -50,7 +50,7 @@ async function getPage(page) {
     myRole.innerText = `Role: ${role}`;
     myUsername.innerText = `Nickname: ${username}`;
     myEmail.innerText = `Email: ${email}`;
-    localStorage.setItem("userData", JSON.stringify(data.user));
+    setUserData(data.user);
 
     if (!games.length) return;
 
@@ -126,7 +126,7 @@ async function deleteGame(ws) {
 }
 
 async function getLobbyPage(ws, gameId) {
-  const data = await fetchProfileInfo("lobby", getToken(), gameId);
+  const data = await fetchPageInfo("lobby", getToken(), gameId);
   if (!data) return jumpToStartPage();
 
   ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
@@ -139,12 +139,12 @@ async function getLobbyPage(ws, gameId) {
   tablesEl.insertAdjacentHTML("afterbegin", html);
 }
 
-async function createNewGameTable(ws) {
+async function createNewGameTable(ws, gameId) {
   createTableBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     try {
-      const newTable = await table.create(getId(), getToken());
+      const newTable = await table.create(gameId, getToken());
       ws.send(JSON.stringify({ table: newTable, event: "createTable" }));
     } catch (error) {
       showError(error);
@@ -152,7 +152,7 @@ async function createNewGameTable(ws) {
   });
 }
 
-async function deleteGameTable(ws) {
+async function deleteGameTable(ws, gameId) {
   deleteTableForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -160,7 +160,6 @@ async function deleteGameTable(ws) {
     const tableId = formData.get("id");
     deleteTableForm.reset();
 
-    const gameId = getId();
     const isDeleted = await table.delete(gameId, tableId, getToken());
 
     if (isDeleted)

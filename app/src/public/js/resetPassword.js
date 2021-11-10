@@ -1,6 +1,8 @@
-import user from "./services/user.js";
+import auth from "./services/auth.js";
 import showError from "./utils/showError.js";
+import app from "./config.js";
 
+const { loginPage } = app;
 const successMessage = document.querySelector(".success-msg");
 const form = document.querySelector(".reset-pw-form");
 const confimMessage = document.querySelector(".confirm-message");
@@ -28,7 +30,7 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await user.send(requestData);
+    const response = await auth.send(requestData);
 
     if (response.status === 400 || response.status === 404) {
       const data = await response.json();
@@ -45,7 +47,7 @@ form.addEventListener("submit", async (e) => {
       successMessage.style.display = "block";
 
       setTimeout(() => {
-        location.href = `/auth/login`;
+        location.href = loginPage;
       }, 2000);
     }
   } catch (error) {

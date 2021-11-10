@@ -1,8 +1,8 @@
-import user from "../js/services/user.js";
+import auth from "./services/auth.js";
 import showError from "./utils/showError.js";
 import app from "./config.js";
 
-const { token } = app;
+const { token, userPage, adminPage } = app;
 const failMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".login-form");
 const resetPWLink = document.querySelector(".reset-pw-link");
@@ -23,21 +23,24 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await user.send(requestData);
+    const response = await auth.send(requestData);
     const data = await response.json();
 
-    if (response.status >= 400) {
+    if (response.status === 401) {
       failMessage.innerText = data.message;
       failMessage.style.display = "block";
+
       setTimeout(() => {
         failMessage.style.display = "none";
       }, 4000);
+
       return;
     }
 
+    if (response.status >= 400) throw new Error(data.message);
+
     localStorage.setItem(token, data.token);
-    location.href =
-      data.user.role === "user" ? "/user-profile" : "/admin-profile";
+    location.href = data.user.role === "user" ? userPage : adminPage;
   } catch (error) {
     showError(error);
   }
@@ -66,7 +69,7 @@ resetPWLink.addEventListener("click", (e) => {
       };
 
       try {
-        const response = await user.send(requestData);
+        const response = await auth.send(requestData);
         const data = await response.json();
 
         checkMessage.innerText = data.message;

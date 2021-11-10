@@ -1,6 +1,8 @@
-import user from "./services/user.js";
+import auth from "./services/auth.js";
 import showError from "./utils/showError.js";
+import app from "./config.js";
 
+const { loginPage } = app;
 const errMessage = document.querySelector(".fail-msg");
 const form = document.querySelector(".register-form");
 const confimMessage = document.querySelector(".confirm-message");
@@ -29,7 +31,7 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const response = await user.send(requestData);
+    const response = await auth.send(requestData);
     const data = await response.json();
 
     if (response.status === 409) {
@@ -39,16 +41,14 @@ form.addEventListener("submit", async (e) => {
       setTimeout(() => {
         errMessage.style.display = "none";
       }, 4000);
-      console.log(data.message);
 
-      return;
-    } else if (response.status >= 409) {
       console.log(data.message);
-
       return;
     }
 
-    location.href = "/auth/login";
+    if (response.status >= 400) throw new Error(data.message);
+
+    location.href = loginPage;
   } catch (error) {
     showError(error);
   }

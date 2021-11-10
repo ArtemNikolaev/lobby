@@ -1,4 +1,4 @@
-class User {
+class Auth {
   async send(data) {
     const { body, path, method } = data;
 
@@ -21,4 +21,4 @@ class User {
   }
 }
 
-export default new User();
+export default new Auth();

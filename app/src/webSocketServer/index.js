@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const wsStorage = require("./wsStorage");
+const lobbyChatStorage = require("./lobbyChatStorage");
 
 module.exports = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -13,8 +13,8 @@ module.exports = (server) => {
 
       switch (message.event) {
         case "chat":
-          await wsStorage.save(message);
-          const chat = await wsStorage.getChatById(message.id);
+          await lobbyChatStorage.save(message);
+          const chat = await lobbyChatStorage.getChatById(message.id);
 
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
@@ -30,7 +30,7 @@ module.exports = (server) => {
           break;
 
         case "getChat":
-          const chatData = await wsStorage.getChatById(message.id);
+          const chatData = await lobbyChatStorage.getChatById(message.id);
           if (!chatData) return;
 
           wss.clients.forEach((client) => {
