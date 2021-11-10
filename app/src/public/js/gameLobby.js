@@ -1,3 +1,4 @@
+import app from "./config.js";
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import webSocketListener from "./websocket/webSocketListener.js";
 import showError from "./utils/showError.js";
@@ -7,7 +8,10 @@ import {
   createNewGameTable,
   deleteGameTable,
   sendChatMessage,
+  jumpToPage,
 } from "./handler.js";
+
+const { tableIdKey, tablePage } = app;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -21,6 +25,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     sendChatMessage(ws, gameId);
     webSocketListener(ws, gameId);
+
+    document.addEventListener("click", (e) =>
+      jumpToPage(e, "table-link", tableIdKey, tablePage)
+    );
   } catch (error) {
     showError(error);
   }

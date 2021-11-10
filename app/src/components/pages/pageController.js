@@ -20,6 +20,16 @@ class PageController {
       return next(error);
     }
   }
+
+  async getTablePage(req, res, next) {
+    try {
+      const data = await pageService.getTablePage(req.params.tableId);
+
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 module.exports = new PageController();

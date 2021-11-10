@@ -1,8 +1,12 @@
 import app from "../config.js";
-const { token, gameIdKey, userDataKey } = app;
+const { token, gameIdKey, userDataKey, tableIdKey } = app;
 
 export function getGameId() {
   return localStorage.getItem(gameIdKey);
+}
+
+export function getTableId() {
+  return localStorage.getItem(tableIdKey);
 }
 
 export function getToken() {

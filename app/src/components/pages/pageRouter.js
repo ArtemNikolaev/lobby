@@ -17,4 +17,8 @@ router.get("/lobby/:gameId", checkAuth("user"), async (req, res, next) => {
   await pageController.getLobbyPage(req, res, next);
 });
 
+router.get("/table/:tableId", checkAuth("user"), async (req, res, next) => {
+  await pageController.getTablePage(req, res, next);
+});
+
 module.exports = router;

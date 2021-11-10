@@ -9,7 +9,7 @@ import app from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
 import { getToken, setUserData } from "./utils/localStorage.js";
 
-const { token, gameIdKey } = app;
+const { token, gameIdKey, tableIdKey } = app;
 const myUsername = document.querySelector("#username");
 const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
@@ -61,13 +61,13 @@ async function getPage(page) {
   }
 }
 
-async function enterToGameLobby(e) {
-  if (e.target.className !== "card-links") return;
+function jumpToPage(e, className, key, page) {
+  if (!e.target.classList.contains(className)) return;
 
   const id = e.target.id.split("-")[1];
-  localStorage.setItem(gameIdKey, id);
+  localStorage.setItem(key, id);
 
-  document.location = "/lobby-room";
+  document.location = page;
 }
 
 async function createGame(ws) {
@@ -139,6 +139,22 @@ async function getLobbyPage(ws, gameId) {
   tablesEl.insertAdjacentHTML("afterbegin", html);
 }
 
+async function getTablePage(ws, tableId) {
+  const data = await fetchPageInfo("table", getToken(), tableId);
+  if (!data) return jumpToStartPage();
+
+  console.log(data);
+
+  // ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
+
+  // const { game, tables } = data;
+  // lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
+
+  // if (!tables.length) return;
+  // const html = tables.map(createTableCardHtml).join("\n");
+  // tablesEl.insertAdjacentHTML("afterbegin", html);
+}
+
 async function createNewGameTable(ws, gameId) {
   createTableBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -192,9 +208,10 @@ export {
   getPage,
   logout,
   createGame,
-  enterToGameLobby,
+  jumpToPage,
   deleteGame,
   getLobbyPage,
+  getTablePage,
   createNewGameTable,
   deleteGameTable,
   sendChatMessage,

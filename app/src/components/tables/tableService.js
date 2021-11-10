@@ -48,6 +48,17 @@ class TableService {
       throw new CatchError(error);
     }
   }
+
+  async findGameAndTableById(id) {
+    try {
+      const table = await tableStorage.findGameAndTableById(id);
+      if (!table) throw new NotFoundError(TABLE_NOT_FOUND);
+
+      return table;
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
 }
 
 module.exports = new TableService();

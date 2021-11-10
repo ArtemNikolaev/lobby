@@ -5,7 +5,7 @@ export default ({ id, creator, players, viewers }) => {
       <p>creator: ${creator}</p>
       <p>players: ${players}</p>
       <p>viewers: ${viewers}</p>
-      <a class="btn btn-success play-btn" id="tableId-${id}" href="/table-room">Play</a>
+      <a class="btn btn-success table-link" id="tableId-${id}">Play</a>
     </div>
   `;
 };

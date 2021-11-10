@@ -1,7 +1,10 @@
+import app from "./config.js";
 import webSocketConnection from "./websocket/webSocketConnection.js";
-import { getPage, logout, enterToGameLobby } from "./handler.js";
+import { getPage, logout, jumpToPage } from "./handler.js";
 import webSocketListener from "./websocket/webSocketListener.js";
 import showError from "./utils/showError.js";
+
+const { gameIdKey, lobbyPage } = app;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -9,14 +12,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     await getPage("user-page");
     webSocketListener(ws);
 
-    document.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await enterToGameLobby(e);
-    });
+    document.addEventListener("click", (e) =>
+      jumpToPage(e, "card-link", gameIdKey, lobbyPage)
+    );
 
-    document.querySelector(".logout").addEventListener("click", async () => {
-      await logout();
-    });
+    document
+      .querySelector(".logout")
+      .addEventListener("click", async () => await logout());
   } catch (error) {
     showError(error);
   }

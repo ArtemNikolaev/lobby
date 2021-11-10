@@ -18,12 +18,20 @@ class PageService {
     }
   }
 
-  async getLobbyPage(id) {
+  async getLobbyPage(gameId) {
     try {
-      const tables = await tableService.findByGameId(id);
-      const game = await gameService.findById(id);
+      const tables = await tableService.findByGameId(gameId);
+      const game = await gameService.findById(gameId);
 
       return { tables, game };
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async getTablePage(id) {
+    try {
+      return tableService.findGameAndTableById(id);
     } catch (error) {
       throw new CatchError(error);
     }
