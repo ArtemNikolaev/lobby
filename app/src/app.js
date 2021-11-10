@@ -1,6 +1,5 @@
 const http = require("http");
 const express = require("express");
-const WebSocket = require("ws");
 const morgan = require("morgan");
 const path = require("path");
 const authRouter = require("./components/auth/authRouter.js");
@@ -8,41 +7,12 @@ const pageRouter = require("./components/pages/pageRouter");
 const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
-const wsStorage = require("./wsStorage.js");
+const webSocketServerConnection = require("./webSocketServer");
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 
-wss.on("connection", (ws) => {
-  console.log("connection");
-  ws.on("message", async (data) => {
-    const message = JSON.parse(data);
-    console.log(message);
-
-    switch (message.event) {
-      case "chat":
-        await wsStorage.save(message);
-        const chat = await wsStorage.getChatById(message.id);
-        console.log(`CHAT ${message.id}`, chat);
-
-        wss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(chat));
-          }
-        });
-        break;
-
-      default:
-        wss.clients.forEach((client) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(message));
-          }
-        });
-        break;
-    }
-  });
-});
+webSocketServerConnection(server);
 
 app.use(morgan("dev"));
 app.use(express.json());

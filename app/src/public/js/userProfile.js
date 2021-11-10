@@ -1,17 +1,13 @@
-import webSocketConnection from "./utils/webSocketConnection.js";
-import {
-  getRoom,
-  logout,
-  gameEventsListener,
-  enterToGameLobby,
-} from "./handler.js";
+import webSocketConnection from "./websocket/webSocketConnection.js";
+import { getRoom, logout, enterToGameLobby } from "./handler.js";
+import webSocketListener from "./websocket/webSocketListener.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const ws = webSocketConnection();
+  const ws = await webSocketConnection();
 
   await getRoom("user");
 
-  gameEventsListener(ws);
+  webSocketListener(ws);
 });
 
 document.addEventListener("click", async (e) => {

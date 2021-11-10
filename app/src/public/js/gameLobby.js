@@ -1,25 +1,26 @@
+import webSocketConnection from "./websocket/webSocketConnection.js";
+import webSocketListener from "./websocket/webSocketListener.js";
+import { getId } from "./utils/localStorage.js";
 import {
   getLobbyRoom,
   createNewGameTable,
   deleteGameTable,
-  chatListener,
-  loadChat,
-  tableEventsListener,
+  sendChatMessage,
 } from "./handler.js";
-import { getId } from "./utils/localStorage.js";
-import webSocketConnection from "./utils/webSocketConnection.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const ws = webSocketConnection();
+  try {
+    const ws = await webSocketConnection();
+    const gameId = getId();
 
-  const gameId = getId();
+    await getLobbyRoom(ws, gameId);
 
-  await getLobbyRoom(gameId);
+    await createNewGameTable(ws);
+    await deleteGameTable(ws);
 
-  await createNewGameTable(ws);
-  await deleteGameTable(ws);
-
-  tableEventsListener(ws, gameId);
-  // chatListener();
-  // loadChat(gameId);
+    sendChatMessage(ws, gameId);
+    webSocketListener(ws, gameId);
+  } catch (error) {
+    showError(error);
+  }
 });

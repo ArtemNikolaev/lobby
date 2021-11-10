@@ -2,10 +2,6 @@ const { CREATED, NO_CONTENT } = require("../../helpers/statusCodes");
 const tableService = require("../tables/tableService");
 const gameService = require("./gameService");
 
-const wsStorage = require("../../wsStorage");
-// const WebSocket = require("ws");
-// const ws = new WebSocket(`ws://localhost:3000`);
-
 class GameController {
   async create(req, res, next) {
     try {
@@ -33,10 +29,6 @@ class GameController {
 
     try {
       let tables = await tableService.findByGameId(id);
-      const chatData = await wsStorage.getChatById(id);
-
-      // if (chatData)
-      //   ws.send(JSON.stringify({ event: "loadChat", chatData, id }));
 
       return res.json(tables);
     } catch (error) {

@@ -4,13 +4,12 @@ import table from "../js/services/table.js";
 import fetchProfileInfo from "./services/fetchProfileInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
-import createChatMessageHtml from "./utils/createChatMessageHtml.js";
 import showError from "./utils/showError.js";
 import app from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import { getId, getTables, getTitle, getToken } from "./utils/localStorage.js";
+import { getId, getTitle, getToken } from "./utils/localStorage.js";
 
-const { token, wsUrl, gameTablesKey, gameTitleKey, gameIdKey } = app;
+const { token, gameTitleKey, gameIdKey } = app;
 const myUsername = document.querySelector("#username");
 const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
@@ -23,7 +22,6 @@ const lobbyTitle = document.querySelector("#lobby-title");
 const tables = document.querySelector(".tables");
 const createTableBtn = document.querySelector(".create-table-btn");
 const deleteTableForm = document.querySelector(".delete-table-form");
-const chat = document.querySelector(".chat");
 const chatForm = document.querySelector("#chat-form");
 
 async function logout() {
@@ -71,8 +69,6 @@ async function enterToGameLobby(e) {
     e.target.parentElement.previousElementSibling.previousElementSibling
       .previousElementSibling.innerText;
 
-  // const tables = await table.getAll(id, getToken());
-  // localStorage.setItem(gameTablesKey, JSON.stringify(tables));
   localStorage.setItem(gameIdKey, id);
   localStorage.setItem(gameTitleKey, title);
 
@@ -134,17 +130,11 @@ async function deleteGame(ws) {
   });
 }
 
-async function getLobbyRoom(gameId) {
-  // let gameTables = getTables();
-
-  // if (gameTables) {
-  //   localStorage.removeItem(gameTablesKey);
-  // } else {
+async function getLobbyRoom(ws, gameId) {
   const gameTables = await table.getAll(gameId, getToken());
-  // }
+  ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
 
   lobbyTitle.innerText = `You are in the lobby of ${getTitle()}`;
-
   if (!gameTables.length) return;
 
   const html = gameTables.map(createTableCardHtml).join("\n");
@@ -180,37 +170,7 @@ async function deleteGameTable(ws) {
   });
 }
 
-function gameEventsListener(ws) {
-  ws.onmessage = (response) => {
-    const data = JSON.parse(response.data);
-
-    if (data.event === "addGame") {
-      const html = createGameCardHtml(data.game);
-      gameCards.insertAdjacentHTML("beforeend", html);
-    }
-
-    if (data.event === "deleteGame") {
-      document.querySelector(`#cardId-${data.id}`).remove();
-    }
-  };
-}
-
-function tableEventsListener(ws, gameId) {
-  ws.onmessage = (response) => {
-    const data = JSON.parse(response.data);
-
-    if (data.event === "createTable" && data.table.game_id === +gameId) {
-      const html = createTableCardHtml(data.table);
-      tables.insertAdjacentHTML("beforeend", html);
-    }
-
-    if (data.event === "deleteTable" && data.gameId === gameId) {
-      document.querySelector(`#tableId-${data.tableId}`).remove();
-    }
-  };
-}
-
-function chatListener(ws) {
+function sendChatMessage(ws, gameId) {
   chatForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -221,53 +181,14 @@ function chatListener(ws) {
 
     ws.send(
       JSON.stringify({
-        id: getId(), // lobbyId/gameId
+        id: gameId,
         chatData: { username, message, date },
         event: "chat",
       })
     );
 
-    ws.onmessage = (response) => {
-      const chatStory = JSON.parse(response.data);
-      const html = chatStory
-        .map((msg) => {
-          return msg.username === username
-            ? createChatMessageHtml(msg)
-            : createChatMessageHtml(msg, "chat-msg-you");
-        })
-        .join("\n");
-
-      chat.innerText = "";
-      chat.insertAdjacentHTML("afterbegin", html);
-    };
+    chatForm.reset();
   });
-}
-
-function loadChat(gameId) {
-  // const ws = new WebSocket(wsUrl);
-
-  // ws.onopen = () => console.log("WS: ChatLoad connected");
-  // ws.onclose = () => console.log("WS: Connection closed...");
-  // ws.onerror = (error) => showError(error);
-
-  ws.onmessage = (response) => {
-    const { event, id, chatData } = JSON.parse(response.data);
-    console.log(JSON.parse(response.data));
-
-    if (event === "loadChat" && id === gameId) {
-      const { username } = JSON.parse(localStorage.getItem("userData"));
-      const html = chatData
-        .map((msg) => {
-          return msg.username === username
-            ? createChatMessageHtml(msg)
-            : createChatMessageHtml(msg, "chat-msg-you");
-        })
-        .join("\n");
-
-      chat.innerText = "";
-      chat.insertAdjacentHTML("afterbegin", html);
-    }
-  };
 }
 
 export {
@@ -279,8 +200,5 @@ export {
   getLobbyRoom,
   createNewGameTable,
   deleteGameTable,
-  chatListener,
-  loadChat,
-  tableEventsListener,
-  gameEventsListener,
+  sendChatMessage,
 };

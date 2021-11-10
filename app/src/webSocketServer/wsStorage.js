@@ -9,13 +9,10 @@ class WSStorage {
     const chat = this.storage.get(id);
     if (!chat) {
       this.storage.set(id, [chatData]);
-      return [chatData];
+    } else {
+      chat.push(chatData);
+      this.storage.set(id, chat);
     }
-
-    chat.push(chatData);
-    this.storage.set(id, chat);
-
-    return chat;
   }
 
   async getChatById(id) {
