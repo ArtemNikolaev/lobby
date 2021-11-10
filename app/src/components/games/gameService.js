@@ -21,6 +21,17 @@ class GameService {
     }
   }
 
+  async findById(id) {
+    try {
+      const game = await gameStorage.findById(id);
+      if (!game) throw new NotFoundError(GAME_NOT_FOUND);
+
+      return game;
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
   async getAll() {
     try {
       return gameStorage.getAll();

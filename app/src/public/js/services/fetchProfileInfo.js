@@ -1,9 +1,11 @@
 import jumpToStartPage from "../utils/jumpToStartPage.js";
 
-export default async (path, jwt) => {
+export default async (path, jwt, id) => {
   if (!jwt) return null;
 
-  const response = await fetch("/" + path, {
+  const url = id ? `/${path}/${id}` : `/${path}`;
+
+  const response = await fetch(url, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${jwt}`,

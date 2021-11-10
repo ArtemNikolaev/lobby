@@ -8,7 +8,3 @@ export function getId() {
 export function getToken() {
   return localStorage.getItem(token);
 }
-
-export function getTitle() {
-  return localStorage.getItem(gameTitleKey);
-}

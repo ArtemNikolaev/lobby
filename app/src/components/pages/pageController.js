@@ -10,6 +10,16 @@ class PageController {
       return next(error);
     }
   }
+
+  async getLobbyPage(req, res, next) {
+    try {
+      const data = await pageService.getLobbyPage(req.params.gameId);
+
+      return res.json(data);
+    } catch (error) {
+      return next(error);
+    }
+  }
 }
 
 module.exports = new PageController();

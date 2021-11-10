@@ -36,15 +36,19 @@ app.use(
 app.use("/auth", authRouter);
 
 /**
- *  Main Pages (admin/user)
+ *  Pages (admin/user/lobby)
  */
 app.use(
-  "/profile",
+  "/user-profile",
   express.static(path.join(__dirname, "public", "userProfile.html"))
 );
 app.use(
   "/admin-profile",
   express.static(path.join(__dirname, "public", "adminProfile.html"))
+);
+app.use(
+  "/lobby-room",
+  express.static(path.join(__dirname, "public", "gameLobby.html"))
 );
 app.use("/", pageRouter);
 
@@ -56,10 +60,10 @@ app.use("/games", gameRouter);
 /**
  *  Lobby Room
  */
-app.use(
-  "/lobby-room",
-  express.static(path.join(__dirname, "public", "gameLobby.html"))
-);
+// app.use(
+//   "/lobby-room",
+//   express.static(path.join(__dirname, "public", "gameLobby.html"))
+// );
 
 /**
  *  Table Room

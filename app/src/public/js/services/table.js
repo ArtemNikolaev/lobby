@@ -9,19 +9,19 @@ class Table {
     this.url = "/games";
   }
 
-  async getAll(id, jwt) {
-    const response = await fetch(this.url + `/${id}/tables`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
+  // async getAll(id, jwt) {
+  //   const response = await fetch(this.url + `/${id}/tables`, {
+  //     method: "GET",
+  //     headers: {
+  //       Authorization: `Bearer ${jwt}`,
+  //     },
+  //   });
 
-    const data = await response.json();
-    okInterceptor(response, data);
+  //   const data = await response.json();
+  //   okInterceptor(response, data);
 
-    return data;
-  }
+  //   return data;
+  // }
 
   async create(id, jwt) {
     const response = await fetch(this.url + `/${id}/tables`, {

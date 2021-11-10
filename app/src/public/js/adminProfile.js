@@ -1,11 +1,11 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import webSocketListener from "./websocket/webSocketListener.js";
-import { getRoom, logout, createGame, deleteGame } from "./handler.js";
+import { getPage, logout, createGame, deleteGame } from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const ws = await webSocketConnection();
 
-  await getRoom("admin");
+  await getPage("admin-page");
   document
     .querySelector(".show-add-game-btn")
     .addEventListener("click", async () => {

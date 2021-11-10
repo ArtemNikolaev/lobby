@@ -1,8 +1,9 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import webSocketListener from "./websocket/webSocketListener.js";
+import showError from "./utils/showError.js";
 import { getId } from "./utils/localStorage.js";
 import {
-  getLobbyRoom,
+  getLobbyPage,
   createNewGameTable,
   deleteGameTable,
   sendChatMessage,
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
     const gameId = getId();
 
-    await getLobbyRoom(ws, gameId);
+    await getLobbyPage(ws, gameId);
 
     await createNewGameTable(ws);
     await deleteGameTable(ws);

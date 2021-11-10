@@ -8,9 +8,9 @@ const ForbiddenError = require("../../errors/forbiddenError");
 class TableService {
   async findByGameId(gameId) {
     try {
-      const [games, _] = await tableStorage.findByGameId(gameId);
+      const [tables, _] = await tableStorage.findByGameId(gameId);
 
-      return games;
+      return tables;
     } catch (error) {
       throw new CatchError(error);
     }

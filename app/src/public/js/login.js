@@ -36,7 +36,8 @@ form.addEventListener("submit", async (e) => {
     }
 
     localStorage.setItem(token, data.token);
-    location.href = data.user.role === "user" ? "/profile" : "/admin-profile";
+    location.href =
+      data.user.role === "user" ? "/user-profile" : "/admin-profile";
   } catch (error) {
     showError(error);
   }

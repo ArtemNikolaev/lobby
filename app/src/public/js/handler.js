@@ -7,9 +7,9 @@ import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
 import app from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import { getId, getTitle, getToken } from "./utils/localStorage.js";
+import { getId, getToken } from "./utils/localStorage.js";
 
-const { token, gameTitleKey, gameIdKey } = app;
+const { token, gameIdKey } = app;
 const myUsername = document.querySelector("#username");
 const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
@@ -19,7 +19,7 @@ const addResponseMessage = document.querySelector("#add-response-msg");
 const delResponseMessage = document.querySelector("#del-response-msg");
 const gameCards = document.querySelector(".game-cards");
 const lobbyTitle = document.querySelector("#lobby-title");
-const tables = document.querySelector(".tables");
+const tablesEl = document.querySelector(".tables");
 const createTableBtn = document.querySelector(".create-table-btn");
 const deleteTableForm = document.querySelector(".delete-table-form");
 const chatForm = document.querySelector("#chat-form");
@@ -37,9 +37,9 @@ async function logout() {
   }
 }
 
-async function getRoom(room) {
+async function getPage(page) {
   try {
-    const data = await fetchProfileInfo(room, getToken());
+    const data = await fetchProfileInfo(page, getToken());
     if (!data) return jumpToStartPage();
 
     const {
@@ -65,12 +65,7 @@ async function enterToGameLobby(e) {
   if (e.target.className !== "card-links") return;
 
   const id = e.target.id.split("-")[1];
-  const title =
-    e.target.parentElement.previousElementSibling.previousElementSibling
-      .previousElementSibling.innerText;
-
   localStorage.setItem(gameIdKey, id);
-  localStorage.setItem(gameTitleKey, title);
 
   document.location = "/lobby-room";
 }
@@ -130,15 +125,18 @@ async function deleteGame(ws) {
   });
 }
 
-async function getLobbyRoom(ws, gameId) {
-  const gameTables = await table.getAll(gameId, getToken());
+async function getLobbyPage(ws, gameId) {
+  const data = await fetchProfileInfo("lobby", getToken(), gameId);
+  if (!data) return jumpToStartPage();
+
   ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
 
-  lobbyTitle.innerText = `You are in the lobby of ${getTitle()}`;
-  if (!gameTables.length) return;
+  const { game, tables } = data;
+  lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
 
-  const html = gameTables.map(createTableCardHtml).join("\n");
-  tables.insertAdjacentHTML("afterbegin", html);
+  if (!tables.length) return;
+  const html = tables.map(createTableCardHtml).join("\n");
+  tablesEl.insertAdjacentHTML("afterbegin", html);
 }
 
 async function createNewGameTable(ws) {
@@ -192,12 +190,12 @@ function sendChatMessage(ws, gameId) {
 }
 
 export {
-  getRoom,
+  getPage,
   logout,
   createGame,
   enterToGameLobby,
   deleteGame,
-  getLobbyRoom,
+  getLobbyPage,
   createNewGameTable,
   deleteGameTable,
   sendChatMessage,
