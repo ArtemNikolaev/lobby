@@ -1,9 +1,14 @@
 const tableStorage = require("./tableStorage");
 const userStorage = require("../user/userStorage");
+const playersTablesStorage = require("./playersTablesStorage");
 const NotFoundError = require("../../errors/notFoundError");
-const CatchError = require("../../errors/catchError");
-const { TABLE_NOT_FOUND, CANNOT_DELETE } = require("../../helpers/messages");
 const ForbiddenError = require("../../errors/forbiddenError");
+const CatchError = require("../../errors/catchError");
+const {
+  TABLE_NOT_FOUND,
+  CANNOT_DELETE,
+  USER_NOT_FOUND,
+} = require("../../helpers/messages");
 
 class TableService {
   async findByGameId(gameId) {
@@ -17,11 +22,14 @@ class TableService {
   }
 
   async create(data) {
-    const user = await userStorage.findById(data.user.id);
-    const tableData = { game_id: +data.params.id, user_id: user.id };
-
     try {
+      const user = await userStorage.findById(data.user.id);
+      if (!user) throw new NotFoundError(USER_NOT_FOUND);
+
+      const tableData = { game_id: +data.params.id, user_id: user.id };
       const id = await tableStorage.create(tableData);
+
+      // await playersTablesStorage.create({ user_id: user.id, table_id: id });
 
       return {
         id,

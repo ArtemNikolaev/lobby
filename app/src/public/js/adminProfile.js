@@ -1,13 +1,14 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
-import webSocketListener from "./websocket/webSocketListener.js";
+import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
 import showError from "./utils/showError.js";
 import { getPage, logout, createGame, deleteGame } from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const ws = await webSocketConnection();
+
     await getPage("admin-page");
-    webSocketListener(ws);
+    wsLobbyEventListener(ws);
 
     document
       .querySelector(".show-add-game-btn")

@@ -5,11 +5,20 @@ import fetchPageInfo from "./services/fetchPageInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
-import app from "./config.js";
+import { app, webSocket } from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import { getToken, setUserData } from "./utils/localStorage.js";
+import { getToken, getUserData, setUserData } from "./utils/localStorage.js";
 
-const { token, gameIdKey, tableIdKey } = app;
+const { token } = app;
+const {
+  addGameEvent,
+  deleteGameEvent,
+  deleteTableEvent,
+  createTableEvent,
+  chatHistoryEvent,
+  chatMessageEvent,
+} = webSocket;
+
 const myUsername = document.querySelector("#username");
 const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
@@ -61,15 +70,6 @@ async function getPage(page) {
   }
 }
 
-function jumpToPage(e, className, key, page) {
-  if (!e.target.classList.contains(className)) return;
-
-  const id = e.target.id.split("-")[1];
-  localStorage.setItem(key, id);
-
-  document.location = page;
-}
-
 async function createGame(ws) {
   addGameForm.classList.toggle("hidden");
 
@@ -82,7 +82,7 @@ async function createGame(ws) {
 
     try {
       const newGame = await game.create(gameData, getToken());
-      ws.send(JSON.stringify({ game: newGame, event: "addGame" }));
+      ws.send(JSON.stringify({ game: newGame, event: addGameEvent }));
 
       addResponseMessage.innerText = "Game successfully added to the GameLobby";
       addResponseMessage.style.display = "block";
@@ -110,7 +110,7 @@ async function deleteGame(ws) {
 
     try {
       const isDeleted = await game.delete(id, getToken());
-      if (isDeleted) ws.send(JSON.stringify({ id, event: "deleteGame" }));
+      if (isDeleted) ws.send(JSON.stringify({ id, event: deleteGameEvent }));
 
       delResponseMessage.innerText = "Game successfully deleted!";
       delResponseMessage.style.display = "block";
@@ -129,7 +129,13 @@ async function getLobbyPage(ws, gameId) {
   const data = await fetchPageInfo("lobby", getToken(), gameId);
   if (!data) return jumpToStartPage();
 
-  ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
+  ws.send(
+    JSON.stringify({
+      id: gameId,
+      chat: "lobby",
+      event: chatHistoryEvent,
+    })
+  );
 
   const { game, tables } = data;
   lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
@@ -143,9 +149,13 @@ async function getTablePage(ws, tableId) {
   const data = await fetchPageInfo("table", getToken(), tableId);
   if (!data) return jumpToStartPage();
 
-  console.log(data);
-
-  // ws.send(JSON.stringify({ id: gameId, event: "getChat" }));
+  ws.send(
+    JSON.stringify({
+      id: tableId,
+      chat: "table",
+      event: chatHistoryEvent,
+    })
+  );
 
   // const { game, tables } = data;
   // lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
@@ -155,13 +165,13 @@ async function getTablePage(ws, tableId) {
   // tablesEl.insertAdjacentHTML("afterbegin", html);
 }
 
-async function createNewGameTable(ws, gameId) {
+async function createGameTable(ws, gameId) {
   createTableBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     try {
       const newTable = await table.create(gameId, getToken());
-      ws.send(JSON.stringify({ table: newTable, event: "createTable" }));
+      ws.send(JSON.stringify({ table: newTable, event: createTableEvent }));
     } catch (error) {
       showError(error);
     }
@@ -179,29 +189,39 @@ async function deleteGameTable(ws, gameId) {
     const isDeleted = await table.delete(gameId, tableId, getToken());
 
     if (isDeleted)
-      ws.send(JSON.stringify({ gameId, tableId, event: "deleteTable" }));
+      ws.send(JSON.stringify({ gameId, tableId, event: deleteTableEvent }));
   });
 }
 
-function sendChatMessage(ws, gameId) {
+function sendChatMessage(ws, chat, id) {
   chatForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const formData = new FormData(chatForm);
     const message = formData.get("message");
-    const { username } = JSON.parse(localStorage.getItem("userData"));
+    const { username } = getUserData();
     const date = new Date().toISOString();
 
     ws.send(
       JSON.stringify({
-        id: gameId,
+        id,
         chatData: { username, message, date },
-        event: "chat",
+        chat,
+        event: chatMessageEvent,
       })
     );
 
     chatForm.reset();
   });
+}
+
+function jumpToPage(e, className, key, page) {
+  if (!e.target.classList.contains(className)) return;
+
+  const id = e.target.id.split("-")[1];
+  localStorage.setItem(key, id);
+
+  document.location = page;
 }
 
 export {
@@ -212,7 +232,7 @@ export {
   deleteGame,
   getLobbyPage,
   getTablePage,
-  createNewGameTable,
+  createGameTable,
   deleteGameTable,
   sendChatMessage,
 };

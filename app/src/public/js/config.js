@@ -1,6 +1,5 @@
-const app = {
+export const app = {
   token: "game-lobby-token",
-  wsUrl: "ws://localhost:3000",
   gameIdKey: "gameId",
   tableIdKey: "tableId",
   userDataKey: "userData",
@@ -11,4 +10,12 @@ const app = {
   tablePage: "/table-room",
 };
 
-export default app;
+export const webSocket = {
+  url: "ws://localhost:3000",
+  chatHistoryEvent: "chatHistory",
+  chatMessageEvent: "chatMessage",
+  deleteTableEvent: "deleteTable",
+  createTableEvent: "createTable",
+  deleteGameEvent: "deleteGame",
+  addGameEvent: "addGame",
+};

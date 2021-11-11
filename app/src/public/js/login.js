@@ -1,6 +1,6 @@
 import auth from "./services/auth.js";
 import showError from "./utils/showError.js";
-import app from "./config.js";
+import { app } from "./config.js";
 
 const { token, userPage, adminPage } = app;
 const failMessage = document.querySelector(".fail-msg");

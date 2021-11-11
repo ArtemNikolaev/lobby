@@ -2,39 +2,47 @@ import createChatMessageHtml from "../utils/createChatMessageHtml.js";
 import createGameCardHtml from "../utils/createGameCardHtml.js";
 import createTableCardHtml from "../utils/createTableCardHtml.js";
 import { getUserData } from "../utils/localStorage.js";
+import { webSocket } from "../config.js";
 
+const {
+  addGameEvent,
+  deleteGameEvent,
+  createTableEvent,
+  deleteTableEvent,
+  chatHistoryEvent,
+  chatMessageEvent,
+} = webSocket;
 const gameCards = document.querySelector(".game-cards");
 const tables = document.querySelector(".tables");
 const chat = document.querySelector(".chat");
+const { username } = getUserData();
 
 export default (ws, gameId) => {
   ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 
-    if (data.event === "addGame") {
+    if (data.event === addGameEvent) {
       const html = createGameCardHtml(data.game);
       gameCards.insertAdjacentHTML("beforeend", html);
     }
 
-    if (data.event === "deleteGame") {
+    if (data.event === deleteGameEvent) {
       document.querySelector(`#cardId-${data.id}`).remove();
     }
 
-    if (data.event === "createTable" && data.table.game_id === +gameId) {
+    if (data.event === createTableEvent && data.table.game_id === +gameId) {
       const html = createTableCardHtml(data.table);
       tables.insertAdjacentHTML("beforeend", html);
     }
 
-    if (data.event === "deleteTable" && data.gameId === gameId) {
+    if (data.event === deleteTableEvent && data.gameId === gameId) {
       document.querySelector(`#tableId-${data.tableId}`).remove();
     }
 
     if (
-      (data.event === "getChat" && data.id === gameId) ||
-      (data.event === "chat" && data.id === gameId)
+      (data.event === chatHistoryEvent && data.id === gameId) ||
+      (data.event === chatMessageEvent && data.id === gameId)
     ) {
-      const { username } = getUserData();
-
       const html = data.chatData
         .map((msg) => {
           return msg.username === username

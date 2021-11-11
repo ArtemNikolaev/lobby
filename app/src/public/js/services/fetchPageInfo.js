@@ -1,5 +1,4 @@
 import { okInterceptor } from "../utils/interceptors.js";
-import jumpToStartPage from "../utils/jumpToStartPage.js";
 
 export default async (path, jwt, id) => {
   if (!jwt) return null;

@@ -1,7 +1,6 @@
 import {
   noContentInterceptor,
   createdInterceptor,
-  okInterceptor,
 } from "../utils/interceptors.js";
 
 class Table {

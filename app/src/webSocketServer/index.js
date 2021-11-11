@@ -1,8 +1,10 @@
 const WebSocket = require("ws");
-const lobbyChatStorage = require("./lobbyChatStorage");
+const chatService = require("./chatService");
+const { chatMessageEvent, chatHistoryEvent } = require("../../config").wsEvents;
 
 module.exports = (server) => {
   const wss = new WebSocket.Server({ server });
+
   wss.on("listening", () => {
     console.log("WebSocketServer started");
   });
@@ -12,15 +14,15 @@ module.exports = (server) => {
       const message = JSON.parse(data);
 
       switch (message.event) {
-        case "chat":
-          await lobbyChatStorage.save(message);
-          const chat = await lobbyChatStorage.getChatById(message.id);
+        case chatMessageEvent:
+          await chatService.saveMessage(message);
+          const chat = await chatService.getChatHistory(message);
 
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
-                  event: "chat",
+                  event: chatMessageEvent,
                   id: message.id,
                   chatData: chat,
                 })
@@ -29,15 +31,15 @@ module.exports = (server) => {
           });
           break;
 
-        case "getChat":
-          const chatData = await lobbyChatStorage.getChatById(message.id);
+        case chatHistoryEvent:
+          const chatData = await chatService.getChatHistory(message);
           if (!chatData) return;
 
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
               client.send(
                 JSON.stringify({
-                  event: "getChat",
+                  event: chatHistoryEvent,
                   id: message.id,
                   chatData,
                 })

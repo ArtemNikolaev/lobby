@@ -1,8 +1,9 @@
-import app from "../config.js";
+import { webSocket } from "../config.js";
 
 export default () => {
   return new Promise((resolve, reject) => {
-    const ws = new WebSocket(app.wsUrl);
+    const ws = new WebSocket(webSocket.url);
+
     ws.onopen = () => {
       console.log("WS: Ready to listen Events");
       resolve(ws);

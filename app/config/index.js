@@ -17,4 +17,9 @@ const token = {
   linkTTL: "15m",
 };
 
-module.exports = { app, db, token };
+const wsEvents = {
+  chatMessageEvent: "chatMessage",
+  chatHistoryEvent: "chatHistory",
+};
+
+module.exports = { app, db, token, wsEvents };

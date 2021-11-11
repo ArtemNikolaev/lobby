@@ -50,6 +50,10 @@ app.use(
   "/lobby-room",
   express.static(path.join(__dirname, "public", "gameLobby.html"))
 );
+app.use(
+  "/table-room",
+  express.static(path.join(__dirname, "public", "gameTable.html"))
+);
 app.use("/", pageRouter);
 
 /**
@@ -58,15 +62,7 @@ app.use("/", pageRouter);
 app.use("/games", gameRouter);
 
 /**
- *  Table Room
- */
-app.use(
-  "/table-room",
-  express.static(path.join(__dirname, "public", "gameTable.html"))
-);
-
-/**
- *  Other
+ *  not emplemented
  */
 app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
 
