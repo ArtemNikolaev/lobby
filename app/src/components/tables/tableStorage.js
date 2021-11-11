@@ -7,8 +7,6 @@ class TableStorage {
             t.id, 
             t.game_id, 
             t.user_id, 
-            t.players, 
-            t.viewers, 
             u.id as creatorId, 
             username as creator 
       FROM tables as t
@@ -39,8 +37,6 @@ class TableStorage {
     const [table] = await pool.query(
       `SELECT 
             t.id, 
-            t.players, 
-            t.viewers, 
             u.id as creatorId, 
             u.username as creator, 
             g.id as gameId, 

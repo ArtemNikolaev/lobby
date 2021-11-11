@@ -12,6 +12,7 @@ module.exports = (server) => {
   wss.on("connection", (ws) => {
     ws.on("message", async (data) => {
       const message = JSON.parse(data);
+      console.log(message);
 
       switch (message.event) {
         case chatMessageEvent:

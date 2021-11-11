@@ -28,27 +28,9 @@ CREATE TABLE IF NOT EXISTS tables (
     id INT AUTO_INCREMENT,
     game_id INT NOT NULL,
     user_id INT NOT NULL,
-    players INT DEFAULT (1) NOT NULL,
-    viewers INT DEFAULT (0) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY (game_id) REFERENCES games(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-
-CREATE TABLE IF NOT EXISTS players_tables (
-    user_id INT NOT NULL,
-    table_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (table_id) REFERENCES tables(id)
-);
-
-
-CREATE TABLE IF NOT EXISTS viewers_tables (
-    user_id INT NOT NULL,
-    table_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (table_id) REFERENCES tables(id)
 );
 
 

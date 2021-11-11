@@ -32,6 +32,7 @@ const tablesEl = document.querySelector(".tables");
 const createTableBtn = document.querySelector(".create-table-btn");
 const deleteTableForm = document.querySelector(".delete-table-form");
 const chatForm = document.querySelector("#chat-form");
+const tableTitle = document.querySelector("#table-title");
 
 async function logout() {
   try {
@@ -157,12 +158,8 @@ async function getTablePage(ws, tableId) {
     })
   );
 
-  // const { game, tables } = data;
-  // lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
-
-  // if (!tables.length) return;
-  // const html = tables.map(createTableCardHtml).join("\n");
-  // tablesEl.insertAdjacentHTML("afterbegin", html);
+  const { title, id } = data;
+  tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 }
 
 async function createGameTable(ws, gameId) {

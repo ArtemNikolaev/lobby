@@ -1,6 +1,5 @@
 const tableStorage = require("./tableStorage");
 const userStorage = require("../user/userStorage");
-const playersTablesStorage = require("./playersTablesStorage");
 const NotFoundError = require("../../errors/notFoundError");
 const ForbiddenError = require("../../errors/forbiddenError");
 const CatchError = require("../../errors/catchError");
@@ -13,9 +12,9 @@ const {
 class TableService {
   async findByGameId(gameId) {
     try {
-      const [tables, _] = await tableStorage.findByGameId(gameId);
+      const tables = await tableStorage.findByGameId(gameId);
 
-      return tables;
+      return tables[0];
     } catch (error) {
       throw new CatchError(error);
     }
@@ -29,15 +28,7 @@ class TableService {
       const tableData = { game_id: +data.params.id, user_id: user.id };
       const id = await tableStorage.create(tableData);
 
-      // await playersTablesStorage.create({ user_id: user.id, table_id: id });
-
-      return {
-        id,
-        creator: user.username,
-        ...tableData,
-        players: 1,
-        viewers: 0,
-      };
+      return { id, creator: user.username, ...tableData };
     } catch (error) {
       throw new CatchError(error);
     }
