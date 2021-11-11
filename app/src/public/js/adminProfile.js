@@ -12,14 +12,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document
       .querySelector(".show-add-game-btn")
-      .addEventListener("click", async () => {
-        await createGame(ws);
+      .addEventListener("click", () => {
+        createGame(ws);
       });
 
     document
       .querySelector(".show-delete-game-btn")
-      .addEventListener("click", async () => {
-        await deleteGame(ws);
+      .addEventListener("click", () => {
+        deleteGame(ws);
       });
 
     document.querySelector(".logout").addEventListener("click", async () => {

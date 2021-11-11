@@ -19,8 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getLobbyPage(ws, gameId);
-    await createGameTable(ws, gameId);
-    await deleteGameTable(ws, gameId);
+    createGameTable(ws, gameId);
+    deleteGameTable(ws, gameId);
 
     sendChatMessage(ws, "lobby", gameId);
     wsLobbyEventListener(ws, gameId);

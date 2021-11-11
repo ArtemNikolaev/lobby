@@ -9,7 +9,7 @@ import { app, webSocket } from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
 import { getToken, getUserData, setUserData } from "./utils/localStorage.js";
 
-const { token } = app;
+const { token, tableIdKey, tablePage, lobbyPage } = app;
 const {
   addGameEvent,
   deleteGameEvent,
@@ -33,6 +33,7 @@ const createTableBtn = document.querySelector(".create-table-btn");
 const deleteTableForm = document.querySelector(".delete-table-form");
 const chatForm = document.querySelector("#chat-form");
 const tableTitle = document.querySelector("#table-title");
+const exitGameBtn = document.querySelector(".exit-game-btn");
 
 async function logout() {
   try {
@@ -71,7 +72,7 @@ async function getPage(page) {
   }
 }
 
-async function createGame(ws) {
+function createGame(ws) {
   addGameForm.classList.toggle("hidden");
 
   const form = document.querySelector(".add-game-form");
@@ -98,7 +99,7 @@ async function createGame(ws) {
   });
 }
 
-async function deleteGame(ws) {
+function deleteGame(ws) {
   deleteGameForm.classList.toggle("hidden");
 
   const form = document.querySelector(".delete-game-form");
@@ -162,20 +163,23 @@ async function getTablePage(ws, tableId) {
   tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 }
 
-async function createGameTable(ws, gameId) {
+function createGameTable(ws, gameId) {
   createTableBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
     try {
       const newTable = await table.create(gameId, getToken());
       ws.send(JSON.stringify({ table: newTable, event: createTableEvent }));
+
+      localStorage.setItem(tableIdKey, newTable.id);
+      document.location = tablePage;
     } catch (error) {
       showError(error);
     }
   });
 }
 
-async function deleteGameTable(ws, gameId) {
+function deleteGameTable(ws, gameId) {
   deleteTableForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -191,12 +195,13 @@ async function deleteGameTable(ws, gameId) {
 }
 
 function sendChatMessage(ws, chat, id) {
+  const { username } = getUserData();
+
   chatForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const formData = new FormData(chatForm);
     const message = formData.get("message");
-    const { username } = getUserData();
     const date = new Date().toISOString();
 
     ws.send(
@@ -221,6 +226,17 @@ function jumpToPage(e, className, key, page) {
   document.location = page;
 }
 
+function exitGame(ws, gameId, tableId) {
+  exitGameBtn.addEventListener("click", async () => {
+    const isDeleted = await table.delete(gameId, tableId, getToken());
+
+    if (isDeleted)
+      ws.send(JSON.stringify({ gameId, tableId, event: deleteTableEvent }));
+
+    document.location = lobbyPage;
+  });
+}
+
 export {
   getPage,
   logout,
@@ -232,4 +248,5 @@ export {
   createGameTable,
   deleteGameTable,
   sendChatMessage,
+  exitGame,
 };
