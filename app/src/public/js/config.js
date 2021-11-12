@@ -18,4 +18,7 @@ export const webSocket = {
   createTableEvent: "createTable",
   deleteGameEvent: "deleteGame",
   addGameEvent: "addGame",
+  getPlayersCountEvent: "getPlayersCount",
+  userJoinTableEvent: "userJoinTable",
+  userLeftTableEvent: "userLeftTable",
 };

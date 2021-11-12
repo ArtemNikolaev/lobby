@@ -2,6 +2,7 @@ import {
   noContentInterceptor,
   createdInterceptor,
 } from "../utils/interceptors.js";
+import showError from "../utils/showError.js";
 
 class Table {
   constructor() {
@@ -9,30 +10,38 @@ class Table {
   }
 
   async create(id, jwt) {
-    const response = await fetch(this.url + `/${id}/tables`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch(this.url + `/${id}/tables`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      const data = await response.json();
 
-    await createdInterceptor(response, data);
+      await createdInterceptor(response, data);
 
-    return data;
+      return data;
+    } catch (error) {
+      showError(error);
+    }
   }
 
   async delete(gameId, tableId, jwt) {
-    const response = await fetch(this.url + `/${gameId}/tables/${tableId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
+    try {
+      const response = await fetch(this.url + `/${gameId}/tables/${tableId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
 
-    await noContentInterceptor(response);
+      await noContentInterceptor(response);
 
-    return true;
+      return true;
+    } catch (error) {
+      showError(error);
+    }
   }
 }
 

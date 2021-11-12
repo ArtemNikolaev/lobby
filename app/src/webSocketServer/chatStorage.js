@@ -17,6 +17,10 @@ class ChatStorage {
   async getAll(key) {
     return this.storage.get(key);
   }
+
+  async delete(key) {
+    this.storage.delete(key);
+  }
 }
 
 module.exports = new ChatStorage();

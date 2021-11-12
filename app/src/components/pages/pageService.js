@@ -3,6 +3,7 @@ const UserDto = require("../../dtos/userDto");
 const gameService = require("../games/gameService");
 const userService = require("../user/userService");
 const tableService = require("../tables/tableService");
+const inMemoryStorage = require("../../inMemoryStorage/inMemoryStorage");
 
 class PageService {
   async getPage(id) {
@@ -31,7 +32,11 @@ class PageService {
 
   async getTablePage(id) {
     try {
-      return tableService.findGameAndTableById(id);
+      const table = await tableService.findGameAndTableById(id);
+
+      const count = await inMemoryStorage.getPlayersCount(parseInt(id));
+
+      return { table, count };
     } catch (error) {
       throw new CatchError(error);
     }

@@ -2,6 +2,7 @@ import {
   createdInterceptor,
   noContentInterceptor,
 } from "../utils/interceptors.js";
+import showError from "../utils/showError.js";
 
 class Game {
   constructor() {
@@ -9,30 +10,38 @@ class Game {
   }
 
   async create(body, jwt) {
-    const response = await fetch(this.url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-      body,
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch(this.url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+        body,
+      });
+      const data = await response.json();
 
-    await createdInterceptor(response, data);
-    return data;
+      await createdInterceptor(response, data);
+      return data;
+    } catch (error) {
+      showError(error);
+    }
   }
 
   async delete(id, jwt) {
-    const response = await fetch(this.url + `/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
+    try {
+      const response = await fetch(this.url + `/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
 
-    await noContentInterceptor(response);
+      await noContentInterceptor(response);
 
-    return true;
+      return true;
+    } catch (error) {
+      showError(error);
+    }
   }
 }
 

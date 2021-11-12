@@ -2,7 +2,7 @@ import webSocketConnection from "./websocket/webSocketConnection.js";
 import wsTableEventListener from "./websocket/wsTableEventListener.js";
 import showError from "./utils/showError.js";
 import { getTableId, getGameId } from "./utils/localStorage.js";
-import { getTablePage, sendChatMessage, exitGame } from "./handler.js";
+import { getTablePage, sendChatMessage, leftTable } from "./handler.js";
 
 const tableId = getTableId();
 const gameId = getGameId();
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getTablePage(ws, tableId);
-    exitGame(ws, gameId, tableId);
+    leftTable(ws, gameId, tableId);
 
     sendChatMessage(ws, "table", tableId);
     wsTableEventListener(ws, tableId);

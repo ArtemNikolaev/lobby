@@ -7,9 +7,16 @@ import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
 import { app, webSocket } from "./config.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import { getToken, getUserData, setUserData } from "./utils/localStorage.js";
+import getPlayersCount from "./websocket/wsResponseListeners/getPlayersCount.js";
+import {
+  getToken,
+  getUserData,
+  setGameId,
+  setTableId,
+  setUserData,
+} from "./utils/localStorage.js";
 
-const { token, tableIdKey, tablePage, lobbyPage } = app;
+const { token, tablePage, lobbyPage } = app;
 const {
   addGameEvent,
   deleteGameEvent,
@@ -17,6 +24,9 @@ const {
   createTableEvent,
   chatHistoryEvent,
   chatMessageEvent,
+  userJoinTableEvent,
+  userLeftTableEvent,
+  getPlayersCountEvent,
 } = webSocket;
 
 const myUsername = document.querySelector("#username");
@@ -143,7 +153,9 @@ async function getLobbyPage(ws, gameId) {
   lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
 
   if (!tables.length) return;
-  const html = tables.map(createTableCardHtml).join("\n");
+  const html = tables
+    .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
+    .join("\n");
   tablesEl.insertAdjacentHTML("afterbegin", html);
 }
 
@@ -152,14 +164,14 @@ async function getTablePage(ws, tableId) {
   if (!data) return jumpToStartPage();
 
   ws.send(
-    JSON.stringify({
-      id: tableId,
-      chat: "table",
-      event: chatHistoryEvent,
-    })
+    JSON.stringify({ id: tableId, chat: "table", event: chatHistoryEvent })
   );
 
-  const { title, id } = data;
+  const {
+    table: { title, id },
+    count,
+  } = data;
+
   tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 }
 
@@ -169,9 +181,20 @@ function createGameTable(ws, gameId) {
 
     try {
       const newTable = await table.create(gameId, getToken());
-      ws.send(JSON.stringify({ table: newTable, event: createTableEvent }));
 
-      localStorage.setItem(tableIdKey, newTable.id);
+      const { id: tableId, user_id: userId, creator } = newTable;
+      setTableId(tableId);
+
+      ws.send(
+        JSON.stringify({
+          tableId,
+          userId,
+          gameId,
+          creator,
+          event: createTableEvent,
+        })
+      );
+
       document.location = tablePage;
     } catch (error) {
       showError(error);
@@ -217,21 +240,46 @@ function sendChatMessage(ws, chat, id) {
   });
 }
 
-function jumpToPage(e, className, key, page) {
-  if (!e.target.classList.contains(className)) return;
+function jumpToLobbyPage(e) {
+  if (!e.target.classList.contains("card-link")) return;
 
   const id = e.target.id.split("-")[1];
-  localStorage.setItem(key, id);
 
-  document.location = page;
+  setGameId(id);
+  document.location = lobbyPage;
 }
 
-function exitGame(ws, gameId, tableId) {
-  exitGameBtn.addEventListener("click", async () => {
-    const isDeleted = await table.delete(gameId, tableId, getToken());
+function joinToTable(e, ws, gameId) {
+  if (!e.target.classList.contains("table-link")) return;
 
-    if (isDeleted)
-      ws.send(JSON.stringify({ gameId, tableId, event: deleteTableEvent }));
+  const tableId = parseInt(e.target.id.split("-")[1]);
+  const { id: userId } = getUserData();
+
+  ws.send(
+    JSON.stringify({ tableId, userId, gameId, event: userJoinTableEvent })
+  );
+
+  setTableId(tableId);
+  document.location = tablePage;
+}
+
+function leftTable(ws, gameId, tableId) {
+  exitGameBtn.addEventListener("click", async () => {
+    ws.send(JSON.stringify({ tableId, event: getPlayersCountEvent }));
+    const count = await getPlayersCount(ws);
+
+    if (count <= 1) {
+      const isDeleted = await table.delete(gameId, tableId, getToken());
+
+      if (isDeleted)
+        ws.send(JSON.stringify({ tableId, gameId, event: deleteTableEvent }));
+    } else {
+      const { id: userId } = getUserData();
+      console.log(typeof gameId);
+      ws.send(
+        JSON.stringify({ tableId, gameId, userId, event: userLeftTableEvent })
+      );
+    }
 
     document.location = lobbyPage;
   });
@@ -241,12 +289,13 @@ export {
   getPage,
   logout,
   createGame,
-  jumpToPage,
+  jumpToLobbyPage,
   deleteGame,
   getLobbyPage,
   getTablePage,
   createGameTable,
   deleteGameTable,
   sendChatMessage,
-  exitGame,
+  leftTable,
+  joinToTable,
 };

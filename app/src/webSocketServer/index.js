@@ -1,6 +1,7 @@
 const WebSocket = require("ws");
 const chatService = require("./chatService");
 const { chatMessageEvent, chatHistoryEvent } = require("../../config").wsEvents;
+const eventService = require("./eventService");
 
 module.exports = (server) => {
   const wss = new WebSocket.Server({ server });
@@ -12,7 +13,7 @@ module.exports = (server) => {
   wss.on("connection", (ws) => {
     ws.on("message", async (data) => {
       const message = JSON.parse(data);
-      console.log(message);
+      console.log(message.event, message);
 
       switch (message.event) {
         case chatMessageEvent:
@@ -47,6 +48,26 @@ module.exports = (server) => {
               );
             }
           });
+          break;
+
+        case "createTable":
+          await eventService.createTable(wss, message);
+          break;
+
+        case "deleteTable":
+          await eventService.deleteTable(wss, message);
+          break;
+
+        case "userJoinTable":
+          await eventService.userJoinTable(wss, message);
+          break;
+
+        case "userLeftTable":
+          await eventService.userLeftTable(wss, message);
+          break;
+
+        case "getPlayersCount":
+          await eventService.getPlayersCount(ws, message);
           break;
 
         default:

@@ -2,7 +2,7 @@ const pool = require("../../db");
 
 class TableStorage {
   async findByGameId(gameId) {
-    return pool.query(
+    const [data] = await pool.query(
       `SELECT 
             t.id, 
             t.game_id, 
@@ -15,6 +15,8 @@ class TableStorage {
       WHERE game_id = ?`,
       gameId
     );
+
+    return data;
   }
 
   async create(tableData) {

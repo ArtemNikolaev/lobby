@@ -1,4 +1,3 @@
-import { app } from "./config.js";
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
 import showError from "./utils/showError.js";
@@ -8,10 +7,9 @@ import {
   createGameTable,
   deleteGameTable,
   sendChatMessage,
-  jumpToPage,
+  joinToTable,
 } from "./handler.js";
 
-const { tableIdKey, tablePage } = app;
 const gameId = getGameId();
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -25,9 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     sendChatMessage(ws, "lobby", gameId);
     wsLobbyEventListener(ws, gameId);
 
-    document.addEventListener("click", (e) =>
-      jumpToPage(e, "table-link", tableIdKey, tablePage)
-    );
+    document.addEventListener("click", (e) => joinToTable(e, ws, gameId));
   } catch (error) {
     showError(error);
   }

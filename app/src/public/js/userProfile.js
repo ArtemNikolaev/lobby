@@ -1,10 +1,7 @@
-import { app } from "./config.js";
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
-import { getPage, logout, jumpToPage } from "./handler.js";
+import { getPage, logout, jumpToLobbyPage } from "./handler.js";
 import showError from "./utils/showError.js";
-
-const { gameIdKey, lobbyPage } = app;
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -13,9 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await getPage("user-page");
     wsLobbyEventListener(ws);
 
-    document.addEventListener("click", (e) =>
-      jumpToPage(e, "card-link", gameIdKey, lobbyPage)
-    );
+    document.addEventListener("click", (e) => jumpToLobbyPage(e));
 
     document
       .querySelector(".logout")

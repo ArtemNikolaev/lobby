@@ -47,10 +47,8 @@ class GameController {
   }
 
   async deleteTable(req, res, next) {
-    const { tableId, gameId } = req.params;
-
     try {
-      await tableService.delete(tableId, gameId, req.user.id);
+      await tableService.delete(req.params.tableId);
 
       return res.status(NO_CONTENT).send();
     } catch (error) {
