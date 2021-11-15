@@ -26,7 +26,6 @@ const {
   chatMessageEvent,
   userJoinTableEvent,
   userLeftTableEvent,
-  getPlayersCountEvent,
 } = webSocket;
 
 const myUsername = document.querySelector("#username");
@@ -163,16 +162,12 @@ async function getTablePage(ws, tableId) {
   const data = await fetchPageInfo("table", getToken(), tableId);
   if (!data) return jumpToStartPage();
 
+  const { title, id } = data;
+  tableTitle.innerText = `${title}. Game Table ID: ${id}`;
+
   ws.send(
     JSON.stringify({ id: tableId, chat: "table", event: chatHistoryEvent })
   );
-
-  const {
-    table: { title, id },
-    count,
-  } = data;
-
-  tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 }
 
 function createGameTable(ws, gameId) {
@@ -263,10 +258,9 @@ function joinToTable(e, ws, gameId) {
   document.location = tablePage;
 }
 
-function leftTable(ws, gameId, tableId) {
+function leaveTable(ws, gameId, tableId) {
   exitGameBtn.addEventListener("click", async () => {
-    ws.send(JSON.stringify({ tableId, event: getPlayersCountEvent }));
-    const count = await getPlayersCount(ws);
+    const count = await getPlayersCount(ws, tableId);
 
     if (count <= 1) {
       const isDeleted = await table.delete(gameId, tableId, getToken());
@@ -275,7 +269,7 @@ function leftTable(ws, gameId, tableId) {
         ws.send(JSON.stringify({ tableId, gameId, event: deleteTableEvent }));
     } else {
       const { id: userId } = getUserData();
-      console.log(typeof gameId);
+
       ws.send(
         JSON.stringify({ tableId, gameId, userId, event: userLeftTableEvent })
       );
@@ -296,6 +290,6 @@ export {
   createGameTable,
   deleteGameTable,
   sendChatMessage,
-  leftTable,
+  leaveTable,
   joinToTable,
 };

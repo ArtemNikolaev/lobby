@@ -1,14 +1,9 @@
 const tableStorage = require("./tableStorage");
 const userStorage = require("../user/userStorage");
+const playerStorage = require("../players/playerStorage");
 const NotFoundError = require("../../errors/notFoundError");
-const ForbiddenError = require("../../errors/forbiddenError");
 const CatchError = require("../../errors/catchError");
-const {
-  TABLE_NOT_FOUND,
-  CANNOT_DELETE,
-  USER_NOT_FOUND,
-} = require("../../helpers/messages");
-const inMemoryStorage = require("../../inMemoryStorage/inMemoryStorage");
+const { TABLE_NOT_FOUND, USER_NOT_FOUND } = require("../../helpers/messages");
 
 class TableService {
   async findByGameId(gameId) {
@@ -18,7 +13,7 @@ class TableService {
       if (tables.length) {
         tables = await Promise.all(
           tables.map(async (table) => {
-            table.count = await inMemoryStorage.getPlayersCount(table.id);
+            table.count = await playerStorage.getCount(table.id);
             return table;
           })
         );
@@ -46,18 +41,15 @@ class TableService {
 
   async delete(id) {
     try {
-      const count = await inMemoryStorage.getPlayersCount(parseInt(id));
-      if (count > 1) throw new ForbiddenError(CANNOT_DELETE);
-
       await tableStorage.deleteById(id);
     } catch (error) {
       throw new CatchError(error);
     }
   }
 
-  async findGameAndTableById(id) {
+  async getTableInfo(id) {
     try {
-      const table = await tableStorage.findGameAndTableById(id);
+      const table = await tableStorage.getTableInfo(id);
       if (!table) throw new NotFoundError(TABLE_NOT_FOUND);
 
       return table;

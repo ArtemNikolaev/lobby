@@ -20,6 +20,11 @@ const token = {
 const wsEvents = {
   chatMessageEvent: "chatMessage",
   chatHistoryEvent: "chatHistory",
+  createTableEvent: "createTable",
+  deleteTableEvent: "deleteTable",
+  userJoinTableEvent: "userJoinTable",
+  userLeftTableEvent: "userLeftTable",
+  getPlayersCountEvent: "getPlayersCount",
 };
 
 module.exports = { app, db, token, wsEvents };

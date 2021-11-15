@@ -1,4 +1,4 @@
-class InMemoryStorage {
+class PlayerStorage {
   constructor() {
     this.storage = new Map();
   }
@@ -9,15 +9,14 @@ class InMemoryStorage {
 
     if (!players) {
       this.storage.set(tableId, new Set().add(userId));
-    } else {
-      players.add(userId);
-      this.storage.set(tableId, players);
+      return;
     }
 
-    return this.getPlayersCount(tableId);
+    players.add(userId);
+    this.storage.set(tableId, players);
   }
 
-  async getPlayersCount(id) {
+  async getCount(id) {
     const players = this.storage.get(id);
 
     return players ? players.size : 0;
@@ -32,4 +31,4 @@ class InMemoryStorage {
   }
 }
 
-module.exports = new InMemoryStorage();
+module.exports = new PlayerStorage();

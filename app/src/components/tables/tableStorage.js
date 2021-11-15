@@ -35,7 +35,7 @@ class TableStorage {
     return table[0];
   }
 
-  async findGameAndTableById(id) {
+  async getTableInfo(id) {
     const [table] = await pool.query(
       `SELECT 
             t.id, 

@@ -14,7 +14,7 @@ class ChatStorage {
     }
   }
 
-  async getAll(key) {
+  async getAllMessages(key) {
     return this.storage.get(key);
   }
 
