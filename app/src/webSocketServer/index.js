@@ -20,6 +20,7 @@ module.exports = (server) => {
   wss.on("connection", (ws) => {
     ws.on("message", async (data) => {
       const message = JSON.parse(data);
+      console.log("message", message);
 
       switch (message.event) {
         case chatMessageEvent:
@@ -27,7 +28,7 @@ module.exports = (server) => {
           break;
 
         case chatHistoryEvent:
-          await eventController.getChatHistory(wss, message);
+          await eventController.getChatHistory(ws, message);
           break;
 
         case createTableEvent:

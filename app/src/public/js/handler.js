@@ -1,3 +1,4 @@
+import { app, webSocket } from "./config.js";
 import auth from "../js/services/auth.js";
 import game from "../js/services/game.js";
 import table from "../js/services/table.js";
@@ -5,9 +6,10 @@ import fetchPageInfo from "./services/fetchPageInfo.js";
 import jumpToStartPage from "./utils/jumpToStartPage.js";
 import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
-import { app, webSocket } from "./config.js";
+import renderChat from "./utils/renderChat.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import getPlayersCount from "./websocket/wsResponseListeners/getPlayersCount.js";
+import getPlayersCount from "./websocket/wsRequests/getPlayersCount.js";
+import getChatHistory from "./websocket/wsRequests/getChatHistory.js";
 import {
   getToken,
   getUserData,
@@ -22,7 +24,6 @@ const {
   deleteGameEvent,
   deleteTableEvent,
   createTableEvent,
-  chatHistoryEvent,
   chatMessageEvent,
   userJoinTableEvent,
   userLeftTableEvent,
@@ -121,7 +122,9 @@ function deleteGame(ws) {
 
     try {
       const isDeleted = await game.delete(id, getToken());
-      if (isDeleted) ws.send(JSON.stringify({ id, event: deleteGameEvent }));
+      if (!isDeleted) return;
+
+      ws.send(JSON.stringify({ id, event: deleteGameEvent }));
 
       delResponseMessage.innerText = "Game successfully deleted!";
       delResponseMessage.style.display = "block";
@@ -140,22 +143,18 @@ async function getLobbyPage(ws, gameId) {
   const data = await fetchPageInfo("lobby", getToken(), gameId);
   if (!data) return jumpToStartPage();
 
-  ws.send(
-    JSON.stringify({
-      id: gameId,
-      chat: "lobby",
-      event: chatHistoryEvent,
-    })
-  );
-
   const { game, tables } = data;
   lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
 
-  if (!tables.length) return;
-  const html = tables
-    .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
-    .join("\n");
-  tablesEl.insertAdjacentHTML("afterbegin", html);
+  if (tables.length) {
+    const html = tables
+      .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
+      .join("\n");
+    tablesEl.insertAdjacentHTML("afterbegin", html);
+  }
+
+  const chat = await getChatHistory(ws, gameId, "lobby");
+  if (chat.chatData) renderChat(chat.chatData);
 }
 
 async function getTablePage(ws, tableId) {
@@ -165,9 +164,8 @@ async function getTablePage(ws, tableId) {
   const { title, id } = data;
   tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 
-  ws.send(
-    JSON.stringify({ id: tableId, chat: "table", event: chatHistoryEvent })
-  );
+  const chat = await getChatHistory(ws, tableId, "table");
+  if (chat.chatData) renderChat(chat.chatData);
 }
 
 function createGameTable(ws, gameId) {
@@ -203,7 +201,10 @@ function deleteGameTable(ws, gameId) {
 
     const formData = new FormData(deleteTableForm);
     const tableId = formData.get("id");
+
+    const count = await getPlayersCount(ws, parseInt(tableId));
     deleteTableForm.reset();
+    if (count >= 1) return;
 
     const isDeleted = await table.delete(gameId, tableId, getToken());
 

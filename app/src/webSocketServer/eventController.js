@@ -17,18 +17,13 @@ class EventController {
     });
   }
 
-  async getChatHistory(wss, data) {
+  async getChatHistory(ws, data) {
     const { chat, id } = data;
     const key = `${chat}-${id}`;
 
     const chatData = await chatStorage.getAllMessages(key);
-    if (!chatData) return;
 
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ ...data, chatData }));
-      }
-    });
+    ws.send(JSON.stringify({ ...data, chatData }));
   }
 
   async createTable(wss, data) {
