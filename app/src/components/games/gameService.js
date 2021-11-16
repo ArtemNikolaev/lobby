@@ -48,6 +48,8 @@ class GameService {
       await gameStorage.deleteById(id);
       if (existsSync(game.url)) await fs.unlink(game.url);
     } catch (error) {
+      if (error.errno === 1451)
+        error.message = "Database Error: cannot delete.";
       throw new CatchError(error);
     }
   }

@@ -6,16 +6,22 @@ class ChatStorage {
   async save(key, data) {
     const chat = this.storage.get(key);
 
-    if (!chat) {
-      this.storage.set(key, [data]);
-    } else {
-      chat.push(data);
-      this.storage.set(key, chat);
-    }
+    chat.push(data);
+    this.storage.set(key, chat);
   }
 
   async getAllMessages(key) {
-    return this.storage.get(key);
+    const chat = this.storage.get(key);
+    if (chat) return chat;
+
+    const botMessage = {
+      username: "Chat Bot",
+      message: `Welcome to our chat "${key}"`,
+      date: new Date(),
+    };
+    this.storage.set(key, [botMessage]);
+
+    return [botMessage];
   }
 
   async delete(key) {

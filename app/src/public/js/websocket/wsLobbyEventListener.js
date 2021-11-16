@@ -1,19 +1,15 @@
-import createGameCardHtml from "../utils/createGameCardHtml.js";
 import createTableCardHtml from "../utils/createTableCardHtml.js";
 import changePlayersCount from "../utils/changePlayersCount.js";
 import { webSocket } from "../config.js";
 import renderChat from "../utils/renderChat.js";
 
 const {
-  addGameEvent,
-  deleteGameEvent,
   createTableEvent,
   deleteTableEvent,
   chatMessageEvent,
   userJoinTableEvent,
   userLeftTableEvent,
 } = webSocket;
-const gameCards = document.querySelector(".game-cards");
 const tables = document.querySelector(".tables");
 
 export default (ws, gameId) => {
@@ -37,15 +33,6 @@ export default (ws, gameId) => {
 
     if (data.event === deleteTableEvent && data.gameId === gameId) {
       document.querySelector(`#tableId-${data.tableId}`).remove();
-    }
-
-    if (data.event === addGameEvent) {
-      const html = createGameCardHtml(data.game);
-      gameCards.insertAdjacentHTML("beforeend", html);
-    }
-
-    if (data.event === deleteGameEvent) {
-      document.querySelector(`#cardId-${data.id}`).remove();
     }
   };
 };

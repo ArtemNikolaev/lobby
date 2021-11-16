@@ -1,5 +1,5 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
-import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
+import wsProfileEventListener from "./websocket/wsProfileEventListener.js";
 import showError from "./utils/showError.js";
 import {
   getPage,
@@ -14,20 +14,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getPage("admin-page");
-    wsLobbyEventListener(ws);
+    wsProfileEventListener(ws);
 
     document.addEventListener("click", (e) => jumpToLobbyPage(e));
+    document.addEventListener("click", async (e) => await deleteGame(e, ws));
 
     document
       .querySelector(".show-add-game-btn")
       .addEventListener("click", () => {
         createGame(ws);
-      });
-
-    document
-      .querySelector(".show-delete-game-btn")
-      .addEventListener("click", () => {
-        deleteGame(ws);
       });
 
     document.querySelector(".logout").addEventListener("click", async () => {

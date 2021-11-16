@@ -40,7 +40,6 @@
       height: 160px;
       margin-bottom: 1rem;
     }
-
     .games-controls {
       display: flex;
       width: 80vw;
@@ -58,8 +57,7 @@
     .hidden {
       display: none;
     }
-    #add-response-msg,
-    #del-response-msg {
+    #add-response-msg {
       color: green;
       margin-bottom: 1rem;
     }
@@ -127,11 +125,6 @@
               <div>
                 <button class="btn btn-info show-add-game-btn">New Game</button>
               </div>
-              <div>
-                <button class="btn btn-info show-delete-game-btn">
-                  Delete Game
-                </button>
-              </div>
             </div>
 
             <!-- Action FORMs -->
@@ -188,32 +181,6 @@
                   </div>
                 </form>
               </div>
-              <!--  -->
-              <div class="delete-game hidden">
-                <div id="del-response-msg"></div>
-
-                <form class="form-row delete-game-form">
-                  <div class="col-md-4">
-                    <label class="control-label" for="id">Game ID</label>
-                    <div class="controls">
-                      <input
-                        type="text"
-                        id="id"
-                        name="gameId"
-                        class="input-xlarge"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div class="col-md-4">
-                    <div class="controls">
-                      <button class="btn btn-info">Delete</button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <!--  -->
             </div>
           </div>
         </div>

@@ -88,7 +88,7 @@ class EventController {
 
   async getPlayersViewersCount(ws, data) {
     const count = await pvStorage.getCount(data.tableId);
-
+    console.log(count);
     ws.send(JSON.stringify({ ...data, count }));
   }
 }

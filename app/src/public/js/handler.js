@@ -8,7 +8,7 @@ import createGameCardHtml from "./utils/createGameCardHtml.js";
 import showError from "./utils/showError.js";
 import renderChat from "./utils/renderChat.js";
 import createTableCardHtml from "./utils/createTableCardHtml.js";
-import getPlayersCount from "./websocket/wsRequests/getPlayersCount.js";
+import getPlayersViewersCount from "./websocket/wsRequests/getPlayersViewersCount.js";
 import getChatHistory from "./websocket/wsRequests/getChatHistory.js";
 import {
   deleteTableId,
@@ -34,9 +34,7 @@ const myUsername = document.querySelector("#username");
 const myEmail = document.querySelector("#email");
 const myRole = document.querySelector("#role");
 const addGameForm = document.querySelector(".add-game");
-const deleteGameForm = document.querySelector(".delete-game");
 const addResponseMessage = document.querySelector("#add-response-msg");
-const delResponseMessage = document.querySelector("#del-response-msg");
 const gameCards = document.querySelector(".game-cards");
 const lobbyTitle = document.querySelector("#lobby-title");
 const tablesEl = document.querySelector(".tables");
@@ -109,44 +107,34 @@ function createGame(ws) {
   });
 }
 
-function deleteGame(ws) {
-  deleteGameForm.classList.toggle("hidden");
+async function deleteGame(e, ws) {
+  if (!e.target.classList.contains("delete-link")) return;
 
-  const form = document.querySelector(".delete-game-form");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const id = e.target.id.split("-")[1];
 
-    const gameData = new FormData(form);
-    const id = gameData.get("gameId");
-    form.reset();
+  try {
+    const isDeleted = await game.delete(id, getToken());
+    if (!isDeleted) return;
 
-    try {
-      const isDeleted = await game.delete(id, getToken());
-      if (!isDeleted) return;
-
-      ws.send(JSON.stringify({ id, event: deleteGameEvent }));
-
-      delResponseMessage.innerText = "Game successfully deleted!";
-      delResponseMessage.style.display = "block";
-
-      setTimeout(() => {
-        delResponseMessage.style.display = "none";
-        deleteGameForm.classList.toggle("hidden");
-      }, 2000);
-    } catch (error) {
-      showError(error);
-    }
-  });
+    ws.send(JSON.stringify({ id, event: deleteGameEvent }));
+  } catch (error) {
+    showError(error);
+  }
 }
 
 async function getLobbyPage(ws, gameId) {
   const data = await fetchPageInfo("lobby", getToken(), gameId);
   if (!data) return jumpToStartPage();
 
-  const { game, tables } = data;
-  lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
+  lobbyTitle.innerText = `You are in the lobby of ${data.game.title}`;
 
-  if (tables.length) {
+  if (data.tables.length) {
+    let tables = [];
+    for (let table of data.tables) {
+      table.count = await getPlayersViewersCount(ws, table.id);
+      tables.push(table);
+    }
+
     const html = tables
       .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
       .join("\n");
@@ -165,7 +153,7 @@ async function getTablePage(ws, tableId) {
   tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 
   const chat = await getChatHistory(ws, tableId, "table");
-  if (chat.chatData) renderChat(chat.chatData);
+  renderChat(chat.chatData);
 }
 
 function createGameTable(ws, gameId) {
@@ -203,7 +191,7 @@ function sendChatMessage(ws, chat, id) {
 
     const formData = new FormData(chatForm);
     const message = formData.get("message");
-    const date = new Date().toISOString();
+    const date = new Date();
 
     ws.send(
       JSON.stringify({
@@ -243,7 +231,7 @@ function joinToTable(e, ws, gameId) {
 
 function leaveTable(ws, gameId, tableId) {
   exitGameBtn.addEventListener("click", async () => {
-    const count = await getPlayersCount(ws, tableId);
+    const count = await getPlayersViewersCount(ws, tableId);
 
     if (count.players <= 1) {
       const isDeleted = await table.delete(gameId, tableId, getToken());

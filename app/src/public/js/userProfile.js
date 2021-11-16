@@ -1,5 +1,5 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
-import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
+import wsProfileEventListener from "./websocket/wsProfileEventListener.js";
 import { getPage, logout, jumpToLobbyPage } from "./handler.js";
 import showError from "./utils/showError.js";
 
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getPage("user-page");
-    wsLobbyEventListener(ws);
+    wsProfileEventListener(ws);
 
     document.addEventListener("click", (e) => jumpToLobbyPage(e));
 
