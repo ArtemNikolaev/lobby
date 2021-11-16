@@ -20,7 +20,6 @@ module.exports = (server) => {
   wss.on("connection", (ws) => {
     ws.on("message", async (data) => {
       const message = JSON.parse(data);
-      console.log("message", message);
 
       switch (message.event) {
         case chatMessageEvent:
@@ -60,5 +59,7 @@ module.exports = (server) => {
           break;
       }
     });
+
+    ws.on("close", () => console.log("WS connection CLOSED!"));
   });
 };

@@ -9,7 +9,13 @@ module.exports = (role) => (req, res, next) => {
     if (!accessToken) throw new UnauthorizedError(TOKEN_REQUIRED);
 
     const payload = tokenService.verify(accessToken.split(" ")[1]);
-    if (payload.role !== role) throw new ForbiddenError(ACCESS_DENIED);
+
+    if (role) {
+      if (payload.role !== role) throw new ForbiddenError(ACCESS_DENIED);
+    } else {
+      if (payload.role !== "user" && payload.role !== "admin")
+        throw new ForbiddenError(ACCESS_DENIED);
+    }
 
     req.user = payload;
     return next();

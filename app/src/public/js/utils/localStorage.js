@@ -25,3 +25,6 @@ export function setTableId(id) {
 export function getTableId() {
   return parseInt(localStorage.getItem(tableIdKey));
 }
+export function deleteTableId() {
+  localStorage.removeItem(tableIdKey);
+}

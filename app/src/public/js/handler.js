@@ -11,6 +11,7 @@ import createTableCardHtml from "./utils/createTableCardHtml.js";
 import getPlayersCount from "./websocket/wsRequests/getPlayersCount.js";
 import getChatHistory from "./websocket/wsRequests/getChatHistory.js";
 import {
+  deleteTableId,
   getToken,
   getUserData,
   setGameId,
@@ -18,7 +19,7 @@ import {
   setUserData,
 } from "./utils/localStorage.js";
 
-const { token, tablePage, lobbyPage } = app;
+const { token, tablePage, lobbyPage, adminPage, userPage } = app;
 const {
   addGameEvent,
   deleteGameEvent,
@@ -276,7 +277,18 @@ function leaveTable(ws, gameId, tableId) {
       );
     }
 
+    deleteTableId();
     document.location = lobbyPage;
+  });
+}
+
+function jumpToProfilePage() {
+  document.querySelector("#profile-page").addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const { role } = getUserData();
+    console.log(role);
+    document.location = role === "admin" ? adminPage : userPage;
   });
 }
 
@@ -293,4 +305,5 @@ export {
   sendChatMessage,
   leaveTable,
   joinToTable,
+  jumpToProfilePage,
 };

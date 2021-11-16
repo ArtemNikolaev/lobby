@@ -18,17 +18,17 @@ router.delete("/:id", checkAuth("admin"), async (req, res, next) => {
   await gameController.delete(req, res, next);
 });
 
-router.get("/:id/tables", checkAuth("user"), async (req, res, next) => {
+router.get("/:id/tables", checkAuth(), async (req, res, next) => {
   await gameController.getTablesByGameId(req, res, next);
 });
 
-router.post("/:id/tables", checkAuth("user"), async (req, res, next) => {
+router.post("/:id/tables", checkAuth(), async (req, res, next) => {
   await gameController.createTable(req, res, next);
 });
 
 router.delete(
   "/:gameId/tables/:tableId",
-  checkAuth("user"),
+  checkAuth(),
   async (req, res, next) => {
     await gameController.deleteTable(req, res, next);
   }

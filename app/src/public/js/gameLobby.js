@@ -8,6 +8,7 @@ import {
   deleteGameTable,
   sendChatMessage,
   joinToTable,
+  jumpToProfilePage,
 } from "./handler.js";
 
 const gameId = getGameId();
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getLobbyPage(ws, gameId);
+
     createGameTable(ws, gameId);
     deleteGameTable(ws, gameId);
 
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     wsLobbyEventListener(ws, gameId);
 
     document.addEventListener("click", (e) => joinToTable(e, ws, gameId));
+    jumpToProfilePage();
   } catch (error) {
     showError(error);
   }

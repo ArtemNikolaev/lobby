@@ -1,7 +1,13 @@
 import webSocketConnection from "./websocket/webSocketConnection.js";
 import wsLobbyEventListener from "./websocket/wsLobbyEventListener.js";
 import showError from "./utils/showError.js";
-import { getPage, logout, createGame, deleteGame } from "./handler.js";
+import {
+  getPage,
+  logout,
+  createGame,
+  deleteGame,
+  jumpToLobbyPage,
+} from "./handler.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -9,6 +15,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await getPage("admin-page");
     wsLobbyEventListener(ws);
+
+    document.addEventListener("click", (e) => jumpToLobbyPage(e));
 
     document
       .querySelector(".show-add-game-btn")
