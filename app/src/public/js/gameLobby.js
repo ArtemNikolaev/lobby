@@ -5,7 +5,6 @@ import { getGameId } from "./utils/localStorage.js";
 import {
   getLobbyPage,
   createGameTable,
-  deleteGameTable,
   sendChatMessage,
   joinToTable,
   jumpToProfilePage,
@@ -18,9 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ws = await webSocketConnection();
 
     await getLobbyPage(ws, gameId);
-
     createGameTable(ws, gameId);
-    deleteGameTable(ws, gameId);
 
     sendChatMessage(ws, "lobby", gameId);
     wsLobbyEventListener(ws, gameId);

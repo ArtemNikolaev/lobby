@@ -41,7 +41,6 @@ const gameCards = document.querySelector(".game-cards");
 const lobbyTitle = document.querySelector("#lobby-title");
 const tablesEl = document.querySelector(".tables");
 const createTableBtn = document.querySelector(".create-table-btn");
-const deleteTableForm = document.querySelector(".delete-table-form");
 const chatForm = document.querySelector("#chat-form");
 const tableTitle = document.querySelector("#table-title");
 const exitGameBtn = document.querySelector(".exit-game-btn");
@@ -196,24 +195,6 @@ function createGameTable(ws, gameId) {
   });
 }
 
-function deleteGameTable(ws, gameId) {
-  deleteTableForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(deleteTableForm);
-    const tableId = formData.get("id");
-
-    const count = await getPlayersCount(ws, parseInt(tableId));
-    deleteTableForm.reset();
-    if (count >= 1) return;
-
-    const isDeleted = await table.delete(gameId, tableId, getToken());
-
-    if (isDeleted)
-      ws.send(JSON.stringify({ gameId, tableId, event: deleteTableEvent }));
-  });
-}
-
 function sendChatMessage(ws, chat, id) {
   const { username } = getUserData();
 
@@ -264,7 +245,7 @@ function leaveTable(ws, gameId, tableId) {
   exitGameBtn.addEventListener("click", async () => {
     const count = await getPlayersCount(ws, tableId);
 
-    if (count <= 1) {
+    if (count.players <= 1) {
       const isDeleted = await table.delete(gameId, tableId, getToken());
 
       if (isDeleted)
@@ -301,7 +282,6 @@ export {
   getLobbyPage,
   getTablePage,
   createGameTable,
-  deleteGameTable,
   sendChatMessage,
   leaveTable,
   joinToTable,

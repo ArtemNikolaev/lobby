@@ -1,5 +1,7 @@
 export default ({ tableId, count }) => {
-  const targetTable = document.querySelector(`#players-${tableId}`);
+  const playersCount = document.querySelector(`#players-${tableId}`);
+  const viewersCount = document.querySelector(`#viewers-${tableId}`);
 
-  targetTable.innerText = count;
+  playersCount.innerText = count.players;
+  viewersCount.innerText = count.viewers;
 };

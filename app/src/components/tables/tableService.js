@@ -1,6 +1,6 @@
 const tableStorage = require("./tableStorage");
 const userStorage = require("../user/userStorage");
-const playerStorage = require("../players/playerStorage");
+const pvStorage = require("../players-viewers/pvStorage");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { TABLE_NOT_FOUND, USER_NOT_FOUND } = require("../../helpers/messages");
@@ -13,7 +13,7 @@ class TableService {
       if (tables.length) {
         tables = await Promise.all(
           tables.map(async (table) => {
-            table.count = await playerStorage.getCount(table.id);
+            table.count = await pvStorage.getCount(table.id);
             return table;
           })
         );

@@ -36,9 +36,6 @@
       width: 70vw;
       margin-right: 3rem;
     }
-    .table-btns {
-      display: flex;
-    }
     .delete-table-form {
       display: flex;
     }
@@ -95,7 +92,7 @@
 
   <body>
     <div class="nav">
-      <button class="btn btn-warning" id="profile-page">Profile</button>
+      <button class="btn btn-warning" id="profile-page">My profile</button>
     </div>
 
     <div style="display: block; text-align: center">
@@ -106,36 +103,9 @@
       <!-- tables-section -->
       <div class="tables-section">
         <!-- btns -->
-        <div class="table-btns">
+        <div style="margin-bottom: 2rem">
           <!-- create btn -->
-          <div style="margin-right: 2rem">
-            <a class="btn btn-info create-table-btn">Create New Table</a>
-          </div>
-          <!-- delete btn -->
-          <div class="delete-table">
-            <div class="response-msg"></div>
-
-            <form class="form-row delete-table-form">
-              <div style="margin-right: 0.5rem" class="col-md-4">
-                <div class="controls delete-btn">
-                  <button class="btn btn-info">Delete Table</button>
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <div class="controls">
-                  <input
-                    style="width: 50px"
-                    type="text"
-                    id="id"
-                    name="id"
-                    placeholder="ID..."
-                    required
-                  />
-                </div>
-              </div>
-            </form>
-          </div>
+          <a class="btn btn-info create-table-btn">Create New Table</a>
         </div>
         <p style="border: 1px solid black"></p>
         <!-- tables cards -->
@@ -147,17 +117,7 @@
         <div class="chat-title">
           <h4>Chat</h4>
         </div>
-        <div class="chat">
-          <!-- <div class="chat-msg-you">
-            <p class="chat-username" id="username">alex69 in 18:27</p>
-            <p class="chat-message">Wazzzaa!</p>
-          </div> -->
-
-          <!-- <div class="chat-msg-me">
-            <p class="chat-username">me in 18:30</p>
-            <p class="chat-message">Hi! Let's start</p>
-          </div> -->
-        </div>
+        <div class="chat"></div>
         <form class="form-row" id="chat-form">
           <div class="col-md-4">
             <div class="controls">

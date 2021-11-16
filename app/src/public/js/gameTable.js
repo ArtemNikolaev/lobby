@@ -2,7 +2,12 @@ import webSocketConnection from "./websocket/webSocketConnection.js";
 import wsTableEventListener from "./websocket/wsTableEventListener.js";
 import showError from "./utils/showError.js";
 import { getTableId, getGameId } from "./utils/localStorage.js";
-import { getTablePage, sendChatMessage, leaveTable } from "./handler.js";
+import {
+  getTablePage,
+  sendChatMessage,
+  leaveTable,
+  jumpToProfilePage,
+} from "./handler.js";
 
 const tableId = getTableId();
 const gameId = getGameId();
@@ -16,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     sendChatMessage(ws, "table", tableId);
     wsTableEventListener(ws, tableId);
+    jumpToProfilePage();
   } catch (error) {
     showError(error);
   }

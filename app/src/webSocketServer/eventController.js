@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
-const playerStorage = require("../components/players/playerStorage");
-const chatStorage = require("./chat/chatStorage");
+const pvStorage = require("../components/players-viewers/pvStorage");
+const chatStorage = require("../components/chat/chatStorage");
 
 class EventController {
   async saveChatMessage(wss, data) {
@@ -27,11 +27,13 @@ class EventController {
   }
 
   async createTable(wss, data) {
-    await playerStorage.addPlayer(data);
+    await pvStorage.add("players", data);
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ ...data, count: 1 }));
+        client.send(
+          JSON.stringify({ ...data, count: { players: 1, viewers: 0 } })
+        );
       }
     });
   }
@@ -40,6 +42,7 @@ class EventController {
     const key = `table-${data.tableId}`;
 
     await chatStorage.delete(key);
+    await pvStorage.deleteAll(data.tableId);
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -49,8 +52,15 @@ class EventController {
   }
 
   async userJoinTable(wss, data) {
-    await playerStorage.addPlayer(data);
-    const count = await playerStorage.getCount(data.tableId);
+    let count = await pvStorage.getCount(data.tableId);
+
+    if (count.players < 2) {
+      await pvStorage.add("players", data);
+    } else {
+      await pvStorage.add("viewers", data);
+    }
+
+    count = await pvStorage.getCount(data.tableId);
 
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
@@ -59,22 +69,27 @@ class EventController {
     });
   }
 
-  async getPlayersCount(ws, data) {
-    const count = await playerStorage.getCount(data.tableId);
-
-    ws.send(JSON.stringify({ ...data, count }));
-  }
-
   async userLeftTable(wss, data) {
-    await playerStorage.deletePlayer(data);
-    const count = await playerStorage.getCount(data.tableId);
+    const exist = await pvStorage.playerExist(data);
 
-    if (count)
+    exist
+      ? await pvStorage.deleteOne("players", data)
+      : await pvStorage.deleteOne("viewers", data);
+
+    const count = await pvStorage.getCount(data.tableId);
+
+    if (count.players)
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ ...data, count }));
         }
       });
+  }
+
+  async getPlayersViewersCount(ws, data) {
+    const count = await pvStorage.getCount(data.tableId);
+
+    ws.send(JSON.stringify({ ...data, count }));
   }
 }
 

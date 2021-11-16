@@ -47,7 +47,7 @@ module.exports = (server) => {
           break;
 
         case getPlayersCountEvent:
-          await eventController.getPlayersCount(ws, message);
+          await eventController.getPlayersViewersCount(ws, message);
           break;
 
         default:
