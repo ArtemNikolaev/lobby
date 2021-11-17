@@ -9,7 +9,7 @@
       rel="stylesheet"
       id="bootstrap-css"
     />
-    <title>Game Room</title>
+    <title>Lobby Room</title>
   </head>
 
   <style>
@@ -24,18 +24,38 @@
       margin: 2rem 3rem;
     }
     .nav {
+      display: block;
       margin-bottom: 1rem;
     }
     .main {
       display: flex;
     }
-    .game-table-section {
+    .tables-section {
       display: flex;
       flex-direction: column;
       width: 70vw;
       margin-right: 3rem;
-      height: 70vh;
-      border: 1px solid black;
+    }
+    .delete-table-form {
+      display: flex;
+    }
+    .tables {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .table-card {
+      width: 110px;
+      height: 150px;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #e6f6ff;
+      border: 1px solid #e0e0e0;
+    }
+    .table-card p {
+      margin: 0;
     }
     .chat-section {
       display: flex;
@@ -45,10 +65,11 @@
     }
     .chat {
       width: 22vw;
-      height: 55vh;
+      height: 60vh;
       padding: 5px;
       border: 1px solid #e0e0e0;
       background: #e6f6ff;
+      overflow-y: scroll;
     }
     #chat-form {
       width: 22vw;
@@ -68,33 +89,34 @@
       font-size: xx-small;
       margin: 0;
     }
+    .chatbot-msg {
+      text-align: center;
+      font-style: normal;
+      color: #a90000;
+    }
   </style>
 
   <body>
     <div class="nav">
-      <div style="display: flex">
-        <p>
-          <button class="btn btn-warning" id="profile-page">My profile</button>
-        </p>
-
-        <p>
-          <a class="btn btn-warning" style="margin: 0 2rem" href="/lobby-room"
-            >Game Lobby</a
-          >
-        </p>
-        <p>
-          <a class="btn btn-danger exit-game-btn">Exit Game</a>
-        </p>
-      </div>
+      <button class="btn btn-warning" id="profile-page">My profile</button>
     </div>
 
     <div style="display: block; text-align: center">
-      <h3 id="table-title"></h3>
+      <h3 id="lobby-title"></h3>
     </div>
 
     <div class="main">
-      <!-- table-section -->
-      <div class="game-table-section"></div>
+      <!-- tables-section -->
+      <div class="tables-section">
+        <!-- btns -->
+        <div style="margin-bottom: 2rem">
+          <!-- create btn -->
+          <a class="btn btn-info create-table-btn">Create New Table</a>
+        </div>
+        <p style="border: 1px solid black"></p>
+        <!-- tables cards -->
+        <div class="tables"></div>
+      </div>
 
       <!-- chat section -->
       <div class="chat-section">
@@ -102,7 +124,6 @@
           <h4>Chat</h4>
         </div>
         <div class="chat"></div>
-
         <form class="form-row" id="chat-form">
           <div class="col-md-4">
             <div class="controls">
@@ -124,6 +145,6 @@
       </div>
     </div>
 
-    <script type="module" src="/js/gameTable.js"></script>
+    <script type="module" src="/js/pages/gameLobby.js"></script>
   </body>
 </html>

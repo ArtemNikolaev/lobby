@@ -1,6 +1,6 @@
-import auth from "./services/auth.js";
-import showError from "./utils/showError.js";
-import { app } from "./config.js";
+import auth from "../fetchServices/auth.js";
+import showError from "../utils/showError.js";
+import { app } from "../config.js";
 
 const { loginPage } = app;
 const successMessage = document.querySelector(".success-msg");

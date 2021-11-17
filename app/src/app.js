@@ -23,15 +23,15 @@ app.use(express.static(path.join(__dirname, "public")));
  */
 app.use(
   "/auth/register",
-  express.static(path.join(__dirname, "public", "register.html"))
+  express.static(path.join(__dirname, "public/html", "register.html"))
 );
 app.use(
   "/auth/login",
-  express.static(path.join(__dirname, "public", "login.html"))
+  express.static(path.join(__dirname, "public/html", "login.html"))
 );
 app.use(
   "/auth/password-reset",
-  express.static(path.join(__dirname, "public", "resetPassword.html"))
+  express.static(path.join(__dirname, "public/html", "resetPassword.html"))
 );
 app.use("/auth", authRouter);
 
@@ -40,19 +40,19 @@ app.use("/auth", authRouter);
  */
 app.use(
   "/user-profile",
-  express.static(path.join(__dirname, "public", "userProfile.html"))
+  express.static(path.join(__dirname, "public/html", "userProfile.html"))
 );
 app.use(
   "/admin-profile",
-  express.static(path.join(__dirname, "public", "adminProfile.html"))
+  express.static(path.join(__dirname, "public/html", "adminProfile.html"))
 );
 app.use(
   "/lobby-room",
-  express.static(path.join(__dirname, "public", "gameLobby.html"))
+  express.static(path.join(__dirname, "public/html", "gameLobby.html"))
 );
 app.use(
   "/table-room",
-  express.static(path.join(__dirname, "public", "gameTable.html"))
+  express.static(path.join(__dirname, "public/html", "gameTable.html"))
 );
 app.use("/", pageRouter);
 

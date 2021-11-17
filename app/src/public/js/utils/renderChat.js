@@ -6,14 +6,18 @@ const chat = document.querySelector(".chat");
 export default (data) => {
   const { username } = getUserData();
 
-  const html = data
-    .map((msg) => {
-      return msg.username === username
-        ? createChatMessageHtml(msg)
-        : createChatMessageHtml(msg, "chat-msg-you");
-    })
-    .join("\n");
+  let html = createChatMessageHtml(data.shift(), "chatbot-msg");
+
+  if (data.length)
+    html += data
+      .map((msg) => {
+        return msg.username === username
+          ? createChatMessageHtml(msg, "chat-msg-me")
+          : createChatMessageHtml(msg);
+      })
+      .join("\n");
 
   chat.innerText = "";
   chat.insertAdjacentHTML("afterbegin", html);
+  chat.scrollTop = chat.scrollHeight;
 };

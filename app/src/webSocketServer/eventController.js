@@ -1,6 +1,7 @@
 const WebSocket = require("ws");
 const pvStorage = require("../components/players-viewers/pvStorage");
 const chatStorage = require("../components/chat/chatStorage");
+const { gamePlayerCount } = require("../../config").app;
 
 class EventController {
   async saveChatMessage(wss, data) {
@@ -54,7 +55,7 @@ class EventController {
   async userJoinTable(wss, data) {
     let count = await pvStorage.getCount(data.tableId);
 
-    if (count.players < 2) {
+    if (count.players < gamePlayerCount) {
       await pvStorage.add("players", data);
     } else {
       await pvStorage.add("viewers", data);
@@ -88,7 +89,7 @@ class EventController {
 
   async getPlayersViewersCount(ws, data) {
     const count = await pvStorage.getCount(data.tableId);
-    console.log(count);
+
     ws.send(JSON.stringify({ ...data, count }));
   }
 }

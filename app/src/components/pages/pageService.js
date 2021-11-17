@@ -5,7 +5,7 @@ const userService = require("../user/userService");
 const tableService = require("../tables/tableService");
 
 class PageService {
-  async getPage(id) {
+  async getProfilePage(id) {
     try {
       const user = await userService.getUser(id);
       const userDto = new UserDto(user);

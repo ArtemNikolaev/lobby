@@ -1,4 +1,4 @@
-export default ({ username, message, date }, className = "chat-msg-me") => {
+export default ({ username, message, date }, className) => {
   const time = date.split("T")[1].split(".")[0];
 
   return `

@@ -1,5 +1,5 @@
 import createTableCardHtml from "../utils/createTableCardHtml.js";
-import changePlayersCount from "../utils/changePlayersCount.js";
+import changePlayersViewersCount from "../utils/changePlayersViewersCount.js";
 import { webSocket } from "../config.js";
 import renderChat from "../utils/renderChat.js";
 
@@ -21,10 +21,10 @@ export default (ws, gameId) => {
     }
 
     if (data.event === userLeftTableEvent && data.gameId === gameId)
-      changePlayersCount(data);
+      changePlayersViewersCount(data);
 
     if (data.event === userJoinTableEvent && data.gameId === gameId)
-      changePlayersCount(data);
+      changePlayersViewersCount(data);
 
     if (data.event === createTableEvent && data.gameId === gameId) {
       const html = createTableCardHtml(data);

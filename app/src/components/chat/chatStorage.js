@@ -16,7 +16,7 @@ class ChatStorage {
 
     const botMessage = {
       username: "Chat Bot",
-      message: `Welcome to our chat "${key}"`,
+      message: `Welcome! Chat ${key.toUpperCase()}`,
       date: new Date(),
     };
     this.storage.set(key, [botMessage]);

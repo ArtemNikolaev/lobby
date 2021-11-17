@@ -1,9 +1,9 @@
 const pageService = require("./pageService");
 
 class PageController {
-  async getPage(req, res, next) {
+  async getProfilePage(req, res, next) {
     try {
-      const data = await pageService.getPage(req.user.id);
+      const data = await pageService.getProfilePage(req.user.id);
 
       return res.json(data);
     } catch (error) {
