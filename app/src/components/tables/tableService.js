@@ -1,5 +1,5 @@
 const tableStorage = require("./tableStorage");
-const userStorage = require("../user/userStorage");
+const userService = require("../user/userService");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { TABLE_NOT_FOUND, USER_NOT_FOUND } = require("../../helpers/messages");
@@ -15,7 +15,7 @@ class TableService {
 
   async create(data) {
     try {
-      const user = await userStorage.findById(data.user.id);
+      const user = await userService.getUser(data.user.id);
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       const tableData = {

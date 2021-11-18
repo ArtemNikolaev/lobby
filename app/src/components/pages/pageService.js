@@ -8,6 +8,7 @@ class PageService {
   async getProfilePage(id) {
     try {
       const user = await userService.getUser(id);
+      console.log(user);
       const userDto = new UserDto(user);
 
       const games = await gameService.getAll();

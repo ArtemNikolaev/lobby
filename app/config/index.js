@@ -12,6 +12,12 @@ const db = {
   database: process.env.MYSQL_DATABASE || "lobby",
 };
 
+const mongodb = {
+  host: process.env.MONGODB_HOST || "mongodb",
+  port: process.env.MONGODB_PORT || "27017",
+  name: process.env.MONGODB_NAME || "lobby",
+};
+
 const token = {
   accessSecret: "ushgf873hsjvyd8173gifhsdg",
   accessTokenTTL: "3h",
@@ -28,4 +34,4 @@ const wsEvents = {
   getPlayersCountEvent: "getPlayersCount",
 };
 
-module.exports = { app, db, token, wsEvents };
+module.exports = { app, db, token, wsEvents, mongodb };

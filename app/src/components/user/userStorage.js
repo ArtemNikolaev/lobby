@@ -47,7 +47,7 @@ class UserStorage {
       [password, email]
     );
 
-    return data;
+    return !!data.affectedRows;
   }
 }
 

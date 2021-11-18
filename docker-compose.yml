@@ -1,19 +1,31 @@
 version: "3.8"
 services:
-  mysqldb:
-    image: mysql
-    container_name: mysqldb
+  mongodb:
+    image: mongo
+    container_name: mongodb
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: lobby
-      MYSQL_ROOT_PASSWORD: 123123
+      MONGO_INITDB_DATABASE: lobby
     ports:
-      - 3307:3306
+      - 27017:27017
     networks:
       - lobby
     volumes:
-      - db:/var/lib/mysql
-      - ./app:/docker-entrypoint-initdb.d
+      - db:/data/db
+  # mysqldb:
+  #   image: mysql
+  #   container_name: mysqldb
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_DATABASE: lobby
+  #     MYSQL_ROOT_PASSWORD: 123123
+  #   ports:
+  #     - 3307:3306
+  #   networks:
+  #     - lobby
+  #   volumes:
+  #     - db:/var/lib/mysql
+  #     - ./app:/docker-entrypoint-initdb.d
   app:
     build:
       context: ./app
@@ -27,7 +39,7 @@ services:
     networks:
       - lobby
     depends_on:
-      - mysqldb
+      - mongodb
 volumes:
   db:
 networks:

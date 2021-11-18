@@ -1,4 +1,5 @@
-const userStorage = require("./userStorage");
+// const userStorage = require("./userStorage");
+const userStorage = require("./userStorageMDB");
 const { verify } = require("../../helpers/scrypt");
 const { WRONG_CREDENTIALS, USER_NOT_FOUND } = require("../../helpers/messages");
 const UnauthorizedError = require("../../errors/unauthorizedError");
@@ -28,6 +29,38 @@ class UserService {
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       return user;
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async create(userData) {
+    try {
+      return userStorage.create(userData);
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async findByEmail(email) {
+    try {
+      return userStorage.findByEmail(email);
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async findByUsername(username) {
+    try {
+      return userStorage.findByUsername(username);
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
+  async updatePassword(data) {
+    try {
+      return userStorage.updatePassword(data);
     } catch (error) {
       throw new CatchError(error);
     }

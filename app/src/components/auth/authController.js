@@ -1,3 +1,4 @@
+const { port } = require("../../../config").app;
 const { CHECK_EMAIL } = require("../../helpers/messages");
 const { CREATED, NO_CONTENT } = require("../../helpers/statusCodes");
 const authService = require("./authService");
@@ -47,7 +48,7 @@ class AuthController {
     try {
       await authService.verifyLink(req.params);
 
-      return res.redirect("http://localhost:3000/auth/password-reset");
+      return res.redirect(`http://localhost:${port}/auth/password-reset`);
     } catch (error) {
       return next(error);
     }

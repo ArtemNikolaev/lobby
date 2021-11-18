@@ -1,12 +1,11 @@
+const { accessSecret, linkTTL } = require("../../../config").token;
+const { port } = require("../../../config").app;
 const userService = require("../user/userService");
-const userStorage = require("../user/userStorage");
-const CatchError = require("../../errors/catchError");
 const tokenService = require("../token/tokenService");
 const { hash } = require("../../helpers/scrypt");
-const NotFoundError = require("../../errors/notFoundError");
 const { USER_NOT_FOUND, IVALID_LINK } = require("../../helpers/messages");
-const { port } = require("../../../config").app;
-const { accessSecret, linkTTL } = require("../../../config").token;
+const NotFoundError = require("../../errors/notFoundError");
+const CatchError = require("../../errors/catchError");
 const GoneError = require("../../errors/goneError");
 
 class AuthService {
@@ -14,7 +13,7 @@ class AuthService {
     try {
       const userData = { ...body, password: await hash(body.password) };
 
-      const id = await userStorage.create(userData);
+      const id = await userService.create(userData);
 
       return { id, ...userData };
     } catch (error) {
@@ -37,7 +36,7 @@ class AuthService {
 
   async sendResetLinkToEmail(email) {
     try {
-      const user = await userStorage.findByEmail(email);
+      const user = await userService.findByEmail(email);
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       const payload = { id: user.id, email: user.email };
@@ -58,7 +57,7 @@ class AuthService {
     try {
       const { id, token } = params;
 
-      const user = await userStorage.findById(id);
+      const user = await userService.getUser(id);
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       const secret = accessSecret + user.password;
@@ -77,12 +76,12 @@ class AuthService {
     try {
       const { email, password } = body;
 
-      const data = await userStorage.updatePassword({
+      const updated = await userService.updatePassword({
         email,
         password: await hash(password),
       });
 
-      if (!data.affectedRows) throw new NotFoundError(USER_NOT_FOUND);
+      if (!updated) throw new NotFoundError(USER_NOT_FOUND);
     } catch (error) {
       throw new CatchError(error);
     }
