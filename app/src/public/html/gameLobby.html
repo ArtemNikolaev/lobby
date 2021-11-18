@@ -36,8 +36,9 @@
       width: 70vw;
       margin-right: 3rem;
     }
-    .delete-table-form {
+    .create-table {
       display: flex;
+      margin-bottom: 2rem;
     }
     .tables {
       display: flex;
@@ -94,6 +95,9 @@
       font-style: normal;
       color: #a90000;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 
   <body>
@@ -108,10 +112,25 @@
     <div class="main">
       <!-- tables-section -->
       <div class="tables-section">
-        <!-- btns -->
-        <div style="margin-bottom: 2rem">
-          <!-- create btn -->
-          <a class="btn btn-info create-table-btn">Create New Table</a>
+        <div class="create-table">
+          <div style="margin-right: 2rem">
+            <button class="btn btn-info create-table-btn">New Table</button>
+          </div>
+
+          <form class="form-inline create-form hidden">
+            <div class="form-group">
+              <label for="maxPlayers" class="sr-only">Set max players</label>
+              <input
+                type="text"
+                class="input-large"
+                id="maxPlayers"
+                name="maxPlayers"
+                placeholder="2 or more players"
+                required
+              />
+              <button class="btn btn-success mb-2">Create</button>
+            </div>
+          </form>
         </div>
         <p style="border: 1px solid black"></p>
         <!-- tables cards -->

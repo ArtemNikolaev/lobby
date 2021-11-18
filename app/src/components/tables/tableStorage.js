@@ -3,16 +3,7 @@ const pool = require("../../db");
 class TableStorage {
   async findByGameId(gameId) {
     const [data] = await pool.query(
-      `SELECT 
-            t.id, 
-            t.game_id, 
-            t.user_id, 
-            u.id as creatorId, 
-            username as creator 
-      FROM tables as t
-      INNER JOIN users as u
-      ON t.user_id = u.id 
-      WHERE game_id = ?`,
+      `SELECT * FROM tables WHERE game_id = ?`,
       gameId
     );
 
@@ -39,14 +30,12 @@ class TableStorage {
     const [table] = await pool.query(
       `SELECT 
             t.id, 
-            u.id as creatorId, 
-            u.username as creator, 
-            g.id as gameId, 
+            t.creator, 
+            t.game_id as gameId, 
+            t.max_players,
             g.title, 
             g.description
       FROM tables as t
-      INNER JOIN users as u
-      ON t.user_id = u.id 
       INNER JOIN games as g
       ON t.game_id = g.id
       WHERE t.id = ?`,

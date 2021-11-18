@@ -22,29 +22,40 @@ const exitGameBtn = document.querySelector(".exit-game-btn");
 
 class TableHandler {
   createTableListener(ws, gameId) {
-    createTableBtn.addEventListener("click", async (e) => {
-      e.preventDefault();
+    createTableBtn.addEventListener("click", () => {
+      const form = document.querySelector(".create-form");
 
-      try {
-        const newTable = await table.create(gameId, getToken());
+      form.classList.toggle("hidden");
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        const { id: tableId, user_id: userId, creator } = newTable;
-        setTableId(tableId);
+        const string = new FormData(form).get("maxPlayers");
+        const body = JSON.stringify({ maxPlayers: parseInt(string) });
+        form.reset();
 
-        ws.send(
-          JSON.stringify({
-            tableId,
-            userId,
-            gameId,
-            creator,
-            event: createTableEvent,
-          })
-        );
+        try {
+          const newTable = await table.create(gameId, body, getToken());
 
-        document.location = tablePage;
-      } catch (error) {
-        showError(error);
-      }
+          const { id: tableId, creator } = newTable;
+
+          setTableId(tableId);
+          const { id: userId } = getUserData();
+
+          ws.send(
+            JSON.stringify({
+              tableId,
+              userId,
+              gameId,
+              creator,
+              event: createTableEvent,
+            })
+          );
+
+          document.location = tablePage;
+        } catch (error) {
+          showError(error);
+        }
+      });
     });
   }
 
@@ -66,23 +77,34 @@ class TableHandler {
 
   leaveTableListener(ws, gameId, tableId) {
     exitGameBtn.addEventListener("click", async () => {
-      const count = await getPlayersViewersCount(ws, tableId);
+      try {
+        const count = await getPlayersViewersCount(ws, tableId);
 
-      if (count.players <= 1) {
-        const isDeleted = await table.delete(gameId, tableId, getToken());
+        if (count.players <= 1) {
+          const isDeleted = await table.delete(gameId, tableId, getToken());
 
-        if (isDeleted)
-          ws.send(JSON.stringify({ tableId, gameId, event: deleteTableEvent }));
-      } else {
-        const { id: userId } = getUserData();
+          if (isDeleted)
+            ws.send(
+              JSON.stringify({ tableId, gameId, event: deleteTableEvent })
+            );
+        } else {
+          const { id: userId } = getUserData();
 
-        ws.send(
-          JSON.stringify({ tableId, gameId, userId, event: userLeftTableEvent })
-        );
+          ws.send(
+            JSON.stringify({
+              tableId,
+              gameId,
+              userId,
+              event: userLeftTableEvent,
+            })
+          );
+        }
+
+        deleteTableId();
+        document.location = lobbyPage;
+      } catch (error) {
+        showError();
       }
-
-      deleteTableId();
-      document.location = lobbyPage;
     });
   }
 }

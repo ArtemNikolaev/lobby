@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role ENUM ('user','admin') DEFAULT ('user') NOT NULL,
-    PRIMARY KEY(id)
+    PRIMARY KEY(id),
+    UNIQUE (username)
 );
 CREATE INDEX email_index ON users(email);
-CREATE INDEX username_index ON users(username);
 CREATE INDEX role_index ON users(role);
 
 
@@ -26,11 +26,12 @@ CREATE TABLE IF NOT EXISTS games (
 
 CREATE TABLE IF NOT EXISTS tables (
     id INT AUTO_INCREMENT,
+    creator VARCHAR(255) NOT NULL,
     game_id INT NOT NULL,
-    user_id INT NOT NULL,
+    max_players INT NOT NULL, 
     PRIMARY KEY(id),
-    FOREIGN KEY (game_id) REFERENCES games(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (creator) REFERENCES users(username),
+    FOREIGN KEY (game_id) REFERENCES games(id)
 );
 
 

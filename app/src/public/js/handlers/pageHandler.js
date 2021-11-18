@@ -49,37 +49,45 @@ class PageHandler {
   }
 
   async getLobby(ws, gameId) {
-    const data = await getPage("lobby", getToken(), gameId);
-    if (!data) return jumpToStartPage();
+    try {
+      const data = await getPage("lobby", getToken(), gameId);
+      if (!data) return jumpToStartPage();
 
-    lobbyTitle.innerText = `You are in the lobby of ${data.game.title}`;
+      lobbyTitle.innerText = `You are in the lobby of ${data.game.title}`;
 
-    if (data.tables.length) {
-      let tables = [];
-      for (let table of data.tables) {
-        table.count = await getPlayersViewersCount(ws, table.id);
-        tables.push(table);
+      if (data.tables.length) {
+        let tables = [];
+        for (let table of data.tables) {
+          table.count = await getPlayersViewersCount(ws, table.id);
+          tables.push(table);
+        }
+
+        const html = tables
+          .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
+          .join("\n");
+        tablesEl.insertAdjacentHTML("afterbegin", html);
       }
 
-      const html = tables
-        .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
-        .join("\n");
-      tablesEl.insertAdjacentHTML("afterbegin", html);
+      const chat = await getChatHistory(ws, gameId, "lobby");
+      renderChat(chat.chatData);
+    } catch (error) {
+      showError();
     }
-
-    const chat = await getChatHistory(ws, gameId, "lobby");
-    renderChat(chat.chatData);
   }
 
   async getTable(ws, tableId) {
-    const data = await getPage("table", getToken(), tableId);
-    if (!data) return jumpToStartPage();
+    try {
+      const data = await getPage("table", getToken(), tableId);
+      if (!data) return jumpToStartPage();
 
-    const { title, id } = data;
-    tableTitle.innerText = `${title}. Game Table ID: ${id}`;
+      const { title, id } = data;
+      tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 
-    const chat = await getChatHistory(ws, tableId, "table");
-    renderChat(chat.chatData);
+      const chat = await getChatHistory(ws, tableId, "table");
+      renderChat(chat.chatData);
+    } catch (error) {
+      showError();
+    }
   }
 
   jumpToLobbyListener() {

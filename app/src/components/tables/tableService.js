@@ -18,10 +18,15 @@ class TableService {
       const user = await userStorage.findById(data.user.id);
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
-      const tableData = { game_id: +data.params.id, user_id: user.id };
+      const tableData = {
+        creator: user.username,
+        game_id: parseInt(data.params.id),
+        max_players: data.body.maxPlayers,
+      };
+
       const id = await tableStorage.create(tableData);
 
-      return { id, creator: user.username, ...tableData };
+      return { id, ...tableData };
     } catch (error) {
       throw new CatchError(error);
     }
