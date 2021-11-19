@@ -1,5 +1,6 @@
 const { promises: fs, existsSync } = require("fs");
-const gameStorage = require("./gameStorage");
+// const gameStorage = require("./gameStorage");
+const gameStorage = require("./gameStorageMDB");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { GAME_NOT_FOUND } = require("../../helpers/messages");

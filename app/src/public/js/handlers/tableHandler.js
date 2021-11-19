@@ -63,7 +63,7 @@ class TableHandler {
     document.addEventListener("click", (e) => {
       if (!e.target.classList.contains("table-link")) return;
 
-      const tableId = parseInt(e.target.id.split("-")[1]);
+      const tableId = e.target.id.split("-")[1];
       const { id: userId } = getUserData();
 
       ws.send(

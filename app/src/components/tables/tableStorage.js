@@ -1,27 +1,30 @@
 const pool = require("../../db");
 
 class TableStorage {
-  async findByGameId(gameId) {
-    const [data] = await pool.query(
-      `SELECT * FROM tables WHERE game_id = ?`,
-      gameId
-    );
-
-    return data;
-  }
-
   async create(tableData) {
     const [data] = await pool.query("INSERT INTO tables SET ?", tableData);
 
     return data.insertId;
   }
 
+  async findByGameId(gameId) {
+    const [data] = await pool.query(
+      `SELECT * FROM tables WHERE game_id = ?`,
+      parseInt(gameId)
+    );
+
+    return data;
+  }
+
   async deleteById(id) {
-    return pool.query("DELETE FROM tables WHERE id = ?", id);
+    return pool.query("DELETE FROM tables WHERE id = ?", parseInt(id));
   }
 
   async findById(id) {
-    const [table] = await pool.query("SELECT * FROM tables WHERE id = ?", id);
+    const [table] = await pool.query(
+      "SELECT * FROM tables WHERE id = ?",
+      parseInt(id)
+    );
 
     return table[0];
   }
@@ -39,7 +42,7 @@ class TableStorage {
       INNER JOIN games as g
       ON t.game_id = g.id
       WHERE t.id = ?`,
-      id
+      parseInt(id)
     );
 
     return table[0];

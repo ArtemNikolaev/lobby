@@ -1,26 +1,18 @@
-const tableStorage = require("./tableStorage");
+// const tableStorage = require("./tableStorage");
+const tableStorage = require("./tableStorageMDB");
 const userService = require("../user/userService");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
-const { TABLE_NOT_FOUND, USER_NOT_FOUND } = require("../../helpers/messages");
+const { TABLE_NOT_FOUND } = require("../../helpers/messages");
 
 class TableService {
-  async findByGameId(gameId) {
-    try {
-      return tableStorage.findByGameId(gameId);
-    } catch (error) {
-      throw new CatchError(error);
-    }
-  }
-
   async create(data) {
     try {
       const user = await userService.getUser(data.user.id);
-      if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       const tableData = {
         creator: user.username,
-        game_id: parseInt(data.params.id),
+        game_id: data.params.id,
         max_players: data.body.maxPlayers,
       };
 
@@ -32,9 +24,18 @@ class TableService {
     }
   }
 
+  async findByGameId(gameId) {
+    try {
+      return tableStorage.findByGameId(gameId);
+    } catch (error) {
+      throw new CatchError(error);
+    }
+  }
+
   async delete(id) {
     try {
-      await tableStorage.deleteById(id);
+      const deleted = await tableStorage.deleteById(id);
+      if (!deleted) throw NotFoundError(TABLE_NOT_FOUND);
     } catch (error) {
       throw new CatchError(error);
     }

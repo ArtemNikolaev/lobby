@@ -1,14 +1,13 @@
-const CatchError = require("../../errors/catchError");
-const UserDto = require("../../dtos/userDto");
-const gameService = require("../games/gameService");
 const userService = require("../user/userService");
+const gameService = require("../games/gameService");
 const tableService = require("../tables/tableService");
+const UserDto = require("../../dtos/userDto");
+const CatchError = require("../../errors/catchError");
 
 class PageService {
   async getProfilePage(id) {
     try {
       const user = await userService.getUser(id);
-      console.log(user);
       const userDto = new UserDto(user);
 
       const games = await gameService.getAll();

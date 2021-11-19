@@ -8,7 +8,10 @@ class UserStorage {
   }
 
   async findById(id) {
-    const [data] = await pool.query("SELECT * FROM users WHERE id = ?", id);
+    const [data] = await pool.query(
+      "SELECT * FROM users WHERE id = ?",
+      parseInt(id)
+    );
 
     return data[0];
   }

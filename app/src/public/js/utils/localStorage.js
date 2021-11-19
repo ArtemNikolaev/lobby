@@ -5,7 +5,11 @@ export function setGameId(id) {
   return localStorage.setItem(gameIdKey, id);
 }
 export function getGameId() {
-  return parseInt(localStorage.getItem(gameIdKey));
+  const id = localStorage.getItem(gameIdKey);
+
+  if (id.length === 24) return id;
+  return parseInt(id);
+  // return parseInt(localStorage.getItem(gameIdKey));
 }
 
 export function getToken() {
@@ -23,7 +27,11 @@ export function setTableId(id) {
   localStorage.setItem(tableIdKey, id);
 }
 export function getTableId() {
-  return parseInt(localStorage.getItem(tableIdKey));
+  const id = localStorage.getItem(tableIdKey);
+
+  if (id.length === 24) return id;
+  return parseInt(id);
+  // return parseInt(localStorage.getItem(tableIdKey));
 }
 export function deleteTableId() {
   localStorage.removeItem(tableIdKey);

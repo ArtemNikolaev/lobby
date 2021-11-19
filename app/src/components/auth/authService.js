@@ -11,7 +11,11 @@ const GoneError = require("../../errors/goneError");
 class AuthService {
   async registration(body) {
     try {
-      const userData = { ...body, password: await hash(body.password) };
+      const userData = {
+        role: "user",
+        ...body,
+        password: await hash(body.password),
+      };
 
       const id = await userService.create(userData);
 
@@ -58,8 +62,6 @@ class AuthService {
       const { id, token } = params;
 
       const user = await userService.getUser(id);
-      if (!user) throw new NotFoundError(USER_NOT_FOUND);
-
       const secret = accessSecret + user.password;
 
       try {

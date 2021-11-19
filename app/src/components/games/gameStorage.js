@@ -14,13 +14,16 @@ class GameStorage {
   }
 
   async findById(id) {
-    const [data] = await pool.query("SELECT * FROM games WHERE id = ?", id);
+    const [data] = await pool.query(
+      "SELECT * FROM games WHERE id = ?",
+      parseInt(id)
+    );
 
     return data[0];
   }
 
   async deleteById(id) {
-    return pool.query("DELETE FROM games WHERE id = ?", id);
+    return pool.query("DELETE FROM games WHERE id = ?", parseInt(id));
   }
 }
 

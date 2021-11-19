@@ -9,7 +9,7 @@ class UserStorage {
   }
 
   async create(userData) {
-    const data = await this.users.insertOne({ ...userData, role: "user" });
+    const data = await this.users.insertOne(userData);
 
     return data.insertedId.toString();
   }

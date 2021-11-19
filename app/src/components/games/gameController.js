@@ -25,10 +25,8 @@ class GameController {
   }
 
   async getTablesByGameId(req, res, next) {
-    const { id } = req.params;
-
     try {
-      const tables = await tableService.findByGameId(id);
+      const tables = await tableService.findByGameId(req.params.id);
 
       return res.json(tables);
     } catch (error) {
