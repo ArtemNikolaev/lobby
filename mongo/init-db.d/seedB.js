@@ -1,4 +1,6 @@
 db.users.drop();
+db.users.createIndex({ username: 1 });
+db.users.createIndex({ email: 1 });
 db.users.insert({
   username: "Jason Statham",
   email: "admin@gmail.com",

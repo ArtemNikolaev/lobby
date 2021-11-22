@@ -1,13 +1,9 @@
-const client = require("../../mongodb");
+const mongoDB = require("../../mongodb");
 const { ObjectId } = require("mongodb");
 
 class TableStorage {
   constructor() {
-    client
-      .connect()
-      .then(
-        (client) => (this.tables = client.db("lobby").collection("tables"))
-      );
+    this.tables = mongoDB.getCollection("tables");
   }
 
   async create(tableData) {

@@ -17,7 +17,12 @@ class TableStorage {
   }
 
   async deleteById(id) {
-    return pool.query("DELETE FROM tables WHERE id = ?", parseInt(id));
+    const result = await pool.query(
+      "DELETE FROM tables WHERE id = ?",
+      parseInt(id)
+    );
+
+    return !!result.affectedRows;
   }
 
   async findById(id) {

@@ -8,10 +8,12 @@ const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
 const webSocketServerConnection = require("./webSocketServer");
+const mongoDB = require("./mongodb/index.js");
 
 const app = express();
 const server = http.createServer(app);
 
+mongoDB.connect();
 webSocketServerConnection(server);
 
 app.use(morgan("dev"));

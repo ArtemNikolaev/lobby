@@ -23,7 +23,12 @@ class GameStorage {
   }
 
   async deleteById(id) {
-    return pool.query("DELETE FROM games WHERE id = ?", parseInt(id));
+    const result = await pool.query(
+      "DELETE FROM games WHERE id = ?",
+      parseInt(id)
+    );
+
+    return !!result.affectedRows;
   }
 }
 

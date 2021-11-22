@@ -1,11 +1,9 @@
-const client = require("../../mongodb");
+const mongoDB = require("../../mongodb");
 const { ObjectId } = require("mongodb");
 
 class GameStorage {
   constructor() {
-    client
-      .connect()
-      .then((client) => (this.games = client.db("lobby").collection("games")));
+    this.games = mongoDB.getCollection("games");
   }
 
   async create(gameData) {
@@ -38,7 +36,9 @@ class GameStorage {
   }
 
   async deleteById(id) {
-    await this.games.deleteOne({ _id: ObjectId(id) });
+    const result = await this.games.deleteOne({ _id: ObjectId(id) });
+
+    return !!result.deletedCount;
   }
 }
 
