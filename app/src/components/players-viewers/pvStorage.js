@@ -1,54 +1,50 @@
 class PlayersViewersStorage {
   constructor() {
     this.storage = new Map();
+    this.maxPlayers;
   }
 
-  async add(type, data) {
-    const { tableId, userId } = data;
-    const key = `${type}-${tableId}`;
+  async create({ key, userId, maxPlayers }) {
+    this.maxPlayers = maxPlayers;
+    this.storage.set(key, {
+      players: new Set().add(userId),
+      viewers: new Set(),
+    });
+  }
 
-    if (type === "viewers") if (await this.playerExist(data)) return;
+  async add(key, userId) {
+    const playersCount = (await this.getCount(key)).players;
+    const type = playersCount < this.maxPlayers ? "players" : "viewers";
+
+    if (type === "viewers") if (await this.playerExist(key, userId)) return;
 
     const users = this.storage.get(key);
+    users[type].add(userId);
 
-    if (!users) {
-      this.storage.set(key, new Set().add(userId));
-      return;
-    }
-
-    users.add(userId);
     this.storage.set(key, users);
   }
 
-  async deleteOne(type, { tableId, userId }) {
-    const key = `${type}-${tableId}`;
+  async deleteOne(key, userId) {
+    const users = this.storage.get(key);
 
-    let users = this.storage.get(key);
-    if (!users) throw new Error("Data not found");
+    const deleted = users.players.delete(userId);
+    if (!deleted) users.viewers.delete(userId);
 
-    users.delete(userId);
     this.storage.set(key, users);
   }
 
-  async playerExist({ tableId, userId }) {
-    const key = `players-${tableId}`;
-
-    return this.storage.get(key).has(userId);
+  async playerExist(key, userId) {
+    return this.storage.get(key).players.has(userId);
   }
 
-  async getCount(id) {
-    const playersData = this.storage.get(`players-${id}`);
-    const viewersData = this.storage.get(`viewers-${id}`);
+  async getCount(key) {
+    const obj = this.storage.get(key);
 
-    const players = playersData ? playersData.size : 0;
-    const viewers = viewersData ? viewersData.size : 0;
-
-    return { players, viewers };
+    return { players: obj.players.size, viewers: obj.viewers.size };
   }
 
-  async deleteAll(id) {
-    this.storage.delete(`players-${id}`);
-    this.storage.delete(`viewers-${id}`);
+  async deleteAll(key) {
+    this.storage.delete(key);
   }
 }
 

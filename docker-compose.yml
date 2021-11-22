@@ -11,21 +11,21 @@ services:
     networks:
       - lobby
     volumes:
-      - db:/data/db
-  # mysqldb:
-  #   image: mysql
-  #   container_name: mysqldb
-  #   restart: unless-stopped
-  #   environment:
-  #     MYSQL_DATABASE: lobby
-  #     MYSQL_ROOT_PASSWORD: 123123
-  #   ports:
-  #     - 3307:3306
-  #   networks:
-  #     - lobby
-  #   volumes:
-  #     - db:/var/lib/mysql
-  #     - ./app:/docker-entrypoint-initdb.d
+      - data_mongo:/data/db
+  mysqldb:
+    image: mysql
+    container_name: mysqldb
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: lobby
+      MYSQL_ROOT_PASSWORD: 123123
+    ports:
+      - 3307:3306
+    networks:
+      - lobby
+    volumes:
+      - data_mysql:/var/lib/mysql
+      - ./app:/docker-entrypoint-initdb.d
   app:
     build:
       context: ./app
@@ -40,8 +40,10 @@ services:
       - lobby
     depends_on:
       - mongodb
+      - mysqldb
 volumes:
-  db:
+  data_mongo:
+  data_mysql:
 networks:
   lobby:
     driver: bridge

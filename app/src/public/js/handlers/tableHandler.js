@@ -47,6 +47,7 @@ class TableHandler {
               userId,
               gameId,
               creator,
+              maxPlayers: parseInt(string),
               event: createTableEvent,
             })
           );

@@ -17,7 +17,7 @@ class TableStorage {
   }
 
   async deleteById(id) {
-    const result = await pool.query(
+    const [result] = await pool.query(
       "DELETE FROM tables WHERE id = ?",
       parseInt(id)
     );

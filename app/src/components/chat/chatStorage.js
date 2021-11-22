@@ -3,6 +3,15 @@ class ChatStorage {
     this.storage = new Map();
   }
 
+  async create(key) {
+    const botMessage = {
+      username: "Chat Bot",
+      message: `Welcome! Chat ${key}`,
+      date: new Date(),
+    };
+    this.storage.set(key, [botMessage]);
+  }
+
   async save(key, data) {
     const chat = this.storage.get(key);
 
@@ -12,16 +21,9 @@ class ChatStorage {
 
   async getAllMessages(key) {
     const chat = this.storage.get(key);
-    if (chat) return chat;
+    if (!chat) await this.create(key);
 
-    const botMessage = {
-      username: "Chat Bot",
-      message: `Welcome! Chat ${key.toUpperCase()}`,
-      date: new Date(),
-    };
-    this.storage.set(key, [botMessage]);
-
-    return [botMessage];
+    return this.storage.get(key);
   }
 
   async delete(key) {

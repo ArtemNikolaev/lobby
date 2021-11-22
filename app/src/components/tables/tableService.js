@@ -35,7 +35,7 @@ class TableService {
   async delete(id) {
     try {
       const deleted = await tableStorage.deleteById(id);
-      if (!deleted) throw NotFoundError(TABLE_NOT_FOUND);
+      if (!deleted) throw new NotFoundError(TABLE_NOT_FOUND);
     } catch (error) {
       throw new CatchError(error);
     }
