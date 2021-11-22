@@ -2,6 +2,7 @@ const app = {
   host: process.env.HOST || "0.0.0.0",
   port: parseInt(process.env.PORT, 10) || 3000,
   uploadsFolder: "uploads",
+  storageType: process.env.STORAGE_TYPE,
 };
 
 const db = {

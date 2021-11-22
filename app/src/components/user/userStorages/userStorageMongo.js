@@ -1,7 +1,7 @@
 const { ObjectId } = require("mongodb");
-const mongoDB = require("../../mongodb");
+const mongoDB = require("../../../mongodb");
 
-class UserStorage {
+module.exports = class UserStorageMongo {
   constructor() {
     this.users = mongoDB.getCollection("users");
   }
@@ -59,6 +59,4 @@ class UserStorage {
 
     return !!data.matchedCount;
   }
-}
-
-module.exports = new UserStorage();
+};

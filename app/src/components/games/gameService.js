@@ -1,11 +1,15 @@
 const { promises: fs, existsSync } = require("fs");
-// const gameStorage = require("./gameStorage");
-const gameStorage = require("./gameStorageMDB");
+const initGameStorage = require("./gameStorages/initGameStorage");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { GAME_NOT_FOUND } = require("../../helpers/messages");
+const { storageType } = require("../../../config").app;
 
 class GameService {
+  constructor() {
+    this.storage = initGameStorage(storageType);
+  }
+
   async create(data) {
     const gameData = {
       title: data.body.title,
@@ -14,7 +18,7 @@ class GameService {
     };
 
     try {
-      const id = await gameStorage.create(gameData);
+      const id = await this.storage.create(gameData);
 
       return { id, ...gameData };
     } catch (error) {
@@ -24,7 +28,7 @@ class GameService {
 
   async findById(id) {
     try {
-      const game = await gameStorage.findById(id);
+      const game = await this.storage.findById(id);
       if (!game) throw new NotFoundError(GAME_NOT_FOUND);
 
       return game;
@@ -35,7 +39,7 @@ class GameService {
 
   async getAll() {
     try {
-      return gameStorage.getAll();
+      return this.storage.getAll();
     } catch (error) {
       throw new CatchError(error);
     }
@@ -43,10 +47,10 @@ class GameService {
 
   async delete(id) {
     try {
-      const game = await gameStorage.findById(id);
+      const game = await this.storage.findById(id);
       if (!game) throw new NotFoundError(GAME_NOT_FOUND);
 
-      await gameStorage.deleteById(id);
+      await this.storage.deleteById(id);
       if (existsSync(game.url)) await fs.unlink(game.url);
     } catch (error) {
       if (error.errno === 1451)

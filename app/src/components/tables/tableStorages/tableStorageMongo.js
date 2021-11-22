@@ -1,7 +1,7 @@
-const mongoDB = require("../../mongodb");
 const { ObjectId } = require("mongodb");
+const mongoDB = require("../../../mongodb");
 
-class TableStorage {
+module.exports = class TableStorageMongo {
   constructor() {
     this.tables = mongoDB.getCollection("tables");
   }
@@ -80,6 +80,4 @@ class TableStorage {
       description,
     };
   }
-}
-
-module.exports = new TableStorage();
+};

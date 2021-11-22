@@ -1,17 +1,21 @@
-// const userStorage = require("./userStorage");
-const userStorage = require("./userStorageMDB");
+const initUserStorage = require("./userStorages/initUserStorage");
 const { verify } = require("../../helpers/scrypt");
 const { WRONG_CREDENTIALS, USER_NOT_FOUND } = require("../../helpers/messages");
 const UnauthorizedError = require("../../errors/unauthorizedError");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
+const { storageType } = require("../../../config").app;
 
 class UserService {
+  constructor() {
+    this.storage = initUserStorage(storageType);
+  }
+
   async checkCredential(credential) {
     try {
       const { login, password } = credential;
 
-      const user = await userStorage.findByLogin(login);
+      const user = await this.storage.findByLogin(login);
       if (!user) throw new UnauthorizedError(WRONG_CREDENTIALS);
 
       const isMatch = await verify(user.password, password);
@@ -25,7 +29,7 @@ class UserService {
 
   async getUser(id) {
     try {
-      const user = await userStorage.findById(id);
+      const user = await this.storage.findById(id);
       if (!user) throw new NotFoundError(USER_NOT_FOUND);
 
       return user;
@@ -36,7 +40,7 @@ class UserService {
 
   async create(userData) {
     try {
-      return userStorage.create(userData);
+      return this.storage.create(userData);
     } catch (error) {
       throw new CatchError(error);
     }
@@ -44,7 +48,7 @@ class UserService {
 
   async findByEmail(email) {
     try {
-      return userStorage.findByEmail(email);
+      return this.storage.findByEmail(email);
     } catch (error) {
       throw new CatchError(error);
     }
@@ -52,7 +56,7 @@ class UserService {
 
   async findByUsername(username) {
     try {
-      return userStorage.findByUsername(username);
+      return this.storage.findByUsername(username);
     } catch (error) {
       throw new CatchError(error);
     }
@@ -60,7 +64,7 @@ class UserService {
 
   async updatePassword(data) {
     try {
-      return userStorage.updatePassword(data);
+      return this.storage.updatePassword(data);
     } catch (error) {
       throw new CatchError(error);
     }

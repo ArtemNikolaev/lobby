@@ -12,6 +12,7 @@ module.exports = {
   GAME_NOT_FOUND: "Game with this ID is not found",
   TABLE_NOT_FOUND: "Table with this ID is not found",
   CANNOT_DELETE: "Don't have permission",
+  UNSUPPORTED_STORAGE_TYPE: "This storage is not implemented",
   PAGE_NOT_FOUND:
     `<h1>Error!</h1>` +
     `<h2>404. Not Found.</h2>` +

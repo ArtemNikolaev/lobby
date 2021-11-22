@@ -1,6 +1,6 @@
-const pool = require("../../db");
+const pool = require("../../../db");
 
-class GameStorage {
+module.exports = class GameStorageMysql {
   async create(gameData) {
     const data = await pool.query("INSERT INTO games SET ?", gameData);
 
@@ -30,6 +30,4 @@ class GameStorage {
 
     return !!result.affectedRows;
   }
-}
-
-module.exports = new GameStorage();
+};

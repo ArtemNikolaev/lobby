@@ -1,6 +1,6 @@
-const pool = require("../../db");
+const pool = require("../../../db");
 
-class UserStorage {
+module.exports = class UserStorageMysql {
   async create(userData) {
     const [data] = await pool.query("INSERT INTO users SET ?", userData);
 
@@ -52,6 +52,4 @@ class UserStorage {
 
     return !!data.affectedRows;
   }
-}
-
-module.exports = new UserStorage();
+};

@@ -1,11 +1,15 @@
-// const tableStorage = require("./tableStorage");
-const tableStorage = require("./tableStorageMDB");
+const initTableStorage = require("./tableStorages/initTableStorage");
 const userService = require("../user/userService");
 const NotFoundError = require("../../errors/notFoundError");
 const CatchError = require("../../errors/catchError");
 const { TABLE_NOT_FOUND } = require("../../helpers/messages");
+const { storageType } = require("../../../config").app;
 
 class TableService {
+  constructor() {
+    this.storage = initTableStorage(storageType);
+  }
+
   async create(data) {
     try {
       const user = await userService.getUser(data.user.id);
@@ -16,7 +20,7 @@ class TableService {
         max_players: data.body.maxPlayers,
       };
 
-      const id = await tableStorage.create(tableData);
+      const id = await this.storage.create(tableData);
 
       return { id, ...tableData };
     } catch (error) {
@@ -26,7 +30,7 @@ class TableService {
 
   async findByGameId(gameId) {
     try {
-      return tableStorage.findByGameId(gameId);
+      return this.storage.findByGameId(gameId);
     } catch (error) {
       throw new CatchError(error);
     }
@@ -34,7 +38,7 @@ class TableService {
 
   async delete(id) {
     try {
-      const deleted = await tableStorage.deleteById(id);
+      const deleted = await this.storage.deleteById(id);
       if (!deleted) throw new NotFoundError(TABLE_NOT_FOUND);
     } catch (error) {
       throw new CatchError(error);
@@ -43,7 +47,7 @@ class TableService {
 
   async getTableInfo(id) {
     try {
-      const table = await tableStorage.getTableInfo(id);
+      const table = await this.storage.getTableInfo(id);
       if (!table) throw new NotFoundError(TABLE_NOT_FOUND);
 
       return table;

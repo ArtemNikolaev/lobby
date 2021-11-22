@@ -13,6 +13,9 @@ A simple application that contains registration, game selection and the ability 
 ### RUN
 
 1. Use `.env.sample` file.
+
+   - choose storage type: STORAGE_TYPE=`mongo` (or `mysql`)
+
 2. Open your terminal in the root directory:
 
 ```sh

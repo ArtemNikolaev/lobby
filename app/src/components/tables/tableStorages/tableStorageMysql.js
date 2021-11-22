@@ -1,6 +1,6 @@
-const pool = require("../../db");
+const pool = require("../../../db");
 
-class TableStorage {
+module.exports = class TableStorageMysql {
   async create(tableData) {
     const [data] = await pool.query("INSERT INTO tables SET ?", tableData);
 
@@ -52,6 +52,4 @@ class TableStorage {
 
     return table[0];
   }
-}
-
-module.exports = new TableStorage();
+};

@@ -1,7 +1,7 @@
-const mongoDB = require("../../mongodb");
+const mongoDB = require("../../../mongodb");
 const { ObjectId } = require("mongodb");
 
-class GameStorage {
+module.exports = class GameStorageMongo {
   constructor() {
     this.games = mongoDB.getCollection("games");
   }
@@ -40,6 +40,4 @@ class GameStorage {
 
     return !!result.deletedCount;
   }
-}
-
-module.exports = new GameStorage();
+};
