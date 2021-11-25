@@ -6,16 +6,24 @@ const app = {
 };
 
 const db = {
-  host: process.env.MYSQL_HOST || "mysqldb",
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_ROOT_PASSWORD || "123123",
-  database: process.env.MYSQL_DATABASE || "lobby",
+  host: process.env.MYSQLDB_HOST || "mysqldb",
+  user: process.env.MYSQLDB_USER || "root",
+  password: process.env.MYSQLDB_ROOT_PASSWORD || "123123",
+  database: process.env.MYSQLDB_DATABASE || "lobby",
 };
 
+const {
+  MONGODB_USER,
+  MONGODB_PASSWORD,
+  MONGODB_HOST,
+  MONGODB_PORT,
+  MONGODB_DATABASE,
+} = process.env;
+
 const mongodb = {
-  host: process.env.MONGODB_HOST || "mongodb",
-  port: process.env.MONGODB_PORT || "27017",
-  name: process.env.MONGODB_NAME || "lobby",
+  mongodbUri:
+    process.env.MONGODB_ATLAS_URI ||
+    `mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_DATABASE}?authSource=admin`,
 };
 
 const token = {

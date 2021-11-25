@@ -1,17 +1,17 @@
 const { MongoClient } = require("mongodb");
 const { storageType } = require("../../config").app;
-const { host, port, name } = require("../../config").mongodb;
+const { mongodbUri } = require("../../config").mongodb;
+const seedData = require("./seedData");
 
-const client = new MongoClient(`mongodb://${host}:${port}/${name}`);
+const client = new MongoClient(mongodbUri);
 
 const mongoDB = {
   connect: () => {
     if (storageType === "mongo") {
       client
         .connect()
-        .then(() =>
-          console.log(`MongoDB connected! | mongodb://${host}:${port}/${name}`)
-        );
+        .then(seedData)
+        .then(() => console.log(`MongoDB connected! | ${mongodbUri}`));
     }
   },
   getCollection: (collection) => client.db("lobby").collection(collection),

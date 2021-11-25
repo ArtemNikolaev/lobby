@@ -15,13 +15,14 @@ A simple application that contains registration, game selection and the ability 
 1. Use `.env.sample` file.
 
    - choose storage type: STORAGE_TYPE=`mongo` (or `mysql`)
+   - specify your mongodb instance with MONGODB_URI variable
 
 2. Open your terminal in the root directory:
 
 ```sh
 npm i
 
-docker-compose up -d
+docker-compose --env-file ./app/.env up -d
 ```
 
 3. Click http://localhost:3000
