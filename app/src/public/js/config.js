@@ -11,7 +11,7 @@ export const app = {
 };
 
 export const webSocket = {
-  url: "ws://localhost:3000",
+  url: "ws://3.218.61.1",
   chatHistoryEvent: "chatHistory",
   chatMessageEvent: "chatMessage",
   deleteTableEvent: "deleteTable",
