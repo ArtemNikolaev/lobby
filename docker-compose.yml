@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  mongodb:
+    build: ./mongo
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_DATABASE=$MONGODB_DATABASE
+      - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    ports:
+      - 27017:27017
+    networks:
+      - lobby
+    volumes:
+      - data_mongo:/data/db
+  mysqldb:
+    image: mysql
+    container_name: mysqldb
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    ports:
+      - 3307:3306
+    networks:
+      - lobby
+    volumes:
+      - data_mysql:/var/lib/mysql
+      - ./app:/docker-entrypoint-initdb.d
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: app
+    restart: unless-stopped
+    volumes:
+      - ./app:/app
+    ports:
+      - 80:80
+    networks:
+      - lobby
+    depends_on:
+      - mongodb
+      - mysqldb
+volumes:
+  data_mongo:
+  data_mysql:
+networks:
+  lobby:
+    driver: bridge
