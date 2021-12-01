@@ -9,7 +9,7 @@ class Table {
   }
 
   async create(id, body, jwt) {
-    const response = await fetch(this.url + `/${id}/tables`, {
+    const response = await fetch(`${this.url}/${id}/tables`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${jwt}`,
@@ -25,7 +25,7 @@ class Table {
   }
 
   async delete(gameId, tableId, jwt) {
-    const response = await fetch(this.url + `/${gameId}/tables/${tableId}`, {
+    const response = await fetch(`${this.url}/${gameId}/tables/${tableId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwt}`,

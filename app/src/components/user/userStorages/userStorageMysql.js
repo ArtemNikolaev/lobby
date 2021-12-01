@@ -10,7 +10,7 @@ module.exports = class UserStorageMysql {
   async findById(id) {
     const [data] = await pool.query(
       "SELECT * FROM users WHERE id = ?",
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return data[0];

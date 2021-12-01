@@ -24,10 +24,10 @@ form.addEventListener("submit", async (e) => {
 
   try {
     const response = await auth.send(requestData);
-    const data = await response.json();
+    const res = await response.json();
 
     if (response.status === 401) {
-      failMessage.innerText = data.message;
+      failMessage.innerText = res.message;
       failMessage.style.display = "block";
 
       setTimeout(() => {
@@ -37,10 +37,10 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    if (response.status >= 400) throw new Error(data.message);
+    if (response.status >= 400) throw new Error(res.message);
 
-    localStorage.setItem(token, data.token);
-    location.href = data.user.role === "user" ? userPage : adminPage;
+    localStorage.setItem(token, res.token);
+    document.location.href = res.user.role === "user" ? userPage : adminPage;
   } catch (error) {
     showError(error);
   }
@@ -54,11 +54,11 @@ resetPWLink.addEventListener("click", (e) => {
     loginBtn.classList.add("hidden");
 
     const checkMessage = document.querySelector(".check-message");
-    const form = document.querySelector(".pw-reset-form");
+    const resetForm = document.querySelector(".pw-reset-form");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const data = new FormData(form);
+    resetForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = new FormData(resetForm);
 
       const requestData = {
         body: {
@@ -70,9 +70,9 @@ resetPWLink.addEventListener("click", (e) => {
 
       try {
         const response = await auth.send(requestData);
-        const data = await response.json();
+        const res = await response.json();
 
-        checkMessage.innerText = data.message;
+        checkMessage.innerText = res.message;
         checkMessage.style.display = "block";
 
         setTimeout(() => {

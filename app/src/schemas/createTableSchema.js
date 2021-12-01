@@ -1,5 +1,3 @@
 module.exports = {
-  maxPlayers: (data) => {
-    return typeof data === "number" && data >= 2;
-  },
+  maxPlayers: (data) => typeof data === "number" && data >= 2,
 };

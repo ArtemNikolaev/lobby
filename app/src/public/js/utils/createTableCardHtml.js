@@ -1,5 +1,4 @@
-export default ({ tableId, creator, count }) => {
-  return `
+export default ({ tableId, creator, count }) => `
     <div class="table-card" id="tableId-${tableId}">
       <h5>Table ID: ${tableId}</h5>
       <p>creator: ${creator}</p>
@@ -8,4 +7,3 @@ export default ({ tableId, creator, count }) => {
       <a class="btn btn-success table-link" id="btn-${tableId}">Play</a>
     </div>
   `;
-};

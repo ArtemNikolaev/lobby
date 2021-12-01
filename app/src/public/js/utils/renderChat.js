@@ -10,11 +10,11 @@ export default (data) => {
 
   if (data.length)
     html += data
-      .map((msg) => {
-        return msg.username === username
+      .map((msg) =>
+        msg.username === username
           ? createChatMessageHtml(msg, "chat-msg-me")
-          : createChatMessageHtml(msg);
-      })
+          : createChatMessageHtml(msg)
+      )
       .join("\n");
 
   chat.innerText = "";

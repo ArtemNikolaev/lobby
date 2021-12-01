@@ -1,4 +1,5 @@
 export default (error) => {
-  console.log(error);
-  alert("Ouch!\n" + "Error: " + error.message);
+  window.console.log(error);
+  // eslint-disable-next-line no-alert
+  alert(`Ouch!\nError: ${error.message}`);
 };

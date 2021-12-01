@@ -11,7 +11,7 @@ const mongoDB = {
       client
         .connect()
         .then(seedData)
-        .then(() => console.log(`MongoDB connected! | ${mongodbUri}`));
+        .then(() => global.console.log(`MongoDB connected! | ${mongodbUri}`));
     }
   },
   getCollection: (collection) => client.db("lobby").collection(collection),

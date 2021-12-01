@@ -56,8 +56,9 @@ class PageHandler {
       lobbyTitle.innerText = `You are in the lobby of ${data.game.title}`;
 
       if (data.tables.length) {
-        let tables = [];
-        for (let table of data.tables) {
+        const tables = [];
+        for (const table of data.tables) {
+          // eslint-disable-next-line no-await-in-loop
           table.count = await getPlayersViewersCount(ws, table.id);
           tables.push(table);
         }
@@ -106,7 +107,6 @@ class PageHandler {
       e.preventDefault();
 
       const { role } = getUserData();
-      console.log(role);
       document.location = role === "admin" ? adminPage : userPage;
     });
   }

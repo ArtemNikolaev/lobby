@@ -1,3 +1,3 @@
 export default () => {
-  location.replace("/");
+  document.location.replace("/");
 };

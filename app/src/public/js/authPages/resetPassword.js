@@ -33,8 +33,8 @@ form.addEventListener("submit", async (e) => {
     const response = await auth.send(requestData);
 
     if (response.status === 400 || response.status === 404) {
-      const data = await response.json();
-      successMessage.innerText = data.message;
+      const res = await response.json();
+      successMessage.innerText = res.message;
       successMessage.style.color = "red";
       successMessage.style.display = "block";
 
@@ -47,7 +47,7 @@ form.addEventListener("submit", async (e) => {
       successMessage.style.display = "block";
 
       setTimeout(() => {
-        location.href = loginPage;
+        document.location.href = loginPage;
       }, 2000);
     }
   } catch (error) {

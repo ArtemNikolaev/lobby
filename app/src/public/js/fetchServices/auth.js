@@ -2,7 +2,7 @@ class Auth {
   async send(data) {
     const { body, path, method } = data;
 
-    return fetch("/auth/" + path, {
+    return fetch(`/auth/${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",

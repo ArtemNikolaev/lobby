@@ -51,7 +51,7 @@ class AuthService {
       const link = `http://localhost:${port}/auth/password-reset-link/${user.id}/${token}`;
 
       // TODO: Logic with sending the link to user email
-      console.log("\n\nClick to reset password:\n\n", link, "\n\n");
+      global.console.log("\n\nClick to reset password:\n\n", link, "\n\n");
     } catch (error) {
       throw new CatchError(error);
     }

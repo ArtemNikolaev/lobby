@@ -16,7 +16,7 @@ module.exports = class GameStorageMysql {
   async findById(id) {
     const [data] = await pool.query(
       "SELECT * FROM games WHERE id = ?",
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return data[0];
@@ -25,7 +25,7 @@ module.exports = class GameStorageMysql {
   async deleteById(id) {
     const result = await pool.query(
       "DELETE FROM games WHERE id = ?",
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return !!result.affectedRows;

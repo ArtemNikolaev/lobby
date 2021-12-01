@@ -13,6 +13,7 @@ const {
 const tables = document.querySelector(".tables");
 
 export default (ws, gameId) => {
+  // eslint-disable-next-line no-param-reassign
   ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 

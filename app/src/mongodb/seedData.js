@@ -11,6 +11,6 @@ module.exports = async (client) => {
     username: "admin",
     role: "admin",
     email: "admin@gmail.com",
-    password: "76f7aa2c3c54dec0b003bc8cbe2d9f35:b4e1fbe96ee21cd188767047", // 123123
+    password: "76f7aa2c3c54dec0b003bc8cbe2d9f35:b4e1fbe96ee21cd188767047",
   });
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { webSocket } from "../../config.js";
 
 const { chatHistoryEvent } = webSocket;
@@ -11,5 +12,7 @@ export default async (ws, id, chat) => {
 
       if (data.event === chatHistoryEvent) resolve(data);
     };
+
+    ws.onerror = (error) => reject(error);
   });
 };

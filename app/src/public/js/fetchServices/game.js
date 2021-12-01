@@ -23,7 +23,7 @@ class Game {
   }
 
   async delete(id, jwt) {
-    const response = await fetch(this.url + `/${id}`, {
+    const response = await fetch(`${this.url}/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwt}`,

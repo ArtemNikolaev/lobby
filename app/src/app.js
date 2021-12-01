@@ -2,13 +2,13 @@ const http = require("http");
 const express = require("express");
 const morgan = require("morgan");
 const path = require("path");
-const authRouter = require("./components/auth/authRouter.js");
+const authRouter = require("./components/auth/authRouter");
 const pageRouter = require("./components/pages/pageRouter");
 const gameRouter = require("./components/games/gameRouter");
-const { PAGE_NOT_FOUND } = require("./helpers/messages.js");
-const APIErrorsHandler = require("./middlewares/APIErrorsHandler.js");
+const { PAGE_NOT_FOUND } = require("./helpers/messages");
+const APIErrorsHandler = require("./middlewares/APIErrorsHandler");
 const webSocketServerConnection = require("./webSocketServer");
-const mongoDB = require("./mongodb/index.js");
+const mongoDB = require("./mongodb/index");
 
 const app = express();
 const server = http.createServer(app);

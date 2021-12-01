@@ -14,7 +14,7 @@ module.exports = (server) => {
   const wss = new WebSocket.Server({ server });
 
   wss.on("listening", () => {
-    console.log("WebSocketServer started");
+    global.console.log("WebSocketServer started");
   });
 
   wss.on("connection", (ws) => {
@@ -60,6 +60,6 @@ module.exports = (server) => {
       }
     });
 
-    ws.on("close", () => console.log("WS connection CLOSED!"));
+    ws.on("close", () => global.console.log("WS connection CLOSED!"));
   });
 };

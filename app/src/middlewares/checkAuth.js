@@ -12,10 +12,8 @@ module.exports = (role) => (req, res, next) => {
 
     if (role) {
       if (payload.role !== role) throw new ForbiddenError(ACCESS_DENIED);
-    } else {
-      if (payload.role !== "user" && payload.role !== "admin")
-        throw new ForbiddenError(ACCESS_DENIED);
-    }
+    } else if (payload.role !== "user" && payload.role !== "admin")
+      throw new ForbiddenError(ACCESS_DENIED);
 
     req.user = payload;
     return next();

@@ -1,4 +1,5 @@
 import { app } from "../config.js";
+
 const { token, gameIdKey, userDataKey, tableIdKey } = app;
 
 export function setGameId(id) {

@@ -4,6 +4,7 @@ import renderChat from "../utils/renderChat.js";
 const { chatMessageEvent } = webSocket;
 
 export default (ws, tableId) => {
+  // eslint-disable-next-line no-param-reassign
   ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 

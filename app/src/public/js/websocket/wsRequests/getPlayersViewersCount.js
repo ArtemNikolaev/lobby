@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { webSocket } from "../../config.js";
 
 const { getPlayersCountEvent } = webSocket;
@@ -11,5 +12,7 @@ export default async (ws, tableId) => {
 
       if (data.event === getPlayersCountEvent) resolve(data.count);
     };
+
+    ws.onerror = (error) => reject(error);
   });
 };

@@ -1,7 +1,7 @@
 class PlayersViewersStorage {
   constructor() {
     this.storage = new Map();
-    this.maxPlayers;
+    this.maxPlayers = 2;
   }
 
   async create({ key, userId, maxPlayers }) {

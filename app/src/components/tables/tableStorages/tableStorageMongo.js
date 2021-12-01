@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable camelcase */
 const { ObjectId } = require("mongodb");
 const mongoDB = require("../../../mongodb");
 

@@ -1,5 +1,6 @@
-const mongoDB = require("../../../mongodb");
+/* eslint-disable no-param-reassign */
 const { ObjectId } = require("mongodb");
+const mongoDB = require("../../../mongodb");
 
 module.exports = class GameStorageMongo {
   constructor() {

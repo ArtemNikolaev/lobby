@@ -5,6 +5,7 @@ const { addGameEvent, deleteGameEvent } = webSocket;
 const gameCards = document.querySelector(".game-cards");
 
 export default (ws) => {
+  // eslint-disable-next-line no-param-reassign
   ws.onmessage = (response) => {
     const data = JSON.parse(response.data);
 

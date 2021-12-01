@@ -10,7 +10,7 @@ module.exports = class TableStorageMysql {
   async findByGameId(gameId) {
     const [data] = await pool.query(
       `SELECT * FROM tables WHERE game_id = ?`,
-      parseInt(gameId)
+      parseInt(gameId, 10)
     );
 
     return data;
@@ -19,7 +19,7 @@ module.exports = class TableStorageMysql {
   async deleteById(id) {
     const [result] = await pool.query(
       "DELETE FROM tables WHERE id = ?",
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return !!result.affectedRows;
@@ -28,7 +28,7 @@ module.exports = class TableStorageMysql {
   async findById(id) {
     const [table] = await pool.query(
       "SELECT * FROM tables WHERE id = ?",
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return table[0];
@@ -47,7 +47,7 @@ module.exports = class TableStorageMysql {
       INNER JOIN games as g
       ON t.game_id = g.id
       WHERE t.id = ?`,
-      parseInt(id)
+      parseInt(id, 10)
     );
 
     return table[0];

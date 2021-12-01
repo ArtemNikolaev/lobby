@@ -1,4 +1,4 @@
-const { GONE } = require("../helpers/statusCodes.js");
+const { GONE } = require("../helpers/statusCodes");
 
 module.exports = class GoneError extends Error {
   constructor(message) {

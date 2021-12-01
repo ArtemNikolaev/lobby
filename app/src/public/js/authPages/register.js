@@ -42,13 +42,13 @@ form.addEventListener("submit", async (e) => {
         errMessage.style.display = "none";
       }, 4000);
 
-      console.log(data.message);
+      window.console.log(data.message);
       return;
     }
 
     if (response.status >= 400) throw new Error(data.message);
 
-    location.href = loginPage;
+    document.location.href = loginPage;
   } catch (error) {
     showError(error);
   }

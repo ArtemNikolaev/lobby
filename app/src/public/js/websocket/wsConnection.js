@@ -1,16 +1,15 @@
 import { webSocket } from "../config.js";
 
-export default () => {
-  return new Promise((resolve, reject) => {
+export default () =>
+  new Promise((resolve, reject) => {
     const ws = new WebSocket(webSocket.url);
 
     ws.onopen = () => {
-      console.log("WS: Ready to listen Events");
+      window.console.log("WS: Ready to listen Events");
       resolve(ws);
     };
     ws.onerror = (error) => {
       reject(error);
     };
-    ws.onclose = () => console.log("WS: Connection closed...");
+    ws.onclose = () => window.console.log("WS: Connection closed...");
   });
-};
