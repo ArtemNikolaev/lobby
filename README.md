@@ -22,7 +22,7 @@ A simple application that contains registration, game selection and the ability 
 ```sh
 npm i
 
-docker-compose --env-file ./app/.env up -d
+docker-compose --env-file .env up -d
 ```
 
 3. Click http://localhost:3000
