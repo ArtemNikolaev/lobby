@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "nodemon --legacy-watch index.js",
     "start": "node index.js",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix --color"
+    "prepare": "husky install",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix --color"
   },
   "keywords": [],
   "author": "",
@@ -35,15 +36,7 @@
     "nodemon": "^2.0.14",
     "prettier": "^2.5.0"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.js": [
-      "npm run lint:fix",
-      "git add"
-    ]
+    "*.js": "npm run lint:fix"
   }
 }
