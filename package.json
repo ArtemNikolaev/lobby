@@ -7,8 +7,10 @@
     "dev": "nodemon --legacy-watch index.js",
     "start": "node index.js",
     "prepare": "husky install",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix --color"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix --color",
+    "prettier": "prettier --check .",
+    "prettier:write": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -37,6 +39,9 @@
     "prettier": "^2.5.0"
   },
   "lint-staged": {
-    "*.js": "npm run lint:fix"
+    "*.js": [
+      "npm run lint",
+      "npm run prettier"
+    ]
   }
 }
