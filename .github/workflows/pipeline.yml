@@ -41,6 +41,9 @@ jobs:
     needs: [lint]
 
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+      
       - name: Prepare .env file
         run: |
           mv .env.sample .env
