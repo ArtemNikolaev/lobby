@@ -7,7 +7,7 @@ on:
     branches: "**"
 
 env:
-  AWS_REGION: eu-central-1
+  AWS_REGION: us-east-1
   ECR_REPOSITORY: lobby
   ECS_SERVICE: ECS-SERVICE
   ECS_CLUSTER: ECS-CLUSTER
