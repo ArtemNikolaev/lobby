@@ -47,7 +47,7 @@ jobs:
       - name: Prepare .env file
         run: |
           mv .env.sample .env
-          sed -i "s~fake_string~${{ secrets.MONGODB_ATLAS_URI }}~" .env
+          sed -i '$d' .env && sed -i '$ a MONGODB_ATLAS_URI=${{ secrets.MONGODB_ATLAS_URI }}' .env
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
