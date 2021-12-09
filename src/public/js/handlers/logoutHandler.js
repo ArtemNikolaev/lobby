@@ -9,12 +9,10 @@ const { token } = app;
 export default function logoutListener() {
   document.querySelector(".logout").addEventListener("click", async () => {
     try {
-      const response = await auth.logout(getToken());
+      await auth.logout(getToken());
 
-      if (response.status !== 200) throw new Error("Logout Error");
-
-      jumpToStartPage();
       localStorage.removeItem(token);
+      jumpToStartPage();
     } catch (error) {
       showError(error);
     }
