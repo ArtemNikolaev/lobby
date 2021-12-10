@@ -12,12 +12,14 @@ class Auth {
   }
 
   async logout(jwt) {
-    return fetch("/auth/logout", {
+    const response = await fetch("/auth/logout", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
     });
+
+    if (response.status !== 200) throw new Error("Logout Error");
   }
 }
 
