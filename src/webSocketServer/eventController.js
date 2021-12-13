@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
-const pvStorage = require("../components/players-viewers/pvStorage");
-const chatStorage = require("../components/chat/chatStorage");
+const pvStorage = require("./storages/pvStorage");
+const chatStorage = require("./storages/chatStorage");
 
 class EventController {
   async saveChatMessage(wss, data) {

@@ -13,7 +13,7 @@ const eventController = require("./eventController");
 module.exports = (server) => {
   const wss = new WebSocket.Server({ server });
 
-  wss.on("listening", () => {
+  wss.once("listening", () => {
     global.console.log("WebSocketServer started");
   });
 
