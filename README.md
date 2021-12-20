@@ -9,3 +9,18 @@ A simple application that contains registration, game selection and the ability 
 3. The lobby contains information about the created tables, has functionality for connecting to the table
 4. You can create a table with a password and only comrades who know the password can enter it
 5. Inside the table, a simple chat functionality must be implemented (you can send general or individual messages)
+
+### RUN
+
+1. Use `.env.sample` file.
+2. Open your terminal in the root directory:
+
+```sh
+npm i
+
+docker-compose up -d
+```
+
+3. Click http://localhost:3000
+
+4. Admin creds: login - `Jason Statham`/`admin@gmail.com`, password - `123123`
