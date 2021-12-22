@@ -2,12 +2,12 @@ name: CI-CD-Lobby
 
 on:
   push:
-    branches: [ master ]
-  pull_request: 
-    branches: '**'
-    
+    branches: [master]
+  pull_request:
+    branches: "**"
+
 env:
-  AWS_REGION: eu-central-1
+  AWS_REGION: us-east-1
   ECR_REPOSITORY: lobby
   ECS_SERVICE: ECS-SERVICE
   ECS_CLUSTER: ECS-CLUSTER
@@ -20,20 +20,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Clone repo
-      uses: actions/checkout@v2
-      
-    - name: Installing node
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14.x'
-        
-    - name: Running linters
-      run: |
-        npm i
-        npm run lint
-        npm run prettier
-    
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Installing node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14.x"
+
+      - name: Running linters
+        run: |
+          npm i
+          npm run lint
+          npm run prettier
+
   deploy:
     name: Deploy to AWS ECS
     runs-on: ubuntu-latest
@@ -43,11 +43,11 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
-      
+
       - name: Prepare .env file
         run: |
           mv .env.sample .env
-          sed -i "s~fake_string~${{ secrets.MONGODB_ATLAS_URI }}~" .env
+          sed -i '$d' .env && sed -i '$ a MONGODB_ATLAS_URI=${{ secrets.MONGODB_ATLAS_URI }}' .env
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -63,9 +63,10 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: public.ecr.aws/n2n4a4x9
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          aws ecr-public get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.ECR_REGISTRY }}
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
@@ -85,4 +86,3 @@ jobs:
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
-

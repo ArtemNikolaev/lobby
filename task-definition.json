@@ -24,6 +24,5 @@
   "memory": null,
   "cpu": null,
   "placementConstraints": [],
-  "status": "ACTIVE",
   "volumes": []
 }
