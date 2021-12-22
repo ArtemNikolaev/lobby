@@ -1,11 +1,12 @@
+import { app } from "../config.js";
 import { okInterceptor } from "../utils/interceptors.js";
 
 export default async (path, jwt, id) => {
   if (!jwt) return null;
 
-  const url = id ? `/${path}/${id}` : `/${path}`;
+  const resource = id ? `${path}/${id}` : path;
 
-  const response = await fetch(url, {
+  const response = await fetch(`${app.url}/${resource}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${jwt}`,

@@ -1,3 +1,4 @@
+import { app } from "../config.js";
 import {
   createdInterceptor,
   noContentInterceptor,
@@ -5,7 +6,7 @@ import {
 
 class Game {
   constructor() {
-    this.url = "/games";
+    this.url = `${app.url}/games`;
   }
 
   async create(body, jwt) {

@@ -1,4 +1,5 @@
 export const app = {
+  url: "",
   token: "game-lobby-token",
   gameIdKey: "gameId",
   tableIdKey: "tableId",
@@ -11,7 +12,7 @@ export const app = {
 };
 
 export const webSocket = {
-  url: `ws://${window.location.host}`,
+  url: "wss://0r7n80lhic.execute-api.us-east-1.amazonaws.com/test",
   chatHistoryEvent: "chatHistory",
   chatMessageEvent: "chatMessage",
   deleteTableEvent: "deleteTable",

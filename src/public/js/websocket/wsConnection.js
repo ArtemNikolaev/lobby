@@ -8,8 +8,8 @@ export default () =>
       window.console.log("WS: Ready to listen Events");
       resolve(ws);
     };
-    ws.onerror = (error) => {
-      reject(error);
-    };
+
+    ws.onerror = (error) => reject(error);
+
     ws.onclose = () => window.console.log("WS: Connection closed...");
   });

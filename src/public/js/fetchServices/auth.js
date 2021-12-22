@@ -1,8 +1,10 @@
+import { app } from "../config.js";
+
 class Auth {
   async send(data) {
     const { body, path, method } = data;
 
-    return fetch(`/auth/${path}`, {
+    return fetch(`${app.url}/auth/${path}`, {
       method,
       headers: {
         "Content-Type": "application/json",
@@ -12,7 +14,7 @@ class Auth {
   }
 
   async logout(jwt) {
-    const response = await fetch("/auth/logout", {
+    const response = await fetch(`${app.url}/auth/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${jwt}`,
