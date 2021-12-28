@@ -26,14 +26,6 @@ class AuthController {
     }
   }
 
-  async logout(req, res, next) {
-    try {
-      return res.send("logout was successful");
-    } catch (error) {
-      return next(error);
-    }
-  }
-
   async sendResetLink(req, res, next) {
     try {
       await authService.sendResetLinkToEmail(req.body.email);

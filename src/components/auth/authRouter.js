@@ -22,10 +22,6 @@ router.post("/login", validator(loginSchema), async (req, res, next) => {
   await authController.login(req, res, next);
 });
 
-router.post("/logout", async (req, res, next) => {
-  await authController.logout(req, res, next);
-});
-
 router.post(
   "/password-reset-link",
   validator(emailSchema),
