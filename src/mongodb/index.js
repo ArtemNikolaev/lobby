@@ -14,7 +14,12 @@ const mongoDB = {
         .then(() => global.console.log(`MongoDB connected! | ${mongodbUri}`));
     }
   },
-  getCollection: (collection) => client.db("lobby").collection(collection),
+  getCollection: (collection) => {
+    return client.db(process.env.MONGODB_DATABASE).collection(collection);
+  },
+  db: () => {
+    return client.db(process.env.MONGODB_DATABASE);
+  },
 };
 
 module.exports = mongoDB;

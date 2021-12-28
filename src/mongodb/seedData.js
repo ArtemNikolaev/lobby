@@ -3,7 +3,7 @@ const { mongodbUri } = require("../../config").mongodb;
 module.exports = async (client) => {
   if (!mongodbUri.startsWith("mongodb+srv://")) return;
 
-  const users = client.db("lobby").collection("users");
+  const users = client.db(process.env.MONGODB_DATABASE).collection("users");
   const admin = await users.findOne({ role: "admin" });
   if (admin) return;
 
