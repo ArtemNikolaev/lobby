@@ -2,6 +2,7 @@ import {
   noContentInterceptor,
   createdInterceptor,
 } from "../utils/interceptors.js";
+import fetchGraphQL from "./graphQL.js";
 
 class Table {
   constructor() {
@@ -9,30 +10,54 @@ class Table {
   }
 
   async create(id, body, jwt) {
-    const response = await fetch(`${this.url}/${id}/tables`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-        "Content-Type": "application/json",
+    const query = `mutation CreateTableMutation($game_id: ID!, $max_players: ID!) {
+      createTable(game_id: $game_id, max_players: $max_players) {
+        code
+        success
+        message
+        table {
+          id
+          creator {
+            username
+            id
+          }
+          game_id
+          max_players
+        }
+      }
+    }`;
+
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        game_id: id,
+        max_players: body.maxPlayers
       },
-      body,
-    });
-    const data = await response.json();
+    }, jwt);
 
-    await createdInterceptor(response, data);
-
-    return data;
+    // TODO: review interceptors
+    // await createdInterceptor(response, data);
+    return json.data.createTable.table;
   }
 
   async delete(gameId, tableId, jwt) {
-    const response = await fetch(`${this.url}/${gameId}/tables/${tableId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
+    const query = `mutation DeleteTableMutation($id: ID!) {
+      deleteTable(id: $id) {
+        code
+        message
+        success
+      }
+    }`;
 
-    await noContentInterceptor(response);
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        id: tableId
+      },
+    }, jwt);
+
+    // TODO: review interceptors
+    // await noContentInterceptor(response);
 
     return true;
   }

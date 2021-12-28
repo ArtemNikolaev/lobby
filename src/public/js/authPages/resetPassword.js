@@ -1,6 +1,6 @@
-import auth from "../fetchServices/auth.js";
 import showError from "../utils/showError.js";
 import { app } from "../config.js";
+import fetchGraphQL from "../fetchServices/graphQL";
 
 const { loginPage } = app;
 const successMessage = document.querySelector(".success-msg");
@@ -20,36 +20,45 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const requestData = {
-    body: {
-      email: data.get("email"),
-      password,
-    },
-    path: "password-reset",
-    method: "PATCH",
-  };
-
   try {
-    const response = await auth.send(requestData);
+    const query = `mutation ResetPasswordMutation($email: String!, $password: String!) {
+      resetPassword(email: $email, password: $password) {
+        code
+        success
+        message
+      }
+    }`;
 
-    if (response.status === 400 || response.status === 404) {
-      const res = await response.json();
-      successMessage.innerText = res.message;
-      successMessage.style.color = "red";
-      successMessage.style.display = "block";
 
-      setTimeout(() => {
-        successMessage.style.color = "green";
-        successMessage.style.display = "none";
-      }, 2000);
-    } else if (response.status === 204) {
-      successMessage.innerText = "Password updated successfully!";
-      successMessage.style.display = "block";
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        email: data.get("email"),
+        password,
+      },
+    });
 
-      setTimeout(() => {
-        document.location.href = loginPage;
-      }, 2000);
-    }
+    const data = json.data.resetPassword;
+
+    // TODO: remove comment
+    // if (response.status === 400 || response.status === 404) {
+    //   const res = await response.json();
+    //   successMessage.innerText = res.message;
+    //   successMessage.style.color = "red";
+    //   successMessage.style.display = "block";
+    //
+    //   setTimeout(() => {
+    //     successMessage.style.color = "green";
+    //     successMessage.style.display = "none";
+    //   }, 2000);
+    // } else if (response.status === 204) {
+    //   successMessage.innerText = "Password updated successfully!";
+    //   successMessage.style.display = "block";
+    //
+    //   setTimeout(() => {
+    //     document.location.href = loginPage;
+    //   }, 2000);
+    // }
   } catch (error) {
     showError(error);
   }

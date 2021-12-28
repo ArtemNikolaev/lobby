@@ -21,7 +21,13 @@ class GameHandler {
         form.reset();
 
         try {
-          const newGame = await game.create(gameData, getToken());
+          const newGame = await game.create({
+            title: gameData.get("title"),
+            description: gameData.get("description"),
+            url: "some url",
+            // TODO: add uploading
+            // url: gameData.get("url")
+          }, getToken());
           ws.send(JSON.stringify({ game: newGame, event: addGameEvent }));
 
           addResponseMessage.innerText =

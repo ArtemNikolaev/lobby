@@ -2,6 +2,7 @@ import {
   createdInterceptor,
   noContentInterceptor,
 } from "../utils/interceptors.js";
+import fetchGraphQL from "./graphQL.js";
 
 class Game {
   constructor() {
@@ -9,28 +10,48 @@ class Game {
   }
 
   async create(body, jwt) {
-    const response = await fetch(this.url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
+    const query = `mutation CreateGameMutation($title: String!, $description: String, $url: String!) {
+      createGame(title: $title, description: $description, url: $url) {
+        code
+        success
+        message
+        game {
+          id
+          title
+          description
+          url
+        }
+      }
+    }`;
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        title: body.title,
+        description: body.description,
+        url: body.url,
       },
-      body,
-    });
-    const data = await response.json();
-
-    await createdInterceptor(response, data);
-    return data;
+    }, jwt);
+    console.log(json);
+    // TODO: review interceptors
+    // await createdInterceptor(response, data);
+    return json.data.createGame.game;
   }
 
   async delete(id, jwt) {
-    const response = await fetch(`${this.url}/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${jwt}`,
-      },
-    });
-
-    await noContentInterceptor(response);
+    const query = `mutation DeleteGameMutation($id: ID!) {
+      deleteGame(id: $id) {
+        code
+        success
+        message
+      }
+    }`;
+    const json = await fetchGraphQL({
+      query,
+      variables: { id },
+    }, jwt);
+    console.log(json);
+    // TODO: review interceptors
+    // await noContentInterceptor(response);
 
     return true;
   }

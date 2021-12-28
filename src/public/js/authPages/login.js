@@ -1,6 +1,6 @@
-import auth from "../fetchServices/auth.js";
 import showError from "../utils/showError.js";
 import { app } from "../config.js";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
 const { token, userPage, adminPage } = app;
 const failMessage = document.querySelector(".fail-msg");
@@ -13,31 +13,48 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = new FormData(form);
 
-  const requestData = {
-    body: {
-      login: data.get("login"),
-      password: data.get("password"),
-    },
-    path: "login",
-    method: "POST",
-  };
-
   try {
-    const response = await auth.send(requestData);
-    const res = await response.json();
+    const query = `mutation LoginMutation($emailOrUsername: String!, $password: String!) {
+      login(emailOrUsername: $emailOrUsername, password: $password) {
+        code
+        success
+        user {
+          id
+          username
+          email
+          role
+        }
+        message
+        token
+      }
+    }`;
 
-    if (response.status === 401) {
-      failMessage.innerText = res.message;
-      failMessage.style.display = "block";
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        emailOrUsername: data.get("login"),
+        password: data.get("password")
+      },
+    });
 
-      setTimeout(() => {
-        failMessage.style.display = "none";
-      }, 4000);
+    const res = json.data.login;
 
-      return;
-    }
-
-    if (response.status >= 400) throw new Error(res.message);
+    // TODO: remove comment
+    // const response = await auth.send(requestData);
+    // const res = await response.json();
+    //
+    // if (response.status === 401) {
+    //   failMessage.innerText = res.message;
+    //   failMessage.style.display = "block";
+    //
+    //   setTimeout(() => {
+    //     failMessage.style.display = "none";
+    //   }, 4000);
+    //
+    //   return;
+    // }
+    //
+    // if (response.status >= 400) throw new Error(res.message);
 
     localStorage.setItem(token, res.token);
     document.location.href = res.user.role === "user" ? userPage : adminPage;
@@ -60,19 +77,28 @@ resetPWLink.addEventListener("click", (e) => {
       event.preventDefault();
       const data = new FormData(resetForm);
 
-      const requestData = {
-        body: {
-          email: data.get("email"),
-        },
-        path: "password-reset-link",
-        method: "POST",
-      };
+      const query = `mutation SendResetLinkMutation($email: String!) {
+        sendResetLink(email: $email) {
+          code
+          success
+          message
+          responseMessage {
+            message
+          }
+        }
+      }`;
 
       try {
-        const response = await auth.send(requestData);
-        const res = await response.json();
+        const json = await fetchGraphQL({
+          query,
+          variables: {
+            email: data.get("email"),
+          },
+        });
 
-        checkMessage.innerText = res.message;
+        const res = json.data.sendResetLink;
+
+        checkMessage.innerText = res.responseMessage.message;
         checkMessage.style.display = "block";
 
         setTimeout(() => {

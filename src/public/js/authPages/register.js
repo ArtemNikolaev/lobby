@@ -1,6 +1,6 @@
-import auth from "../fetchServices/auth.js";
 import showError from "../utils/showError.js";
 import { app } from "../config.js";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
 const { loginPage } = app;
 const errMessage = document.querySelector(".fail-msg");
@@ -10,7 +10,6 @@ const confimMessage = document.querySelector(".confirm-message");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const body = new FormData(form);
-
   const password = body.get("password");
   const confirmPassword = body.get("confirm-password");
 
@@ -20,33 +19,41 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  const requestData = {
-    body: {
-      username: body.get("username"),
-      email: body.get("email"),
-      password,
-    },
-    path: "register",
-    method: "POST",
-  };
-
   try {
-    const response = await auth.send(requestData);
-    const data = await response.json();
+    const query = `mutation RegisterMutation($email: String!, $username: String!, $password: String!) {
+      register(email: $email, username: $username, password: $password) {
+        code
+        success
+        message
+        id
+      }
+    }`;
 
-    if (response.status === 409) {
-      errMessage.innerText = "Something went wrong";
-      errMessage.style.display = "block";
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        email: body.get("email"),
+        username: body.get("username"),
+        password,
+      },
+    });
 
-      setTimeout(() => {
-        errMessage.style.display = "none";
-      }, 4000);
+    const data = json.data.register.id;
 
-      window.console.log(data.message);
-      return;
-    }
-
-    if (response.status >= 400) throw new Error(data.message);
+    // TODO: remove comment
+    // if (response.status === 409) {
+    //   errMessage.innerText = "Something went wrong";
+    //   errMessage.style.display = "block";
+    //
+    //   setTimeout(() => {
+    //     errMessage.style.display = "none";
+    //   }, 4000);
+    //
+    //   window.console.log(data.message);
+    //   return;
+    // }
+    //
+    // if (response.status >= 400) throw new Error(data.message);
 
     document.location.href = loginPage;
   } catch (error) {
