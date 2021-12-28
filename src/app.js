@@ -9,11 +9,13 @@ const { PAGE_NOT_FOUND } = require("./helpers/messages");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler");
 const webSocketServerConnection = require("./webSocketServer");
 const mongoDB = require("./mongodb/index");
+const { init } = require("./apollo");
 
 const app = express();
 const server = http.createServer(app);
 
 mongoDB.connect();
+init(app, mongoDB);
 webSocketServerConnection(server);
 
 app.use(morgan("dev"));
