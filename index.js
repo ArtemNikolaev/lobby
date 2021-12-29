@@ -1,7 +1,4 @@
 require("dotenv").config();
-const server = require("./src/app");
-const { host, port } = require("./config").app;
+const { startServer } = require("./src/app");
 
-server.listen(port, host, () => {
-  global.console.log(`Server has been started! | ${host}:${port}`);
-});
+startServer();

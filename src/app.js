@@ -11,65 +11,68 @@ const webSocketServerConnection = require("./webSocketServer");
 const mongoDB = require("./mongodb/index");
 const { init } = require("./apollo");
 
-const app = express();
-const server = http.createServer(app);
+const startServer = () => {
+    const app = express();
+    const server = http.createServer(app);
 
-mongoDB.connect();
-init(app, mongoDB);
-webSocketServerConnection(server);
+    mongoDB.connect();
+    init(app, mongoDB);
+    webSocketServerConnection(server);
+    server.listen(10000);
 
-app.use(morgan("dev"));
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+    app.use(morgan("dev"));
+    app.use(express.json());
+    app.use(express.static(path.join(__dirname, "public")));
 
-/**
- *  Auth
- */
-app.use(
-  "/auth/register",
-  express.static(path.join(__dirname, "public/html", "register.html"))
-);
-app.use(
-  "/auth/login",
-  express.static(path.join(__dirname, "public/html", "login.html"))
-);
-app.use(
-  "/auth/password-reset",
-  express.static(path.join(__dirname, "public/html", "resetPassword.html"))
-);
-app.use("/auth", authRouter);
+    /**
+     *  Auth
+     */
+    app.use(
+        "/auth/register",
+        express.static(path.join(__dirname, "public/html", "register.html"))
+    );
+    app.use(
+        "/auth/login",
+        express.static(path.join(__dirname, "public/html", "login.html"))
+    );
+    app.use(
+        "/auth/password-reset",
+        express.static(path.join(__dirname, "public/html", "resetPassword.html"))
+    );
+    app.use("/auth", authRouter);
 
-/**
- *  Pages (admin/user/lobby)
- */
-app.use(
-  "/user-profile",
-  express.static(path.join(__dirname, "public/html", "userProfile.html"))
-);
-app.use(
-  "/admin-profile",
-  express.static(path.join(__dirname, "public/html", "adminProfile.html"))
-);
-app.use(
-  "/lobby-room",
-  express.static(path.join(__dirname, "public/html", "gameLobby.html"))
-);
-app.use(
-  "/table-room",
-  express.static(path.join(__dirname, "public/html", "gameTable.html"))
-);
-app.use("/", pageRouter);
+    /**
+     *  Pages (admin/user/lobby)
+     */
+    app.use(
+        "/user-profile",
+        express.static(path.join(__dirname, "public/html", "userProfile.html"))
+    );
+    app.use(
+        "/admin-profile",
+        express.static(path.join(__dirname, "public/html", "adminProfile.html"))
+    );
+    app.use(
+        "/lobby-room",
+        express.static(path.join(__dirname, "public/html", "gameLobby.html"))
+    );
+    app.use(
+        "/table-room",
+        express.static(path.join(__dirname, "public/html", "gameTable.html"))
+    );
+    app.use("/", pageRouter);
 
-/**
- *  Games
- */
-app.use("/games", gameRouter);
+    /**
+     *  Games
+     */
+    app.use("/games", gameRouter);
 
-/**
- *  not emplemented
- */
-app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
+    /**
+     *  not emplemented
+     */
+    app.get("*", (req, res) => res.send(PAGE_NOT_FOUND));
 
-app.use(APIErrorsHandler);
+    app.use(APIErrorsHandler);
+}
 
-module.exports = server;
+module.exports = { startServer };
