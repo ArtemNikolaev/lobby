@@ -183,24 +183,32 @@ const resolvers = {
         };
       }
     },
-    createTable: async (_, { game_id, max_players }, { dataSources }) => {
+    createTable: async (_, { game_id, max_players, userToken }, { dataSources }) => {
       try {
         const table = await dataSources.tableAPI.create({
           game_id,
           max_players,
+          creatorId: userToken.id
         });
+
+        const user = await dataSources.userAPI.findById(userToken.id);
         return {
           code: 200,
           success: true,
           message: `Successfully created table ${table.id}`,
-          table,
+          table: {
+            id: table.id,
+            game_id: table.game_id,
+            max_players: table.max_players,
+            creator: user
+          }
         };
       } catch (err) {
         return {
           code: err.extensions.response.status,
           success: false,
           message: err.extensions.response.body,
-          track: null,
+          table: null,
         };
       }
     },

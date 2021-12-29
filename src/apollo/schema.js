@@ -125,7 +125,6 @@ const typeDefs = gql`
 
   type Table {
     id: ID!
-    "User.username ???"
     creator: User!
     game_id: String!
     max_players: Int!
