@@ -27,7 +27,7 @@ const typeDefs = gql`
       url: String!
     ): CreateGameResponse!
     deleteGame(id: ID!): DeleteResponse!
-    createTable(game_id: ID!, max_players: ID!): CreateTableResponse!
+    createTable(game_id: ID!, max_players: Int!): CreateTableResponse!
     deleteTable(id: ID!): DeleteResponse!
   }
 

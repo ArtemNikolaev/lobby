@@ -8,7 +8,11 @@ class TableDataSource extends MongoDataSource {
       game_id: ObjectId(tableData.game_id),
     });
 
-    return data.insertedId.toString();
+    return {
+      id: data.insertedId.toString(),
+      ...tableData,
+      game_id: ObjectId(tableData.game_id),
+    }
   }
 
   async findByGameId(gameId) {

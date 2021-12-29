@@ -10,7 +10,7 @@ class Table {
   }
 
   async create(id, body, jwt) {
-    const query = `mutation CreateTableMutation($game_id: ID!, $max_players: ID!) {
+    const query = `mutation CreateTableMutation($game_id: ID!, $max_players: Int!) {
       createTable(game_id: $game_id, max_players: $max_players) {
         code
         success

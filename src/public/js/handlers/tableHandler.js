@@ -30,7 +30,7 @@ class TableHandler {
         e.preventDefault();
 
         const string = new FormData(form).get("maxPlayers");
-        const body = JSON.stringify({ maxPlayers: parseInt(string, 10) });
+        const body = { maxPlayers: parseInt(string, 10) };
         form.reset();
 
         try {
