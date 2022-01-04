@@ -1,27 +1,39 @@
-import { webSocket } from "../config.js";
 import { getUserData } from "../utils/localStorage.js";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
-const { chatMessageEvent } = webSocket;
 const chatForm = document.querySelector("#chat-form");
 
-export default function sendChatMessageListener(ws, chat, id) {
+export default function sendChatMessageListener(chat, id) {
   const { username } = getUserData();
 
-  chatForm.addEventListener("submit", (e) => {
+  chatForm.addEventListener("submit", async(e) => {
     e.preventDefault();
 
     const formData = new FormData(chatForm);
     const message = formData.get("message");
     const date = new Date();
 
-    ws.send(
-      JSON.stringify({
+    const query = `mutation AddMessageToChatMutation($id: ID!, $chat: String!, $chatData: ChatMessageInput!) {
+      addMessageToChat(id: $id, chat: $chat, chatData: $chatData) {
+        code
+        success
+        message
+        id
+      }
+    }`;
+
+    const json = await fetchGraphQL({
+      query,
+      variables: {
         id,
-        chatData: { username, message, date },
         chat,
-        event: chatMessageEvent,
-      })
-    );
+        chatData: {
+          message,
+          username,
+          date,
+        }
+      },
+    });
 
     chatForm.reset();
     e.target.elements.message.focus();

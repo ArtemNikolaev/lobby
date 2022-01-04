@@ -1,39 +1,29 @@
 import createTableCardHtml from "../utils/createTableCardHtml.js";
 import changePlayersViewersCount from "../utils/changePlayersViewersCount.js";
-import { webSocket } from "../config.js";
 import renderChat from "../utils/renderChat.js";
+import subscriptionService from "./subscription.js";
 
-const {
-  createTableEvent,
-  deleteTableEvent,
-  chatMessageEvent,
-  userJoinTableEvent,
-  userLeftTableEvent,
-} = webSocket;
 const tables = document.querySelector(".tables");
 
-export default (ws, gameId) => {
-  // eslint-disable-next-line no-param-reassign
-  ws.onmessage = (response) => {
-    const data = JSON.parse(response.data);
+export default (client, gameId) => {
+  subscriptionService.subscribeOnChatMessage(client, gameId, (history) => {
+    renderChat(history);
+  });
 
-    if (data.event === chatMessageEvent && data.id === gameId) {
-      renderChat(data.chatData);
-    }
+  subscriptionService.subscribeOnLeftTable(client, gameId, (table) => {
+    changePlayersViewersCount(table);
+  });
 
-    if (data.event === userLeftTableEvent && data.gameId === gameId)
-      changePlayersViewersCount(data);
+  subscriptionService.subscribeOnJoinTable(client, gameId, (table) => {
+    changePlayersViewersCount(table);
+  });
 
-    if (data.event === userJoinTableEvent && data.gameId === gameId)
-      changePlayersViewersCount(data);
+  subscriptionService.subscribeOnAddTable(client, gameId, (table) => {
+    const html = createTableCardHtml(table);
+    tables.insertAdjacentHTML("beforeend", html);
+  });
 
-    if (data.event === createTableEvent && data.gameId === gameId) {
-      const html = createTableCardHtml(data);
-      tables.insertAdjacentHTML("beforeend", html);
-    }
-
-    if (data.event === deleteTableEvent && data.gameId === gameId) {
-      document.querySelector(`#tableId-${data.tableId}`).remove();
-    }
-  };
+  subscriptionService.subscribeOnDeleteTable(client, gameId, (table) => {
+    document.querySelector(`#tableId-${table.id}`).remove();
+  });
 };

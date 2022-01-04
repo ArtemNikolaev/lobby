@@ -9,7 +9,7 @@ const addResponseMessage = document.querySelector("#add-response-msg");
 const showFormBtn = document.querySelector(".show-add-game-btn");
 
 class GameHandler {
-  createGameListener(ws) {
+  createGameListener() {
     showFormBtn.addEventListener("click", () => {
       addGameForm.classList.toggle("hidden");
 
@@ -28,7 +28,6 @@ class GameHandler {
             // TODO: add uploading
             // url: gameData.get("url")
           }, getToken());
-          ws.send(JSON.stringify({ game: newGame, event: addGameEvent }));
 
           addResponseMessage.innerText =
             "Game successfully added to the GameLobby";
@@ -45,17 +44,14 @@ class GameHandler {
     });
   }
 
-  deleteGameListener(ws) {
+  deleteGameListener() {
     document.addEventListener("click", async (e) => {
       if (!e.target.classList.contains("delete-link")) return;
 
       const id = e.target.id.split("-")[1];
 
       try {
-        const isDeleted = await game.delete(id, getToken());
-        if (!isDeleted) return;
-
-        ws.send(JSON.stringify({ id, event: deleteGameEvent }));
+        await game.delete(id, getToken());
       } catch (error) {
         showError(error);
       }

@@ -6,11 +6,11 @@ import showError from "../utils/showError.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const ws = await wsConnection();
+    const client = wsConnection();
 
     await pageHandler.getProfile("user-page");
     pageHandler.jumpToLobbyListener();
-    wsProfileEventListener(ws);
+    wsProfileEventListener(client);
     logoutListener();
   } catch (error) {
     showError(error);

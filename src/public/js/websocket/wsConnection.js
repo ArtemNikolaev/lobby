@@ -1,15 +1,11 @@
-import { webSocket } from "../config.js";
+const { createClient } = graphqlWs;
 
-export default () =>
-  new Promise((resolve, reject) => {
-    const ws = new WebSocket(webSocket.url);
+export default () => {
+  const GRAPHQL_ENDPOINT = "ws://localhost:8000/graphql";
 
-    ws.onopen = () => {
-      window.console.log("WS: Ready to listen Events");
-      resolve(ws);
-    };
-    ws.onerror = (error) => {
-      reject(error);
-    };
-    ws.onclose = () => window.console.log("WS: Connection closed...");
+  const client = createClient({
+    url: GRAPHQL_ENDPOINT,
   });
+
+  return client;
+};

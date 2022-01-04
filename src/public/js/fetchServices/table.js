@@ -10,8 +10,8 @@ class Table {
   }
 
   async create(id, body, jwt) {
-    const query = `mutation CreateTableMutation($game_id: ID!, $max_players: Int!) {
-      createTable(game_id: $game_id, max_players: $max_players) {
+    const query = `mutation CreateTableMutation($gameId: ID!, $maxPlayers: Int!) {
+      createTable(gameId: $gameId, maxPlayers: $maxPlayers) {
         code
         success
         message
@@ -21,8 +21,8 @@ class Table {
             username
             id
           }
-          game_id
-          max_players
+          gameId
+          maxPlayers
         }
       }
     }`;
@@ -30,8 +30,8 @@ class Table {
     const json = await fetchGraphQL({
       query,
       variables: {
-        game_id: id,
-        max_players: body.maxPlayers
+        gameId: id,
+        maxPlayers: body.maxPlayers
       },
     }, jwt);
 

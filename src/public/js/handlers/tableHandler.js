@@ -1,4 +1,4 @@
-import { app, webSocket } from "../config.js";
+import { app } from "../config.js";
 import table from "../fetchServices/table.js";
 import getPlayersViewersCount from "../websocket/wsRequests/getPlayersViewersCount.js";
 import showError from "../utils/showError.js";
@@ -8,20 +8,15 @@ import {
   getUserData,
   setTableId,
 } from "../utils/localStorage.js";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
 const { tablePage, lobbyPage } = app;
-const {
-  deleteTableEvent,
-  createTableEvent,
-  userJoinTableEvent,
-  userLeftTableEvent,
-} = webSocket;
 
 const createTableBtn = document.querySelector(".create-table-btn");
 const exitGameBtn = document.querySelector(".exit-game-btn");
 
 class TableHandler {
-  createTableListener(ws, gameId) {
+  createTableListener(gameId) {
     createTableBtn.addEventListener("click", () => {
       const form = document.querySelector(".create-form");
 
@@ -36,21 +31,9 @@ class TableHandler {
         try {
           const newTable = await table.create(gameId, body, getToken());
 
-          const { id: tableId, creator } = newTable;
+          const { id: tableId } = newTable;
 
           setTableId(tableId);
-          const { id: userId } = getUserData();
-
-          ws.send(
-            JSON.stringify({
-              tableId,
-              userId,
-              gameId,
-              creator,
-              maxPlayers: parseInt(string, 10),
-              event: createTableEvent,
-            })
-          );
 
           document.location = tablePage;
         } catch (error) {
@@ -60,45 +43,61 @@ class TableHandler {
     });
   }
 
-  joinToTableListener(ws, gameId) {
-    document.addEventListener("click", (e) => {
+  joinToTableListener() {
+    document.addEventListener("click", async (e) => {
       if (!e.target.classList.contains("table-link")) return;
 
       const tableId = e.target.id.split("-")[1];
       const { id: userId } = getUserData();
 
-      ws.send(
-        JSON.stringify({ tableId, userId, gameId, event: userJoinTableEvent })
-      );
+      const query = `mutation JoinTableMutation($id: ID!, $userId: ID!) {
+        joinTable(id: $id, userId: $userId) {
+          code
+          success
+          message
+          id
+        }
+      }`;
+
+      await fetchGraphQL({
+        query,
+        variables: {
+          id: tableId,
+          userId,
+        },
+      });
 
       setTableId(tableId);
       document.location = tablePage;
     });
   }
 
-  leaveTableListener(ws, gameId, tableId) {
+  leaveTableListener(gameId, tableId) {
     exitGameBtn.addEventListener("click", async () => {
       try {
-        const count = await getPlayersViewersCount(ws, tableId);
+        const count = await getPlayersViewersCount(tableId);
 
         if (count.players <= 1) {
-          const isDeleted = await table.delete(gameId, tableId, getToken());
-
-          if (isDeleted)
-            ws.send(
-              JSON.stringify({ tableId, gameId, event: deleteTableEvent })
-            );
+          await table.delete(gameId, tableId, getToken());
         } else {
           const { id: userId } = getUserData();
 
-          ws.send(
-            JSON.stringify({
-              tableId,
-              gameId,
+          const query = `mutation LeaveTableMutation($id: ID!, $userId: ID!) {
+            leaveTable(id: $id, userId: $userId) {
+              code
+              success
+              message
+              id
+            }
+          }`;
+
+          await fetchGraphQL({
+            query,
+            variables: {
+              id: tableId,
               userId,
-              event: userLeftTableEvent,
-            })
-          );
+            },
+          });
         }
 
         deleteTableId();

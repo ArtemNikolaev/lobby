@@ -10,14 +10,14 @@ const gameId = getGameId();
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const ws = await wsConnection();
+    const client = wsConnection();
 
-    await pageHandler.getLobby(ws, gameId);
-    tableHandler.createTableListener(ws, gameId);
-    tableHandler.joinToTableListener(ws, gameId);
-    sendChatMessageListener(ws, "lobby", gameId);
+    await pageHandler.getLobby(gameId);
+    tableHandler.createTableListener(gameId);
+    tableHandler.joinToTableListener();
+    sendChatMessageListener("lobby", gameId);
     pageHandler.jumpToProfileListener();
-    wsLobbyEventListener(ws, gameId);
+    wsLobbyEventListener(client, gameId);
   } catch (error) {
     showError(error);
   }

@@ -1,18 +1,24 @@
-/* eslint-disable no-param-reassign */
-import { webSocket } from "../../config.js";
+import fetchGraphQL from "../../fetchServices/graphQL.js";
 
-const { getPlayersCountEvent } = webSocket;
+export default async (tableId) => {
+  const query = `query PlayersViewersCountQuery($tableId: ID!) {
+    playersViewersCount(tableId: $tableId) {
+      players
+      viewers
+    }
+  }`;
 
-export default async (ws, tableId) => {
-  ws.send(JSON.stringify({ tableId, event: getPlayersCountEvent }));
+  try {
+    const json = await fetchGraphQL({
+      query,
+      variables: {
+        tableId,
+      },
+    });
 
-  return new Promise((resolve, reject) => {
-    ws.onmessage = (response) => {
-      const data = JSON.parse(response.data);
+    const res = json.data.playersViewersCount;
+    return res;
+  } catch (error) {
 
-      if (data.event === getPlayersCountEvent) resolve(data.count);
-    };
-
-    ws.onerror = (error) => reject(error);
-  });
+  }
 };

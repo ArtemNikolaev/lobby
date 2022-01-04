@@ -1,21 +1,14 @@
 import createGameCardHtml from "../utils/createGameCardHtml.js";
-import { webSocket } from "../config.js";
-
-const { addGameEvent, deleteGameEvent } = webSocket;
+import subscriptionService from "./subscription.js"
 const gameCards = document.querySelector(".game-cards");
 
-export default (ws) => {
-  // eslint-disable-next-line no-param-reassign
-  ws.onmessage = (response) => {
-    const data = JSON.parse(response.data);
+export default (client) => {
+  subscriptionService.subscribeOnAddGame(client, (game) => {
+    const html = createGameCardHtml(game);
+    gameCards.insertAdjacentHTML("beforeend", html);
+  })
 
-    if (data.event === addGameEvent) {
-      const html = createGameCardHtml(data.game);
-      gameCards.insertAdjacentHTML("beforeend", html);
-    }
-
-    if (data.event === deleteGameEvent) {
-      document.querySelector(`#cardId-${data.id}`).remove();
-    }
-  };
+  subscriptionService.subscribeOnDeleteGame(client, (id) => {
+    document.querySelector(`#cardId-${id}`).remove();
+  })
 };

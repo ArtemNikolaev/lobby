@@ -13,6 +13,7 @@ import {
   setGameId,
   setUserData,
 } from "../utils/localStorage.js";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
 const { lobbyPage, adminPage, userPage } = app;
 const myUsername = document.querySelector("#username");
@@ -48,35 +49,59 @@ class PageHandler {
     }
   }
 
-  async getLobby(ws, gameId) {
+  async getLobby(gameId) {
     try {
-      const data = await getPage("lobby", getToken(), gameId);
-      if (!data) return jumpToStartPage();
+      const query = `query Query($gameId: ID!) {
+        game(id: $gameId) {
+          title
+          id
+          tables {
+            id
+            creator {
+              username
+            }
+            count {
+              players
+              viewers
+            }
+          }
+        }
+      }`;
 
-      lobbyTitle.innerText = `You are in the lobby of ${data.game.title}`;
+      const json = await fetchGraphQL({
+        query,
+        variables: {
+          gameId,
+        },
+      });
 
-      if (data.tables.length) {
+      const game = json.data.game;
+
+      lobbyTitle.innerText = `You are in the lobby of ${game.title}`;
+
+      if (game.tables.length) {
         const tables = [];
-        for (const table of data.tables) {
+        for (const table of game.tables) {
           // eslint-disable-next-line no-await-in-loop
-          table.count = await getPlayersViewersCount(ws, table.id);
+          table.count = await getPlayersViewersCount(table.id);
           tables.push(table);
         }
 
-        const html = tables
-          .map((t) => createTableCardHtml({ tableId: t.id, ...t }))
+        const html = game.tables
+          .map((t) => createTableCardHtml(t))
           .join("\n");
         tablesEl.insertAdjacentHTML("afterbegin", html);
       }
 
-      const chat = await getChatHistory(ws, gameId, "lobby");
-      renderChat(chat.chatData);
+      const chatData = await getChatHistory(gameId, "lobby");
+      renderChat(chatData);
     } catch (error) {
+      console.log(error)
       showError();
     }
   }
 
-  async getTable(ws, tableId) {
+  async getTable(tableId) {
     try {
       const data = await getPage("table", getToken(), tableId);
       if (!data) return jumpToStartPage();
@@ -84,8 +109,8 @@ class PageHandler {
       const { title, id } = data;
       tableTitle.innerText = `${title}. Game Table ID: ${id}`;
 
-      const chat = await getChatHistory(ws, tableId, "table");
-      renderChat(chat.chatData);
+      const chatData = await getChatHistory(tableId, "table");
+      renderChat(chatData);
     } catch (error) {
       showError();
     }

@@ -7,13 +7,13 @@ import showError from "../utils/showError.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const ws = await wsConnection();
+    const client = wsConnection();
 
     await pageHandler.getProfile("admin-page");
     pageHandler.jumpToLobbyListener();
-    gameHandler.createGameListener(ws);
-    gameHandler.deleteGameListener(ws);
-    wsProfileEventListener(ws);
+    gameHandler.createGameListener();
+    gameHandler.deleteGameListener();
+    wsProfileEventListener(client);
     logoutListener();
   } catch (error) {
     showError(error);

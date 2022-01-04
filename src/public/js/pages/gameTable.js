@@ -1,5 +1,5 @@
 import wsConnection from "../websocket/wsConnection.js";
-import wsTableEventListener from "../websocket/wsTableEventListener.js";
+import wsChatEventListener from "../websocket/wsChatEventListener.js";
 import pageHandler from "../handlers/pageHandler.js";
 import tableHandler from "../handlers/tableHandler.js";
 import sendChatMessageListener from "../handlers/chatHandler.js";
@@ -11,13 +11,13 @@ const gameId = getGameId();
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    const ws = await wsConnection();
+    const client = wsConnection();
 
-    await pageHandler.getTable(ws, tableId);
-    tableHandler.leaveTableListener(ws, gameId, tableId);
-    sendChatMessageListener(ws, "table", tableId);
+    await pageHandler.getTable(tableId);
+    tableHandler.leaveTableListener(gameId, tableId);
+    sendChatMessageListener("table", tableId);
     pageHandler.jumpToProfileListener();
-    wsTableEventListener(ws, tableId);
+    wsChatEventListener(client, tableId);
   } catch (error) {
     showError(error);
   }

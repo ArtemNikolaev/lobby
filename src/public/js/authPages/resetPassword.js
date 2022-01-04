@@ -1,6 +1,6 @@
 import showError from "../utils/showError.js";
 import { app } from "../config.js";
-import fetchGraphQL from "../fetchServices/graphQL";
+import fetchGraphQL from "../fetchServices/graphQL.js";
 
 const { loginPage } = app;
 const successMessage = document.querySelector(".success-msg");
