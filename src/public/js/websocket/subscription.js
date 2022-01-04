@@ -2,7 +2,7 @@ class SubscriptionService {
   subscribeOnChatMessage(client, gameId, onNext) {
     this.subcribe(
       client,
-      `subscription { chatMessageAdded(id: "${gameId}") { username message date } }`,
+      `subscription { chatMessageAdded(id: "${gameId}") { username message utcSecondsSinceEpoch } }`,
       (response) => {
         onNext(response.data.chatMessageAdded)
       }

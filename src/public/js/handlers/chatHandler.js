@@ -11,7 +11,7 @@ export default function sendChatMessageListener(chat, id) {
 
     const formData = new FormData(chatForm);
     const message = formData.get("message");
-    const date = new Date();
+    const utcSecondsSinceEpoch = Math.round(Date.now() / 1000);
 
     const query = `mutation AddMessageToChatMutation($id: ID!, $chat: String!, $chatData: ChatMessageInput!) {
       addMessageToChat(id: $id, chat: $chat, chatData: $chatData) {
@@ -30,7 +30,7 @@ export default function sendChatMessageListener(chat, id) {
         chatData: {
           message,
           username,
-          date,
+          utcSecondsSinceEpoch,
         }
       },
     });

@@ -5,7 +5,7 @@ export default async (id, chat) => {
     chatHistory(id: $id, chat: $chat) {
       username
       message
-      date
+      utcSecondsSinceEpoch
     }
   }`;
 

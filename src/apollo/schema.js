@@ -192,7 +192,7 @@ const typeDefs = gql`
   type ChatMessage {
     username: String!
     message: String!
-    date: String!
+    utcSecondsSinceEpoch: Int!
   }
   
   type PlayersViewersCount {
@@ -203,7 +203,7 @@ const typeDefs = gql`
   input ChatMessageInput {
     username: String!
     message: String!
-    date: String!
+    utcSecondsSinceEpoch: Int!
   }
 `;
 

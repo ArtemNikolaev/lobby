@@ -7,7 +7,7 @@ class ChatStorage {
     const botMessage = {
       username: "Chat Bot",
       message: `Welcome! Chat ${key}`,
-      date: new Date(),
+      utcSecondsSinceEpoch: Math.round(Date.now() / 1000),
     };
     this.storage.set(key, [botMessage]);
   }
