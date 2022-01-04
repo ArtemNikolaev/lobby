@@ -11,16 +11,6 @@ class PageController {
     }
   }
 
-  async getLobbyPage(req, res, next) {
-    try {
-      const data = await pageService.getLobbyPage(req.params.gameId);
-
-      return res.json(data);
-    } catch (error) {
-      return next(error);
-    }
-  }
-
   async getTablePage(req, res, next) {
     try {
       const data = await pageService.getTablePage(req.params.tableId);

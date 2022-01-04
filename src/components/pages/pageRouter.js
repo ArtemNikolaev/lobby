@@ -13,10 +13,6 @@ router.get("/admin-page", checkAuth("admin"), async (req, res, next) => {
   await pageController.getProfilePage(req, res, next);
 });
 
-router.get("/lobby/:gameId", checkAuth(), async (req, res, next) => {
-  await pageController.getLobbyPage(req, res, next);
-});
-
 router.get("/table/:tableId", checkAuth(), async (req, res, next) => {
   await pageController.getTablePage(req, res, next);
 });
