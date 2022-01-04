@@ -8,13 +8,19 @@ const UserAPI = require("./datasources/user-api");
 const { applyMiddleware } = require("graphql-middleware");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 
+const { WebSocketServer } = require("ws");
+const { useServer } = require("graphql-ws/lib/use/ws");
+
 async function startApolloServer(app, mongoClient, typeDefs, resolvers) {
   const executableSchema = makeExecutableSchema({
     typeDefs,
     resolvers,
   });
 
-  const schemaWithMiddleware = applyMiddleware(executableSchema, ...middlewares);
+  const schemaWithMiddleware = applyMiddleware(
+    executableSchema,
+    ...middlewares
+  );
 
   const server = new ApolloServer({
     typeDefs,
@@ -32,8 +38,15 @@ async function startApolloServer(app, mongoClient, typeDefs, resolvers) {
 
   await server.start();
   server.applyMiddleware({ app });
-  await app.listen({ port: process.env.PORT || 3000 });
 
+  const httpServer = app.listen(process.env.PORT || 3000, () => {
+    const wsServer = new WebSocketServer({
+      server: httpServer,
+      path: "/graphql",
+    });
+
+    useServer({ schema: schemaWithMiddleware }, wsServer);
+  });
   console.log(`🚀  Server is running`);
 }
 

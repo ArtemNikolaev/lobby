@@ -16,8 +16,8 @@ class TableService {
 
       const tableData = {
         creator: user.username,
-        game_id: data.params.id,
-        max_players: data.body.maxPlayers,
+        gameId: data.params.id,
+        maxPlayers: data.body.maxPlayers,
       };
 
       const id = await this.storage.create(tableData);

@@ -7,6 +7,9 @@ const { verify } = require("../helpers/scrypt");
 const tokenService = require("../components/token/tokenService");
 const NotFoundError = require("../errors/notFoundError");
 const { USER_NOT_FOUND, CHECK_EMAIL } = require("../helpers/messages");
+const { pubsub } = require("./pubsub");
+const { wsEvents } = require("../../config");
+const eventController = require("../webSocketServer/eventController");
 const resolvers = {
   Query: {
     table: (_, { id }, { dataSources }) => {
@@ -34,6 +37,32 @@ const resolvers = {
     },
     userByLogin: (_, { emailOrUsername }, { dataSources }) => {
       return dataSources.userAPI.findByLogin(emailOrUsername);
+    },
+    playersViewersCount: async (_, { tableId }) => {
+      return await eventController.getPlayersViewersCount(tableId);
+    },
+    chatHistory: async (_, { id, chat }) => {
+      return await eventController.getChatHistory(id, chat);
+    },
+  },
+  Game: {
+    tables: async ({ id }, _, { dataSources }) => {
+      const tables = await dataSources.tableAPI.findByGameId(id);
+      return tables.map(async (table) => {
+        const count = await eventController.getPlayersViewersCount(id);
+        return {
+          ...table,
+          count,
+        };
+      });
+    },
+  },
+  Table: {
+    creator: ({ creatorId, creator }, _, { dataSources } = {}) => {
+      if (creator) {
+        return creator;
+      }
+      return dataSources.userAPI.findById(creatorId);
     },
   },
   Mutation: {
@@ -86,7 +115,8 @@ const resolvers = {
           code: err.statusCode || err.extensions.response.status,
           success: false,
           message: err.message || err.extensions.response.body,
-          track: null,
+          user: null,
+          token: null
         };
       }
     },
@@ -116,7 +146,7 @@ const resolvers = {
           code: err.statusCode || err.extensions.response.status,
           success: false,
           message: err.message || err.extensions.response.body,
-          track: null,
+          responseMessage: null,
         };
       }
     },
@@ -140,7 +170,7 @@ const resolvers = {
           code: err.statusCode || err.extensions.response.status,
           success: false,
           message: err.message || err.extensions.response.body,
-          track: null,
+          responseMessage: null,
         };
       }
     },
@@ -151,57 +181,74 @@ const resolvers = {
           description,
           url,
         });
+
+        await pubsub.publish("GAME_ADDED", game);
         return {
           code: 200,
           success: true,
-          message: `Successfully created game ${title}`,
-          game,
+          message: `Successfully created game ${id}`,
+          game
         };
       } catch (err) {
         return {
           code: err.extensions.response.status,
           success: false,
           message: err.extensions.response.body,
-          track: null,
+          game: null,
         };
       }
     },
     deleteGame: async (_, { id }, { dataSources }) => {
       try {
         await dataSources.gameAPI.deleteById(id);
+
+        await pubsub.publish("GAME_ADDED", id);
         return {
           code: 200,
           success: true,
           message: `Successfully deleted game ${id}`,
+          id
         };
       } catch (err) {
         return {
           code: err.extensions.response.status,
           success: false,
           message: err.extensions.response.body,
-          track: null,
+          game: null,
         };
       }
     },
-    createTable: async (_, { game_id, max_players, userToken }, { dataSources }) => {
+    createTable: async (
+      _,
+      { gameId, maxPlayers, userToken },
+      { dataSources }
+    ) => {
       try {
         const table = await dataSources.tableAPI.create({
-          game_id,
-          max_players,
-          creatorId: userToken.id
+          gameId,
+          maxPlayers,
+          creatorId: userToken.id,
         });
 
         const user = await dataSources.userAPI.findById(userToken.id);
+        const result = {
+          id: table.id,
+          gameId: table.gameId,
+          maxPlayers: table.maxPlayers,
+          creator: user,
+        };
+
+        await eventController.createTable({
+          id: result.id,
+          gameId: result.gameId,
+          creator: result.creator,
+          maxPlayers: result.maxPlayers,
+        });
         return {
           code: 200,
           success: true,
           message: `Successfully created table ${table.id}`,
-          table: {
-            id: table.id,
-            game_id: table.game_id,
-            max_players: table.max_players,
-            creator: user
-          }
+          table: result,
         };
       } catch (err) {
         return {
@@ -215,19 +262,119 @@ const resolvers = {
     deleteTable: async (_, { id }, { dataSources }) => {
       try {
         await dataSources.tableAPI.deleteById(id);
+        await eventController.deleteTable(id);
         return {
           code: 200,
           success: true,
           message: `Successfully deleted table ${id}`,
+          id
         };
       } catch (err) {
         return {
           code: err.extensions.response.status,
           success: false,
           message: err.extensions.response.body,
-          track: null,
+          id: null,
         };
       }
+    },
+    leaveTable: async (_, { id, userId }) => {
+      try {
+        await eventController.userLeftTable(id, userId);
+        return {
+          code: 200,
+          success: true,
+          message: `User ${userId} successfully left table ${id}`,
+          id,
+        };
+      } catch (err) {
+        return {
+          code: err.extensions ? err.extensions.response.status : 500,
+          success: false,
+          message: err.extensions ? err.extensions.response.body : err.message,
+          id: null,
+        };
+      }
+    },
+    joinTable: async (_, { id, userId }) => {
+      try {
+        await eventController.userJoinTable(id, userId);
+        return {
+          code: 200,
+          success: true,
+          message: `User ${userId} successfully joined table ${id}`,
+          id,
+        };
+      } catch (err) {
+        return {
+          code: err.extensions ? err.extensions.response.status : 500,
+          success: false,
+          message: err.extensions ? err.extensions.response.body : err.message,
+          id: null,
+        };
+      }
+    },
+    addMessageToChat: async (_, { id, chat, chatData }) => {
+      try {
+        await eventController.saveChatMessage(id, chat, chatData);
+        return {
+          code: 200,
+          success: true,
+          message: `Successfully added message to chat ${chat}`,
+          id,
+        };
+      } catch (err) {
+        return {
+          code: err.extensions ? err.extensions.response.status : 500,
+          success: false,
+          message: err.extensions ? err.extensions.response.body : err.message,
+          id: null,
+        };
+      }
+    },
+  },
+  Subscription: {
+    chatMessageAdded: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator(wsEvents.chatMessageEvent),
+    },
+    gameAdded: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator("GAME_ADDED"),
+    },
+    gameDeleted: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator("GAME_DELETED"),
+    },
+    tableAdded: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator(wsEvents.createTableEvent),
+    },
+    tableDeleted: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator(wsEvents.deleteTableEvent),
+    },
+    userJoinedTable: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator(wsEvents.userJoinTableEvent),
+    },
+    userLeftTable: {
+      resolve: (value) => {
+        return value;
+      },
+      subscribe: () => pubsub.asyncIterator(wsEvents.userLeftTableEvent),
     },
   },
 };

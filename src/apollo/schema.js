@@ -10,6 +10,9 @@ const typeDefs = gql`
     userByEmail: User
     userByUsername: User
     userByLogin: User
+    creator: User
+    playersViewersCount(tableId: ID!): PlayersViewersCount
+    chatHistory(id: ID!, chat: String!): [ChatMessage!]
   }
 
   type Mutation {
@@ -27,8 +30,21 @@ const typeDefs = gql`
       url: String!
     ): CreateGameResponse!
     deleteGame(id: ID!): DeleteResponse!
-    createTable(game_id: ID!, max_players: Int!): CreateTableResponse!
+    createTable(gameId: ID!, maxPlayers: Int!): CreateTableResponse!
     deleteTable(id: ID!): DeleteResponse!
+    leaveTable(id: ID!, userId: ID!): LeaveTableResponse!
+    joinTable(id: ID!, userId: ID!): LeaveTableResponse!
+    addMessageToChat(id: ID!, chat: String!, chatData: ChatMessageInput!): AddMessageToChatResponse!
+  }
+  
+  type Subscription {
+    chatMessageAdded(id: ID!): [ChatMessage!]!
+    gameAdded: Game!
+    gameDeleted: ID!
+    tableAdded(gameId: ID!): Table!
+    tableDeleted(gameId: ID!): ID!
+    userJoinedTable(gameId: ID!): TableUpdate!
+    userLeftTable(gameId: ID!): TableUpdate!
   }
 
   interface Response {
@@ -97,6 +113,7 @@ const typeDefs = gql`
     success: Boolean!
     "Human-readable message for the UI"
     message: String!
+    id: ID!
   }
 
   type CreateTableResponse implements Response {
@@ -108,12 +125,33 @@ const typeDefs = gql`
     message: String!
     table: Table
   }
+  
+  type LeaveTableResponse implements Response {
+    "Similar to HTTP status code, represents the status of the mutation"
+    code: Int!
+    "Indicates whether the mutation was successful"
+    success: Boolean!
+    "Human-readable message for the UI"
+    message: String!
+    id: ID
+  }
+  
+  type AddMessageToChatResponse implements Response {
+    "Similar to HTTP status code, represents the status of the mutation"
+    code: Int!
+    "Indicates whether the mutation was successful"
+    success: Boolean!
+    "Human-readable message for the UI"
+    message: String!
+    id: ID
+  }
 
   type Game {
     id: ID!
     title: String!
     description: String
     url: String!
+    tables: [Table!]!
   }
 
   type User {
@@ -126,8 +164,15 @@ const typeDefs = gql`
   type Table {
     id: ID!
     creator: User!
-    game_id: String!
-    max_players: Int!
+    gameId: String!
+    maxPlayers: Int!
+    count: PlayersViewersCount!
+  }
+  
+  type TableUpdate {
+    id: ID!
+    userId: ID!
+    count: PlayersViewersCount!
   }
 
   type TableInfo {
@@ -135,13 +180,30 @@ const typeDefs = gql`
     "User.username ???"
     creator: User!
     gameId: String!
-    max_players: Int!
+    maxPlayers: Int!
     title: String!
     description: String
   }
 
   type Message {
     message: String!
+  }
+  
+  type ChatMessage {
+    username: String!
+    message: String!
+    date: String!
+  }
+  
+  type PlayersViewersCount {
+    players: Int!
+    viewers: Int!
+  }
+  
+  input ChatMessageInput {
+    username: String!
+    message: String!
+    date: String!
   }
 `;
 

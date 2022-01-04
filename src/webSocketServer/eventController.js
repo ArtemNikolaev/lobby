@@ -1,88 +1,70 @@
 const WebSocket = require("ws");
 const pvStorage = require("../components/players-viewers/pvStorage");
 const chatStorage = require("../components/chat/chatStorage");
+const { pubsub } = require("../apollo/pubsub");
+const { wsEvents } = require("../../config");
 
 class EventController {
-  async saveChatMessage(wss, data) {
-    const { chat, id, chatData } = data;
+  async saveChatMessage(id, chat, chatData) {
     const key = `${chat}-${id}`;
 
     await chatStorage.save(key, chatData);
     const history = await chatStorage.getAllMessages(key);
 
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ ...data, chatData: history }));
-      }
+    await pubsub.publish(wsEvents.chatMessageEvent, history);
+
+    return history;
+  }
+
+  async getChatHistory(id, chat) {
+    return await chatStorage.getAllMessages(`${chat}-${id}`);
+  }
+
+  async createTable({ id, gameId, creator, maxPlayers }) {
+    const key = id.toString();
+
+    await pvStorage.create({ key, id, gameId, creator, maxPlayers });
+
+    await pubsub.publish(wsEvents.createTableEvent, {
+      id,
+      gameId,
+      creator,
+      maxPlayers,
+      count: { players: 1, viewers: 0 },
     });
   }
 
-  async getChatHistory(ws, data) {
-    const { chat, id } = data;
-
-    const chatData = await chatStorage.getAllMessages(`${chat}-${id}`);
-
-    ws.send(JSON.stringify({ ...data, chatData }));
-  }
-
-  async createTable(wss, data) {
-    const key = data.tableId.toString();
-
-    await pvStorage.create({ key, ...data });
-
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(
-          JSON.stringify({ ...data, count: { players: 1, viewers: 0 } })
-        );
-      }
-    });
-  }
-
-  async deleteTable(wss, data) {
-    const key = `table-${data.tableId}`;
+  async deleteTable(id) {
+    const key = `table-${id}`;
 
     await chatStorage.delete(key);
-    await pvStorage.deleteAll(data.tableId.toString());
+    await pvStorage.deleteAll(id.toString());
 
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(data));
-      }
-    });
+    await pubsub.publish(wsEvents.deleteTableEvent, { id });
   }
 
-  async userJoinTable(wss, data) {
+  async userJoinTable(id, userId) {
     const key = data.tableId.toString();
 
-    await pvStorage.add(key, data.userId);
+    await pvStorage.add(key, userId);
     const count = await pvStorage.getCount(key);
 
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ ...data, count }));
-      }
-    });
+    await pubsub.publish(wsEvents.userJoinTableEvent, { id, userId, count });
   }
 
-  async userLeftTable(wss, data) {
-    const key = data.tableId.toString();
+  async userLeftTable(id, userId) {
+    const key = id.toString();
 
-    await pvStorage.deleteOne(key, data.userId);
+    await pvStorage.deleteOne(key, userId);
     const count = await pvStorage.getCount(key);
 
-    if (count.players)
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ ...data, count }));
-        }
-      });
+    if (count.players) {
+      await pubsub.publish(wsEvents.userLeftTableEvent, { id, userId, count });
+    }
   }
 
-  async getPlayersViewersCount(ws, data) {
-    const count = await pvStorage.getCount(data.tableId.toString());
-
-    ws.send(JSON.stringify({ ...data, count }));
+  async getPlayersViewersCount(tableId) {
+    return await pvStorage.getCount(tableId.toString());
   }
 }
 

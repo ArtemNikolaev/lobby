@@ -7,7 +7,6 @@ const pageRouter = require("./components/pages/pageRouter");
 const gameRouter = require("./components/games/gameRouter");
 const { PAGE_NOT_FOUND } = require("./helpers/messages");
 const APIErrorsHandler = require("./middlewares/APIErrorsHandler");
-const webSocketServerConnection = require("./webSocketServer");
 const mongoDB = require("./mongodb/index");
 const { init } = require("./apollo");
 
@@ -17,7 +16,6 @@ const startServer = () => {
 
     mongoDB.connect();
     init(app, mongoDB);
-    webSocketServerConnection(server);
     server.listen(10000);
 
     app.use(morgan("dev"));

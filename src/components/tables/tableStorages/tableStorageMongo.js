@@ -11,14 +11,14 @@ module.exports = class TableStorageMongo {
   async create(tableData) {
     const data = await this.tables.insertOne({
       ...tableData,
-      game_id: ObjectId(tableData.game_id),
+      gameId: ObjectId(tableData.gameId),
     });
 
     return data.insertedId.toString();
   }
 
   async findByGameId(gameId) {
-    const cursor = this.tables.find({ game_id: ObjectId(gameId) });
+    const cursor = this.tables.find({ gameId: ObjectId(gameId) });
 
     if ((await cursor.count()) === 0) return [];
 
@@ -52,15 +52,15 @@ module.exports = class TableStorageMongo {
       {
         $lookup: {
           from: "games",
-          localField: "game_id",
+          localField: "gameId",
           foreignField: "_id",
           as: "game",
         },
       },
       {
         $project: {
-          game_id: 1,
-          max_players: 1,
+          gameId: 1,
+          maxPlayers: 1,
           creator: 1,
           "game.title": 1,
           "game.description": 1,
@@ -68,7 +68,7 @@ module.exports = class TableStorageMongo {
       },
     ]);
 
-    const { _id, creator, game_id, max_players, game } = (
+    const { _id, creator, gameId, maxPlayers, game } = (
       await cursor.toArray()
     )[0];
     const { title, description } = game[0];
@@ -76,8 +76,8 @@ module.exports = class TableStorageMongo {
     return {
       id: _id.toString(),
       creator,
-      gameId: game_id.toString(),
-      max_players,
+      gameId: gameId.toString(),
+      maxPlayers,
       title,
       description,
     };
