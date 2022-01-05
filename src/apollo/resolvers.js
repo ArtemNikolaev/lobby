@@ -163,7 +163,7 @@ const resolvers = {
         return {
           code: 200,
           success: true,
-          message: `Successfully send reset link to user ${user.username}`,
+          message: `Successfully send reset link to user ${email}`,
           responseMessage: { message: CHECK_EMAIL },
         };
       } catch (err) {

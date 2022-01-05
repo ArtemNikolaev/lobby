@@ -7,6 +7,17 @@ const successMessage = document.querySelector(".success-msg");
 const form = document.querySelector(".reset-pw-form");
 const confimMessage = document.querySelector(".confirm-message");
 
+const displayErrorMessage = (message) => {
+  successMessage.innerText = message;
+  successMessage.style.color = "red";
+  successMessage.style.display = "block";
+
+  setTimeout(() => {
+    successMessage.style.color = "green";
+    successMessage.style.display = "none";
+  }, 2000);
+}
+
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   const data = new FormData(form);
@@ -38,27 +49,20 @@ form.addEventListener("submit", async (e) => {
       },
     });
 
-    const data = json.data.resetPassword;
+    if (json.data && json.data.resetPassword.code === 200) {
+      successMessage.innerText = "Password updated successfully!";
+      successMessage.style.display = "block";
 
-    // TODO: remove comment
-    // if (response.status === 400 || response.status === 404) {
-    //   const res = await response.json();
-    //   successMessage.innerText = res.message;
-    //   successMessage.style.color = "red";
-    //   successMessage.style.display = "block";
-    //
-    //   setTimeout(() => {
-    //     successMessage.style.color = "green";
-    //     successMessage.style.display = "none";
-    //   }, 2000);
-    // } else if (response.status === 204) {
-    //   successMessage.innerText = "Password updated successfully!";
-    //   successMessage.style.display = "block";
-    //
-    //   setTimeout(() => {
-    //     document.location.href = loginPage;
-    //   }, 2000);
-    // }
+      setTimeout(() => {
+        document.location.href = loginPage;
+      }, 2000);
+    } else if (json.data && json.data.resetPassword.code !== 200) {
+      console.log(json);
+      displayErrorMessage(json.data.resetPassword.message);
+    } else {
+      console.log(json);
+      displayErrorMessage("Something went wrong");
+    }
   } catch (error) {
     showError(error);
   }
