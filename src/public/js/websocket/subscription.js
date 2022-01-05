@@ -78,7 +78,13 @@ class SubscriptionService {
             query,
           },
           {
-            next: onNext,
+            next: (value) => {
+              if (value.errors) {
+                console.log(value.errors);
+                reject();
+              }
+              onNext(value);
+            },
             error: reject,
             complete: resolve,
           }
