@@ -1,6 +1,5 @@
 import {
-  createdInterceptor,
-  noContentInterceptor,
+  graphQLRequestInterceptor,
 } from "../utils/interceptors.js";
 import fetchGraphQL from "./graphQL.js";
 
@@ -31,9 +30,8 @@ class Game {
         url: body.url,
       },
     }, jwt);
-    console.log(json);
-    // TODO: review interceptors
-    // await createdInterceptor(response, data);
+
+    await graphQLRequestInterceptor(json);
     return json.data.createGame.game;
   }
 
@@ -49,10 +47,8 @@ class Game {
       query,
       variables: { id },
     }, jwt);
-    console.log(json);
-    // TODO: review interceptors
-    // await noContentInterceptor(response);
 
+    await graphQLRequestInterceptor(json);
     return true;
   }
 }

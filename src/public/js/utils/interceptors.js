@@ -1,26 +1,11 @@
 import jumpToStartPage from "./jumpToStartPage.js";
 
-export async function noContentInterceptor(response) {
-  if (response.status === 401) {
-    const data = await response.json();
+export async function graphQLRequestInterceptor(response) {
+  if (response.errors) {
+    console.log(response.errors);
     jumpToStartPage();
-    throw new Error(data.message);
+    throw new Error("Error in graphql response");
   }
-
-  if (response.status !== 204) {
-    const data = await response.json();
-
-    throw new Error(data.message);
-  }
-}
-
-export async function createdInterceptor(response, data) {
-  if (response.status === 401 || response.status === 403) {
-    jumpToStartPage();
-    throw new Error(data.message);
-  }
-
-  if (response.status !== 201) throw new Error(data.message);
 }
 
 export function okInterceptor(response, data) {

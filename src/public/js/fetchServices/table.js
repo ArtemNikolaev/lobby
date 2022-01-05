@@ -1,7 +1,4 @@
-import {
-  noContentInterceptor,
-  createdInterceptor,
-} from "../utils/interceptors.js";
+import { graphQLRequestInterceptor } from "../utils/interceptors.js";
 import fetchGraphQL from "./graphQL.js";
 
 class Table {
@@ -27,16 +24,18 @@ class Table {
       }
     }`;
 
-    const json = await fetchGraphQL({
-      query,
-      variables: {
-        gameId: id,
-        maxPlayers: body.maxPlayers
+    const json = await fetchGraphQL(
+      {
+        query,
+        variables: {
+          gameId: id,
+          maxPlayers: body.maxPlayers,
+        },
       },
-    }, jwt);
+      jwt
+    );
 
-    // TODO: review interceptors
-    // await createdInterceptor(response, data);
+    await graphQLRequestInterceptor(json);
     return json.data.createTable.table;
   }
 
@@ -49,16 +48,17 @@ class Table {
       }
     }`;
 
-    const json = await fetchGraphQL({
-      query,
-      variables: {
-        id: tableId
+    const json = await fetchGraphQL(
+      {
+        query,
+        variables: {
+          id: tableId,
+        },
       },
-    }, jwt);
+      jwt
+    );
 
-    // TODO: review interceptors
-    // await noContentInterceptor(response);
-
+    await graphQLRequestInterceptor(json);
     return true;
   }
 }
