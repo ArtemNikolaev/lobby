@@ -37,25 +37,18 @@ form.addEventListener("submit", async (e) => {
       },
     });
 
+    if (json.errors || json.data.login.code === 401) {
+      failMessage.innerText = json.errors ? "Something went wrong " : json.data.login.message;
+      failMessage.style.display = "block";
+
+      setTimeout(() => {
+        failMessage.style.display = "none";
+      }, 4000);
+
+      return;
+    }
+
     const res = json.data.login;
-
-    // TODO: remove comment
-    // const response = await auth.send(requestData);
-    // const res = await response.json();
-    //
-    // if (response.status === 401) {
-    //   failMessage.innerText = res.message;
-    //   failMessage.style.display = "block";
-    //
-    //   setTimeout(() => {
-    //     failMessage.style.display = "none";
-    //   }, 4000);
-    //
-    //   return;
-    // }
-    //
-    // if (response.status >= 400) throw new Error(res.message);
-
     localStorage.setItem(token, res.token);
     document.location.href = res.user.role === "user" ? userPage : adminPage;
   } catch (error) {

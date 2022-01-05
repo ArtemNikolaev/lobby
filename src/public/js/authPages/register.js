@@ -38,22 +38,17 @@ form.addEventListener("submit", async (e) => {
       },
     });
 
-    const data = json.data.register.id;
+    if (json.errors || json.data.register.code !== 200) {
+      errMessage.innerText = "Something went wrong";
+      errMessage.style.display = "block";
 
-    // TODO: remove comment
-    // if (response.status === 409) {
-    //   errMessage.innerText = "Something went wrong";
-    //   errMessage.style.display = "block";
-    //
-    //   setTimeout(() => {
-    //     errMessage.style.display = "none";
-    //   }, 4000);
-    //
-    //   window.console.log(data.message);
-    //   return;
-    // }
-    //
-    // if (response.status >= 400) throw new Error(data.message);
+      setTimeout(() => {
+        errMessage.style.display = "none";
+      }, 4000);
+
+      console.log(json);
+      return;
+    }
 
     document.location.href = loginPage;
   } catch (error) {

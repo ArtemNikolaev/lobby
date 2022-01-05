@@ -10,6 +10,7 @@ const { USER_NOT_FOUND, CHECK_EMAIL } = require("../helpers/messages");
 const { pubsub } = require("./pubsub");
 const { wsEvents } = require("../../config");
 const eventController = require("../webSocketServer/eventController");
+const checkUsername = require("../middlewares/checkUsername");
 const resolvers = {
   Query: {
     table: (_, { id }, { dataSources }) => {
@@ -66,7 +67,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    register: async (_, { email, username, password }, { dataSources }) => {
+    register: checkUsername(async (_, { email, username, password }, { dataSources }) => {
       try {
         const userData = {
           role: "user",
@@ -86,10 +87,10 @@ const resolvers = {
           code: err.extensions.response.status,
           success: false,
           message: err.extensions.response.body,
-          track: null,
+          id: null,
         };
       }
-    },
+    }),
     login: async (_, { emailOrUsername, password }, { dataSources }) => {
       try {
         const user = await dataSources.userAPI.findByLogin(emailOrUsername);
