@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Profile</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 2rem 3rem;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+    .main {
+      display: flex;
+      justify-content: space-between;
+    }
+    .user-photo {
+      width: 150px;
+      height: 150px;
+      margin-bottom: 1rem;
+    }
+    .game-cards {
+      display: flex;
+      flex-wrap: wrap;
+      width: 70vw;
+    }
+    .card {
+      margin: 0.5rem;
+      width: 150px;
+    }
+    .card img {
+      width: 150px;
+      height: 180px;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <div>
+        <a href="/profile"><h5>Profile</h5></a>
+      </div>
+      <div>
+        <a href="#"><h4 class="logout">LOGOUT</h4></a>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="info">
+        <div class="userinfo">
+          <div class="user-photo">
+            <img src="../img/profile.jpg" alt="" />
+          </div>
+
+          <div id="role"></div>
+          <div id="id"></div>
+          <div id="username"></div>
+          <div id="email"></div>
+        </div>
+      </div>
+
+      <div class="game-cards"></div>
+    </div>
+
+    <script type="module" src="../js/pages/userProfile.js"></script>
+  </body>
+</html>
