@@ -1,0 +1,50 @@
+service: lobby-front-end
+frameworkVersion: "^2.71.0"
+
+plugins:
+  - serverless-s3-sync
+custom:
+  siteName: lobby.com
+  s3Sync:
+    - bucketName: ${self:custom.siteName}
+      localDir: static
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "eu-central-1"}
+
+resources:
+  Resources:
+    LobbyStaticSite:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        BucketName: ${self:custom.siteName}
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: 404.html
+
+    LobbyStaticSitePolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref LobbyStaticSite
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadGetObject
+              Effect: Allow
+              Principal: "*"
+              Action:
+                - s3:GetObject
+              Resource:
+                Fn::Join:
+                  ["", ["arn:aws:s3:::", { "Ref": "LobbyStaticSite" }, "/*"]]
+
+  Outputs:
+    StaticSiteS3BucketWebsiteURL:
+      Value:
+        Fn::GetAtt:
+          - LobbyStaticSite
+          - WebsiteURL

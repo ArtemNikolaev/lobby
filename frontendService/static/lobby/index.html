@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
+      rel="stylesheet"
+      id="bootstrap-css"
+    />
+    <title>Lobby</title>
+  </head>
+
+  <style>
+    body {
+      background: rgb(255, 247, 247);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 247, 247, 1) 0%,
+        rgba(255, 252, 244, 1) 44%,
+        rgba(247, 254, 255, 1) 100%
+      );
+      margin: 2rem 3rem;
+    }
+    .nav {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .main {
+      display: flex;
+    }
+    .tables-section {
+      display: flex;
+      flex-direction: column;
+      width: 70vw;
+      margin-right: 3rem;
+    }
+    .create-table {
+      display: flex;
+      margin-bottom: 2rem;
+    }
+    .tables {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .table-card {
+      width: 110px;
+      height: 150px;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #e6f6ff;
+      border: 1px solid #e0e0e0;
+    }
+    .table-card p {
+      margin: 0;
+    }
+    .chat-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 25vw;
+    }
+    .chat {
+      width: 22vw;
+      height: 60vh;
+      padding: 5px;
+      border: 1px solid #e0e0e0;
+      background: #e6f6ff;
+      overflow-y: scroll;
+    }
+    #chat-form {
+      width: 22vw;
+      display: flex;
+    }
+    .chat-msg-me {
+      text-align: end;
+    }
+    .chat-username {
+      font-size: x-small;
+      margin: 0;
+    }
+    .chat-message {
+      font-style: italic;
+    }
+    .chat-date {
+      font-size: xx-small;
+      margin: 0;
+    }
+    .chatbot-msg {
+      text-align: center;
+      font-style: normal;
+      color: #a90000;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+
+  <body>
+    <div class="nav">
+      <button class="btn btn-warning" id="profile-page">Profile</button>
+    </div>
+
+    <div style="display: block; text-align: center">
+      <h3 id="lobby-title"></h3>
+    </div>
+
+    <div class="main">
+      <!-- tables-section -->
+      <div class="tables-section">
+        <div class="create-table">
+          <div style="margin-right: 2rem">
+            <button class="btn btn-info create-table-btn">New Table</button>
+          </div>
+
+          <form class="form-inline create-form hidden">
+            <div class="form-group">
+              <label for="maxPlayers" class="sr-only">Set max players</label>
+              <input
+                type="text"
+                class="input-large"
+                id="maxPlayers"
+                name="maxPlayers"
+                placeholder="2 or more players"
+                required
+              />
+              <button class="btn btn-success mb-2">Create</button>
+            </div>
+          </form>
+        </div>
+        <p style="border: 1px solid black"></p>
+        <!-- tables cards -->
+        <div class="tables"></div>
+      </div>
+
+      <!-- chat section -->
+      <div class="chat-section">
+        <div class="chat-title">
+          <h4>Chat</h4>
+        </div>
+        <div class="chat"></div>
+        <form class="form-row" id="chat-form">
+          <div class="col-md-4">
+            <div class="controls">
+              <input
+                style="width: 260px"
+                type="text"
+                id="message"
+                name="message"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="controls delete-btn">
+              <button class="btn btn-info">SEND</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="../js/pages/gameLobby.js"></script>
+  </body>
+</html>

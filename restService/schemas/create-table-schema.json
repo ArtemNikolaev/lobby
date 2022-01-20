@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Create Table Schema",
+  "type": "object",
+  "properties": {
+    "maxPlayers": {
+      "type": "number",
+      "minimum": 2
+    }
+  },
+  "required": ["maxPlayers"]
+}
