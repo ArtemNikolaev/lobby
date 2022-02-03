@@ -14,7 +14,7 @@ class GameController {
       const { error } = checkAuth(req.headers.authorization, role);
       if (error) return responseError(res, error);
 
-      const data = await service.createGame(req.body);
+      const data = await service.createNewGame(req.body);
 
       res.status(201).json(data);
     } catch (error) {
@@ -45,7 +45,7 @@ class GameController {
       const { payload, error } = checkAuth(req.headers.authorization, role);
       if (error) return responseError(res, error);
 
-      const data = await service.createTable(req, payload);
+      const data = await service.createNewTable(req, payload.id);
 
       res.status(201).json(data);
     } catch (error) {

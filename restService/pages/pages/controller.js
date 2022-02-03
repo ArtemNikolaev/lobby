@@ -21,7 +21,8 @@ class Controller {
       const { error } = checkAuth(req.headers.authorization);
       if (error) return responseError(res, error);
 
-      const data = await service.getLobbyPage(req.params.id);
+      const gameId = req.params["0"].split("/")[1];
+      const data = await service.getLobbyPage(gameId);
 
       res.json(data);
     } catch (error) {
@@ -34,7 +35,8 @@ class Controller {
       const { error } = checkAuth(req.headers.authorization);
       if (error) return responseError(res, error);
 
-      const data = await service.getTablePage(req.params.id);
+      const tableId = req.params["0"].split("/")[1];
+      const data = await service.getTablePage(tableId);
 
       res.json(data);
     } catch (error) {
