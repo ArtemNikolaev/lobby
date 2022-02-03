@@ -1,29 +1,30 @@
-const pagesController = require("./pages/pagesController");
+const controller = require("./pages/controller");
 
-exports.handler = async (event) => {
-  let response;
-  global.console.log(`:: | ${event.httpMethod} | ${event.path} |`);
-  const { principalId } = event.requestContext.authorizer;
+exports.pages = async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
 
-  switch (true) {
-    case event.httpMethod === "GET" && event.path === "/admin-page":
-      response = await pagesController.getProfilePage(principalId);
-      break;
-
-    case event.httpMethod === "GET" && event.path === "/user-page":
-      response = await pagesController.getProfilePage(principalId);
-      break;
-
-    case event.httpMethod === "GET" &&
-      event.path === `/lobby-page/${event.pathParameters.id}`:
-      response = await pagesController.getLobbyPage(event);
-      break;
-
-    case event.httpMethod === "GET" &&
-      event.path === `/table-page/${event.pathParameters.id}`:
-      response = await pagesController.getTablePage(event);
-      break;
+  if (req.method === "OPTIONS") {
+    res.set("Access-Control-Allow-Methods", "GET");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.status(204).send();
+    return;
   }
 
-  return response;
+  switch (true) {
+    case req.method === "GET" && req.path === "/admin-page":
+      await controller.getProfilePage(req, res, "admin");
+      break;
+
+    case req.method === "GET" && req.path === "/user-page":
+      await controller.getProfilePage(req, res, "user");
+      break;
+
+    case req.method === "GET" && req.path === `/lobby-page/${req.params.id}`:
+      await controller.getLobbyPage(req, res);
+      break;
+
+    case req.method === "GET" && req.path === `/table-page/${req.params.id}`:
+      await controller.getTablePage(req, res);
+      break;
+  }
 };

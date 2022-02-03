@@ -1,24 +1,32 @@
 const busboy = require("busboy");
+const path = require("path");
+const os = require("os");
+const fs = require("fs");
 
-module.exports = async (event) => {
-  const contentType =
-    event.headers["Content-Type"] || event.headers["content-type"];
+module.exports = async (req) => {
+  const tmpDir = os.tmpdir();
 
   return new Promise((resolve, reject) => {
-    const bb = busboy({ headers: { "content-type": contentType } });
+    const bb = busboy({ headers: req.headers });
 
     let parsed = {};
     bb.on("file", async (fieldname, file, { filename, mimeType }) => {
       try {
-        const buffer = await new Promise((resolve, reject) =>
-          file
-            .on("data", (data) => resolve(data))
-            .on("error", (err) => reject(err))
-        );
-
-        parsed.filename = filename;
+        const filepath = path.join(tmpDir, filename);
+        parsed.filepath = filepath;
         parsed.mimeType = mimeType;
-        parsed.buffer = buffer;
+        parsed.filename = filename;
+
+        const writeStream = fs.createWriteStream(filepath);
+        file.pipe(writeStream);
+
+        await new Promise((resolve, reject) => {
+          file.on("end", () => {
+            writeStream.end();
+          });
+          writeStream.on("finish", resolve);
+          writeStream.on("error", reject);
+        });
       } catch (error) {
         reject(error);
       }
@@ -29,7 +37,6 @@ module.exports = async (event) => {
       .on("finish", () => resolve(parsed))
       .on("error", (error) => reject(error));
 
-    bb.write(event.body, event.isBase64Encoded ? "base64" : "binary");
-    bb.end();
+    bb.end(req.rawBody);
   });
 };

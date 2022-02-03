@@ -8,7 +8,6 @@ const {
 } = require("../config");
 
 const USER_NOT_FOUND = "User not found";
-const TABLE_NOT_FOUND = "Table not found";
 
 async function findUserById(id) {
   const collection = await getCollection(usersCollection);

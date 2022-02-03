@@ -1,163 +1,104 @@
 service: lobby-rest
 frameworkVersion: "^2.71.0"
 
-provider:
-  name: aws
-  runtime: nodejs14.x
-  stage: ${opt:stage, "dev"}
-  region: ${opt:region, "eu-central-1"}
-  apiName: lobby-rest
-  versionFunctions: false
-  iam:
-    role:
-      name: lobby-serverless-role
-      path: /service-role/
-      managedPolicies:
-        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+plugins:
+  - serverless-google-cloudfunctions
 
-  apiGateway:
-    binaryMediaTypes:
-      - "multipart/form-data"
-    request:
-      schemas:
-        signin:
-          name: SignInSchema
-          schema: ${file(schemas/signin-schema.json)}
-          description: "SignIn body validation"
-        signup:
-          name: SignUpSchema
-          schema: ${file(schemas/signup-schema.json)}
-          description: "SignUp body validation"
-        password-reset:
-          name: ResetPasswordSchema
-          schema: ${file(schemas/password-reset-schema.json)}
-          description: "Reset password validation"
-        email:
-          name: EmailSchema
-          schema: ${file(schemas/email-schema.json)}
-          description: "Email validation"
-        create-table:
-          name: CreateTableSchema
-          schema: ${file(schemas/create-table-schema.json)}
-          description: "Create Table body validation"
+provider:
+  name: google
+  runtime: nodejs14
+  memorySize: 1024
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "europe-central2"}
+  project: lobby-serverless
+  credentials: C:\Users\andrei.rylkou\.gcloud\lobby-serverless-6b57ae19aea6.json
+
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
 
 custom:
   resultTtlInSeconds: 0
-  timeout: 5
-  authorizers:
-    memorySize: 1024
+  timeout: 90s
   functions:
-    memorySize: 8192
-  apiGatewayRestApiURL: !Join
-    - ""
-    - - "https://"
-      - !Ref ApiGatewayRestApi
-      - ".execute-api."
-      - ${opt:region, self:provider.region}
-      - ".amazonaws.com/"
-      - ${opt:stage, self:provider.stage}
+    memorySize: 1024
 
 functions:
-  # AUTHORIZERS
-
-  lobby-basic-authorizer:
-    name: lobby-basic-authorizer
-    handler: authorizers/basicAuthorizer.handler
-    memorySize: ${self:custom.authorizers.memorySize}
-    timeout: ${self:custom.timeout}
-    environment:
-      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
-
-  lobby-user-authorizer:
-    name: lobby-user-authorizer
-    handler: authorizers/userAuthorizer.handler
-    memorySize: ${self:custom.authorizers.memorySize}
-    timeout: ${self:custom.timeout}
-    environment:
-      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
-
-  lobby-admin-authorizer:
-    name: lobby-admin-authorizer
-    handler: authorizers/adminAuthorizer.handler
-    memorySize: ${self:custom.authorizers.memorySize}
-    timeout: ${self:custom.timeout}
-    environment:
-      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
-
   # AUTH
 
-  lobby-auth:
-    name: lobby-auth
-    handler: auth/index.handler
-    memorySize: ${self:custom.functions.memorySize}
-    timeout: ${self:custom.timeout}
-    environment:
-      CLIENT_HOST: !Join
-        - ""
-        - - "http://"
-          - ${file(../env.${opt:stage, self:provider.stage}.json):CLIENT_HOST}
-          - ".s3-website."
-          - ${opt:region, self:provider.region}
-          - ".amazonaws.com"
-      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
-      ACCESS_TOKEN_TTL: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_TOKEN_TTL}
-      RESET_LINK_TTL: ${file(../env.${opt:stage, self:provider.stage}.json):RESET_LINK_TTL}
-      MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
-      MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
-      MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
-      API_URL: ${self:custom.apiGatewayRestApiURL}
-    events:
-      - http:
-          path: auth/signin
-          method: post
-          cors: true
-          request:
-            schemas:
-              application/json: signin
-      - http:
-          path: auth/signup
-          method: post
-          cors: true
-          request:
-            schemas:
-              application/json: signup
-      - http:
-          path: auth/signout
-          method: post
-          cors: true
-      - http:
-          path: auth/password-reset-link
-          method: post
-          cors: true
-          request:
-            schemas:
-              application/json: email
-      - http:
-          path: auth/password-reset
-          method: patch
-          cors: true
-          request:
-            schemas:
-              application/json: password-reset
-      - http:
-          path: auth/password-reset-link/{id}/{token}
-          method: get
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-                token: true
+  # lobby-auth:
+  #   name: lobby-auth
+  #   handler: auth/index.handler
+  #   memorySize: ${self:custom.functions.memorySize}
+  #   timeout: ${self:custom.timeout}
+  #   environment:
+  #     CLIENT_HOST: !Join
+  #       - ""
+  #       - - "http://"
+  #         - ${file(../env.${opt:stage, self:provider.stage}.json):CLIENT_HOST}
+  #         - ".s3-website."
+  #         - ${opt:region, self:provider.region}
+  #         - ".amazonaws.com"
+  #     ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
+  #     ACCESS_TOKEN_TTL: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_TOKEN_TTL}
+  #     RESET_LINK_TTL: ${file(../env.${opt:stage, self:provider.stage}.json):RESET_LINK_TTL}
+  #     MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
+  #     MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
+  #     MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
+  #     API_URL: ${self:custom.apiGatewayRestApiURL}
+  #   events:
+  #     - http:
+  #         path: auth/signin
+  #         method: post
+  #         cors: true
+  #         request:
+  #           schemas:
+  #             application/json: signin
+  #     - http:
+  #         path: auth/signup
+  #         method: post
+  #         cors: true
+  #         request:
+  #           schemas:
+  #             application/json: signup
+  #     - http:
+  #         path: auth/signout
+  #         method: post
+  #         cors: true
+  #     - http:
+  #         path: auth/password-reset-link
+  #         method: post
+  #         cors: true
+  #         request:
+  #           schemas:
+  #             application/json: email
+  #     - http:
+  #         path: auth/password-reset
+  #         method: patch
+  #         cors: true
+  #         request:
+  #           schemas:
+  #             application/json: password-reset
+  #     - http:
+  #         path: auth/password-reset-link/{id}/{token}
+  #         method: get
+  #         cors: true
+  #         request:
+  #           parameters:
+  #             paths:
+  #               id: true
+  #               token: true
 
   # PAGES
 
   lobby-pages:
     name: lobby-pages
-    handler: pages/index.handler
+    handler: pages/index.pages
     memorySize: ${self:custom.functions.memorySize}
-    timeout: ${self:custom.timeout}
     environment:
+      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
       MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
       MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
       MONGODB_COLLECTION_GAMES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
@@ -165,147 +106,131 @@ functions:
       MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
     events:
       - http:
-          path: admin-page
-          method: get
-          cors: true
-          authorizer:
-            name: lobby-admin-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: user-page
-          method: get
-          cors: true
-          authorizer:
-            name: lobby-user-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: lobby-page/{id}
-          method: get
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-          authorizer:
-            name: lobby-basic-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: table-page/{id}
-          method: get
-          cors: true
-          request:
-            parameters:
-              paths:
-                id: true
-          authorizer:
-            name: lobby-basic-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+          pages
+          # path: admin-page
+          # method: get
+          # cors: true
+      # - http:
+      #     path: user-page
+      #     method: get
+      #     cors: true
+      # - http:
+      #     path: lobby-page/{id}
+      #     method: get
+      #     cors: true
+      #     request:
+      #       parameters:
+      #         paths:
+      #           id: true
+      # - http:
+      #     path: table-page/{id}
+      #     method: get
+      #     cors: true
+      #     request:
+      #       parameters:
+      #         paths:
+      #           id: true
 
   # GAMES
+#   lobby-games:
+#     name: lobby-games
+#     handler: games/index.handler
+#     memorySize: ${self:custom.functions.memorySize}
+#     timeout: ${self:custom.timeout}
+#     environment:
+#       MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
+#       MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
+#       MONGODB_COLLECTION_GAMES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
+#       MONGODB_COLLECTION_TABLES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_TABLES}
+#       MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
+#       BUCKET_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):BUCKET_NAME}
+#     events:
+#       - http:
+#           path: games
+#           method: post
+#           cors: true
+#           authorizer:
+#             name: lobby-admin-authorizer
+#             identitySource: method.request.header.Authorization
+#             resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+#       - http:
+#           path: games/{gameId}
+#           method: delete
+#           cors: true
+#           request:
+#             parameters:
+#               paths:
+#                 gameId: true
+#           authorizer:
+#             name: lobby-admin-authorizer
+#             identitySource: method.request.header.Authorization
+#             resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+#       - http:
+#           path: games/{gameId}/tables
+#           method: post
+#           cors: true
+#           request:
+#             schemas:
+#               application/json: create-table
+#             parameters:
+#               paths:
+#                 gameId: true
+#           authorizer:
+#             name: lobby-basic-authorizer
+#             identitySource: method.request.header.Authorization
+#             resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+#       - http:
+#           path: games/{gameId}/tables/{tableId}
+#           method: delete
+#           cors: true
+#           request:
+#             parameters:
+#               paths:
+#                 gameId: true
+#                 tableId: true
+#           authorizer:
+#             name: lobby-basic-authorizer
+#             identitySource: method.request.header.Authorization
+#             resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
 
-  lobby-games:
-    name: lobby-games
-    handler: games/index.handler
-    memorySize: ${self:custom.functions.memorySize}
-    timeout: ${self:custom.timeout}
-    environment:
-      MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
-      MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
-      MONGODB_COLLECTION_GAMES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
-      MONGODB_COLLECTION_TABLES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_TABLES}
-      MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
-      BUCKET_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):BUCKET_NAME}
-    events:
-      - http:
-          path: games
-          method: post
-          cors: true
-          authorizer:
-            name: lobby-admin-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: games/{gameId}
-          method: delete
-          cors: true
-          request:
-            parameters:
-              paths:
-                gameId: true
-          authorizer:
-            name: lobby-admin-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: games/{gameId}/tables
-          method: post
-          cors: true
-          request:
-            schemas:
-              application/json: create-table
-            parameters:
-              paths:
-                gameId: true
-          authorizer:
-            name: lobby-basic-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
-      - http:
-          path: games/{gameId}/tables/{tableId}
-          method: delete
-          cors: true
-          request:
-            parameters:
-              paths:
-                gameId: true
-                tableId: true
-          authorizer:
-            name: lobby-basic-authorizer
-            identitySource: method.request.header.Authorization
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+# resources:
+#   Resources:
+#     ImageUploadBucket:
+#       Type: "AWS::S3::Bucket"
+#       Properties:
+#         BucketName: ${file(../env.${opt:stage, self:provider.stage}.json):BUCKET_NAME}
+#         AccessControl: PublicRead
 
-resources:
-  Resources:
-    ImageUploadBucket:
-      Type: "AWS::S3::Bucket"
-      Properties:
-        BucketName: ${file(../env.${opt:stage, self:provider.stage}.json):BUCKET_NAME}
-        AccessControl: PublicRead
+#     ImageUploadBucketPolicy:
+#       Type: "AWS::S3::BucketPolicy"
+#       Properties:
+#         Bucket: !Ref ImageUploadBucket
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Action:
+#                 - "s3:GetObject"
+#               Effect: Allow
+#               Resource: !Join
+#                 - ""
+#                 - - "arn:aws:s3:::"
+#                   - !Ref ImageUploadBucket
+#                   - /*
+#               Principal: "*"
 
-    ImageUploadBucketPolicy:
-      Type: "AWS::S3::BucketPolicy"
-      Properties:
-        Bucket: !Ref ImageUploadBucket
-        PolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Action:
-                - "s3:GetObject"
-              Effect: Allow
-              Resource: !Join
-                - ""
-                - - "arn:aws:s3:::"
-                  - !Ref ImageUploadBucket
-                  - /*
-              Principal: "*"
-
-    Default4XX:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId: !Ref ApiGatewayRestApi
-    Default5XX:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_5XX
-        RestApiId: !Ref ApiGatewayRestApi
+#     Default4XX:
+#       Type: "AWS::ApiGateway::GatewayResponse"
+#       Properties:
+#         ResponseParameters:
+#           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+#           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+#         ResponseType: DEFAULT_4XX
+#         RestApiId: !Ref ApiGatewayRestApi
+#     Default5XX:
+#       Type: "AWS::ApiGateway::GatewayResponse"
+#       Properties:
+#         ResponseParameters:
+#           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+#           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+#         ResponseType: DEFAULT_5XX
+#         RestApiId: !Ref ApiGatewayRestApi
