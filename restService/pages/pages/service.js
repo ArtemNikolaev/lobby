@@ -1,34 +1,26 @@
-const {
-  findUserById,
-  getGames,
-  findTablesByGameId,
-  findGamesById,
-  findTableById,
-} = require("./storage");
+const storage = require("./storage");
 const userDto = require("../utils/userDto");
 
-class Service {
-  async getProfilePage(id) {
-    const userData = await findUserById(id);
-    const user = userDto(userData);
+async function getProfilePage(id) {
+  const userData = await storage.findUserById(id);
+  const user = userDto(userData);
 
-    const games = await getGames();
+  const games = await storage.getGames();
 
-    return { user, games };
-  }
-
-  async getLobbyPage(gameId) {
-    const tables = await findTablesByGameId(gameId);
-    const game = await findGamesById(gameId);
-
-    return { tables, game };
-  }
-
-  async getTablePage(tableId) {
-    const table = await findTableById(tableId);
-
-    return table;
-  }
+  return { user, games };
 }
 
-module.exports = new Service();
+async function getLobbyPage(gameId) {
+  const tables = await storage.findTablesByGameId(gameId);
+  const game = await storage.findGamesById(gameId);
+
+  return { tables, game };
+}
+
+async function getTablePage(tableId) {
+  const table = await storage.findTableById(tableId);
+
+  return table;
+}
+
+module.exports = { getProfilePage, getLobbyPage, getTablePage };

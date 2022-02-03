@@ -1,27 +1,31 @@
-const { ObjectId } = require("mongodb");
-const getCollection = require("../utils/mongoDB");
+const { MongoClient, ObjectId } = require("mongodb");
 const NotFoundError = require("../errors/notFoundError");
 const {
+  dbName,
+  mongoUri,
   usersCollection,
   gamesCollection,
   tablesCollection,
 } = require("../config");
 
+const client = new MongoClient(mongoUri);
 const USER_NOT_FOUND = "User not found";
 
-async function findUserById(id) {
-  const collection = await getCollection(usersCollection);
+exports.findUserById = async (id) => {
+  await client.connect();
+  const users = client.db(dbName).collection(usersCollection);
 
-  const data = await collection.findOne({ _id: ObjectId(id) });
+  const data = await users.findOne({ _id: ObjectId(id) });
   if (!data) throw new NotFoundError(USER_NOT_FOUND);
 
   return { id, ...data };
-}
+};
 
-async function getGames() {
-  const collection = await getCollection(gamesCollection);
+exports.getGames = async () => {
+  await client.connect();
+  const games = client.db(dbName).collection(gamesCollection);
 
-  const cursor = collection.find({});
+  const cursor = games.find({});
 
   if ((await cursor.count()) === 0) return [];
 
@@ -32,12 +36,13 @@ async function getGames() {
     item.id = id;
     return item;
   });
-}
+};
 
-async function findTablesByGameId(gameId) {
-  const collection = await getCollection(tablesCollection);
+exports.findTablesByGameId = async (gameId) => {
+  await client.connect();
+  const tables = client.db(dbName).collection(tablesCollection);
 
-  const cursor = collection.find({ game_id: ObjectId(gameId) });
+  const cursor = tables.find({ game_id: ObjectId(gameId) });
   if ((await cursor.count()) === 0) return [];
 
   return (await cursor.toArray()).map((item) => {
@@ -47,23 +52,25 @@ async function findTablesByGameId(gameId) {
     item.id = id;
     return item;
   });
-}
+};
 
-async function findGamesById(id) {
-  const collection = await getCollection(gamesCollection);
+exports.findGamesById = async (id) => {
+  await client.connect();
+  const games = client.db(dbName).collection(gamesCollection);
 
-  const data = await collection.findOne({ _id: ObjectId(id) });
+  const data = await games.findOne({ _id: ObjectId(id) });
 
   if (data) {
     delete data._id;
     return { id, ...data };
   }
-}
+};
 
-async function findTableById(id) {
-  const collection = await getCollection(tablesCollection);
+exports.findTableById = async (id) => {
+  await client.connect();
+  const tables = client.db(dbName).collection(tablesCollection);
 
-  const cursor = collection.aggregate([
+  const cursor = tables.aggregate([
     { $match: { _id: ObjectId(id) } },
     {
       $lookup: {
@@ -97,12 +104,4 @@ async function findTableById(id) {
     title,
     description,
   };
-}
-
-module.exports = {
-  findUserById,
-  getGames,
-  findTablesByGameId,
-  findGamesById,
-  findTableById,
 };

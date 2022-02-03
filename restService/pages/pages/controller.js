@@ -1,6 +1,7 @@
 const service = require("./service");
 const checkAuth = require("../utils/checkAuth");
 const responseError = require("../utils/responseError");
+const { idValidator } = require("../utils/validator");
 
 class Controller {
   async getProfilePage(req, res, role) {
@@ -18,10 +19,12 @@ class Controller {
 
   async getLobbyPage(req, res) {
     try {
+      const gameId = req.params["0"].split("/")[1];
+      idValidator(gameId);
+
       const { error } = checkAuth(req.headers.authorization);
       if (error) return responseError(res, error);
 
-      const gameId = req.params["0"].split("/")[1];
       const data = await service.getLobbyPage(gameId);
 
       res.json(data);
@@ -32,10 +35,12 @@ class Controller {
 
   async getTablePage(req, res) {
     try {
+      const tableId = req.params["0"].split("/")[1];
+      idValidator(tableId);
+
       const { error } = checkAuth(req.headers.authorization);
       if (error) return responseError(res, error);
 
-      const tableId = req.params["0"].split("/")[1];
       const data = await service.getTablePage(tableId);
 
       res.json(data);
