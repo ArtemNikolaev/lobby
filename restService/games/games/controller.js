@@ -3,9 +3,9 @@ const { bodyValidator, idValidator } = require("../utils/validator");
 const checkAuth = require("../utils/checkAuth");
 const responseError = require("../utils/responseError");
 const parseMultipartFormData = require("../utils/parseMultipartFormData");
-const { createGameSchema, createTableSchema } = require("../schemas");
+const { createGameSchema, createTableSchema } = require("../utils/schemas");
 
-class GameController {
+class Controller {
   async createGame(req, res, role) {
     try {
       req.body = await parseMultipartFormData(req);
@@ -71,4 +71,4 @@ class GameController {
   }
 }
 
-module.exports = new GameController();
+module.exports = new Controller();

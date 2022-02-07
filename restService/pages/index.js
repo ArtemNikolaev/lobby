@@ -26,5 +26,9 @@ exports.pages = async (req, res) => {
     case req.method === "GET" && req.path.startsWith("/table-page/"):
       await controller.getTablePage(req, res);
       break;
+
+    default:
+      res.status(404).send(`The Route ${req.path} doesn't exist`);
+      break;
   }
 };

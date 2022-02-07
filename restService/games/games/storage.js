@@ -13,7 +13,7 @@ exports.createGame = async (gameData) => {
   await client.connect();
   const games = client.db(dbName).collection(gamesCollection);
 
-  const data = await games.insertOne({ ...gameData });
+  const data = await games.insertOne(gameData);
 
   return data.insertedId.toString();
 };
@@ -43,7 +43,7 @@ exports.createTable = async (tableData) => {
   await client.connect();
   const tables = client.db(dbName).collection(tablesCollection);
 
-  const data = await tables.insertOne({ ...tableData });
+  const data = await tables.insertOne(tableData);
 
   return data.insertedId.toString();
 };

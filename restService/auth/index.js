@@ -1,37 +1,43 @@
-const authController = require("./authController");
+const controller = require("./auth/controller");
 
-exports.handler = async (event) => {
-  let response;
-  global.console.log(`:: | ${event.httpMethod} | ${event.path} |`);
+exports.auth = async (req, res) => {
+  res.set("Access-Control-Allow-Origin", "*");
 
-  switch (true) {
-    case event.httpMethod === "POST" && event.path === "/auth/signup":
-      response = await authController.register(JSON.parse(event.body));
-      break;
-
-    case event.httpMethod === "POST" && event.path === "/auth/signin":
-      response = await authController.login(JSON.parse(event.body));
-      break;
-
-    case event.httpMethod === "POST" && event.path === "/auth/signout":
-      response = authController.logout();
-      break;
-
-    case event.httpMethod === "POST" &&
-      event.path === "/auth/password-reset-link":
-      response = await authController.sendResetLink(JSON.parse(event.body));
-      break;
-
-    case event.httpMethod === "GET" &&
-      event.path ===
-        `/auth/password-reset-link/${event.pathParameters.id}/${event.pathParameters.token}`:
-      response = await authController.verifyResetLink(event);
-      break;
-
-    case event.httpMethod === "PATCH" && event.path === "/auth/password-reset":
-      response = await authController.resetPassword(JSON.parse(event.body));
-      break;
+  if (req.method === "OPTIONS") {
+    res.set("Access-Control-Allow-Methods", "POST", "DELETE");
+    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.status(204).send();
+    return;
   }
 
-  return response;
+  switch (true) {
+    case req.method === "POST" && req.path === "/auth/signup":
+      await controller.register(req, res);
+      break;
+
+    case req.method === "POST" && req.path === "/auth/signin":
+      await controller.login(req, res);
+      break;
+
+    case req.method === "POST" && req.path === "/auth/signout":
+      controller.logout();
+      break;
+
+    case req.method === "POST" && req.path === "/auth/password-reset-link":
+      await controller.sendResetLink(req, res);
+      break;
+
+    case req.method === "GET" &&
+      req.path.startsWith("/auth/password-reset-link/"):
+      await controller.verifyResetLink(req, res);
+      break;
+
+    case req.method === "PATCH" && req.path === "/auth/password-reset":
+      await controller.resetPassword(req, res);
+      break;
+
+    default:
+      res.status(404).send(`The Route ${req.path} doesn't exist`);
+      break;
+  }
 };
