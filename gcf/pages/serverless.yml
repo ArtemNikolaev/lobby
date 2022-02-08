@@ -30,11 +30,11 @@ functions:
     handler: pages
     memorySize: ${self:custom.functions.memorySize}
     environment:
-      ACCESS_SECRET: ${file(../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
-      MONGODB_NAME: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
-      MONGODB_COLLECTION_USERS: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
-      MONGODB_COLLECTION_GAMES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
-      MONGODB_COLLECTION_TABLES: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_TABLES}
-      MONGODB_URI: ${file(../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
+      ACCESS_SECRET: ${file(../../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
+      MONGODB_NAME: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
+      MONGODB_COLLECTION_USERS: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
+      MONGODB_COLLECTION_GAMES: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
+      MONGODB_COLLECTION_TABLES: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_TABLES}
+      MONGODB_URI: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
     events:
       - http: pages

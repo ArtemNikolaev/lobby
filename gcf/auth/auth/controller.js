@@ -57,7 +57,7 @@ class Controller {
 
   async verifyResetLink(req, res) {
     try {
-      const [_, __, id, token] = req.params["0"].split("/");
+      const [_, id, token] = req.params["0"].split("/");
       await service.verifyLink({ id, token });
 
       res.setHeader("Location", `${clientHost}/reset-password`);

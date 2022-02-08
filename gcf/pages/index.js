@@ -19,11 +19,13 @@ exports.pages = async (req, res) => {
       await controller.getProfilePage(req, res, "user");
       break;
 
-    case req.method === "GET" && req.path.startsWith("/lobby-page/"):
+    case req.method === "GET" &&
+      /^\/lobby-page\/[0-9a-fA-f]{24}$/.test(req.path):
       await controller.getLobbyPage(req, res);
       break;
 
-    case req.method === "GET" && req.path.startsWith("/table-page/"):
+    case req.method === "GET" &&
+      /^\/table-page\/[0-9a-fA-f]{24}$/.test(req.path):
       await controller.getTablePage(req, res);
       break;
 

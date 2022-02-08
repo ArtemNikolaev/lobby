@@ -1,5 +1,5 @@
 const service = require("./service");
-const { bodyValidator, idValidator } = require("../utils/validator");
+const { bodyValidator } = require("../utils/validator");
 const checkAuth = require("../utils/checkAuth");
 const responseError = require("../utils/responseError");
 const parseMultipartFormData = require("../utils/parseMultipartFormData");
@@ -24,12 +24,10 @@ class Controller {
 
   async deleteGame(req, res, role) {
     try {
-      const gameId = req.params["0"].split("/")[1];
-      idValidator(gameId);
-
       const { error } = checkAuth(req.headers.authorization, role);
       if (error) return responseError(res, error);
 
+      const gameId = req.params["0"];
       await service.deleteGame(gameId);
 
       res.status(204).send();
@@ -55,13 +53,10 @@ class Controller {
 
   async deleteTable(req, res, role) {
     try {
-      const gameId = req.params["0"].split("/")[1];
-      const tableId = req.params["0"].split("/")[3];
-      idValidator(gameId, tableId);
-
       const { error } = checkAuth(req.headers.authorization, role);
       if (error) return responseError(res, error);
 
+      const tableId = req.params["0"].split("/")[2];
       await service.deleteTable(tableId);
 
       res.status(204).send();

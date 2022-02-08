@@ -1,31 +1,30 @@
 # Lobby Serverless
 
 Lobby is a simple application with authorization, chats and saving/retrieving data.
-Technologies: Serverless Framework, AWS (Lambda, API Gateway, S3), Websocket, MongoDB, Redis.
-
-Client side is the static site hosting to AWS S3.
-Backend side is AWS API Gateway (REST, Websocket) and Lambdas.
+Technologies: Serverless Framework, GCP, Websocket, MongoDB, Redis.
 
 ## How to
 
-[Sign up] for an AWS account.
+[Sign up] for GCP account.
 
-### Backend Services
+### Google Cloud Functions
 
-1. Use `env.dev.sample.json` file to configure services with your sensitive data and rename to `env.dev.json`.
-2. Then install dependencies and deploy services:
+1. Use `sample.json` file to configure services with your sensitive data and rename to `env.dev.json`.
+2. Create bucket and service keyfile. You can use this [guide].
+   Rename json file to `keyfile.json` and store it in the root folder "games".
+3. Deploy functions:
 
 ```sh
-cd restService
-npm install
+cd gcf/auth
 sls deploy
 
-cd websocketService
-npm install
-sls deploy
+# Allow unauthenticated requests using gcloud CLI:
+gcloud functions add-iam-policy-binding `funcName` --region=`funcRegion` --member=allUsers --role=roles/cloudfunctions.invoker
 ```
 
-### Frontend Service
+! Deploy all functions in the same way as above.
+
+<!-- ### Frontend Service
 
 1. Fill `config.js` in frontend part using backend services output keys:
 
@@ -42,6 +41,7 @@ sls deploy
 ```
 
 Use the `StaticSiteS3BucketWebsiteURL` output key of the frontendService to test the app.
-Use `sls s3sync` command to sync local files with s3 bucket.
+Use `sls s3sync` command to sync local files with s3 bucket. -->
 
-[sign up]: https://www.serverless.com/framework/docs/providers/aws/guide/credentials
+[sign up]: https://www.serverless.com/framework/docs/providers/google/guide/credentials
+[guide]: https://medium.com/@olamilekan001/image-upload-with-google-cloud-storage-and-node-js-a1cf9baa1876

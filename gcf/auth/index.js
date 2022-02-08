@@ -11,28 +11,28 @@ exports.auth = async (req, res) => {
   }
 
   switch (true) {
-    case req.method === "POST" && req.path === "/auth/signup":
+    case req.method === "POST" && req.path === "/signup":
       await controller.register(req, res);
       break;
 
-    case req.method === "POST" && req.path === "/auth/signin":
+    case req.method === "POST" && req.path === "/signin":
       await controller.login(req, res);
       break;
 
-    case req.method === "POST" && req.path === "/auth/signout":
-      controller.logout();
+    case req.method === "POST" && req.path === "/signout":
+      controller.logout(req, res);
       break;
 
-    case req.method === "POST" && req.path === "/auth/password-reset-link":
+    case req.method === "POST" && req.path === "/password-reset-link":
       await controller.sendResetLink(req, res);
       break;
 
     case req.method === "GET" &&
-      req.path.startsWith("/auth/password-reset-link/"):
+      /^\/password-reset-link\/[0-9a-fA-f]{24}\/[\w\.\-]+$/.test(req.path):
       await controller.verifyResetLink(req, res);
       break;
 
-    case req.method === "PATCH" && req.path === "/auth/password-reset":
+    case req.method === "PATCH" && req.path === "/password-reset":
       await controller.resetPassword(req, res);
       break;
 

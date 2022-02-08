@@ -1,0 +1,43 @@
+service: lobby-rest-auth
+frameworkVersion: "^2.71.0"
+
+plugins:
+  - serverless-google-cloudfunctions
+
+provider:
+  name: google
+  runtime: nodejs14
+  memorySize: 1024
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "europe-central2"}
+  project: lobby-serverless
+  credentials: C:\Users\andrei.rylkou\.gcloud\lobby-serverless-6b57ae19aea6.json
+
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
+
+custom:
+  timeout: 90s
+  functions:
+    memorySize: 1024
+
+functions:
+  lobby-auth:
+    name: auth
+    handler: auth
+    memorySize: ${self:custom.functions.memorySize}
+    environment:
+      CLIENT_HOST: ${file(../../env.${opt:stage, self:provider.stage}.json):CLIENT_HOST}
+      ACCESS_SECRET: ${file(../../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
+      ACCESS_TOKEN_TTL: ${file(../../env.${opt:stage, self:provider.stage}.json):ACCESS_TOKEN_TTL}
+      RESET_LINK_TTL: ${file(../../env.${opt:stage, self:provider.stage}.json):RESET_LINK_TTL}
+      MONGODB_URI: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
+      MONGODB_NAME: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
+      MONGODB_COLLECTION_USERS: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
+      API_URL: ${file(../../env.${opt:stage, self:provider.stage}.json):API_URL}
+
+    events:
+      - http: auth

@@ -31,7 +31,7 @@ async function createNewTable(req, userId) {
   const data = await storage.findUserById(userId);
   if (!data) throw new NotFoundError(USER_NOT_FOUND);
 
-  const gameId = req.params["0"].split("/")[1];
+  const gameId = req.params["0"].split("/")[0];
   const tableData = {
     creator: data.username,
     game_id: gameId,
