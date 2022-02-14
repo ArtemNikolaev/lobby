@@ -4,8 +4,11 @@ class PlayersViewersStorage {
   constructor() {
     this.storage = redis.createClient({
       host: process.env.REDIS_HOST,
-      port: process.env.REDIS_PORT,
+      port: parseInt(process.env.REDIS_PORT),
       password: process.env.REDIS_PASSWORD,
+      // host: "54.210.98.70",
+      // port: 6379,
+      // password: "fella",
     });
     this.prefix = "pv::tableId:";
   }

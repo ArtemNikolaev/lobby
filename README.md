@@ -19,10 +19,35 @@ cd gcf/auth
 sls deploy
 
 # Allow unauthenticated requests using gcloud CLI:
-gcloud functions add-iam-policy-binding `funcName` --region=`funcRegion` --member=allUsers --role=roles/cloudfunctions.invoker
+gcloud functions add-iam-policy-binding <funcName> \
+--region=<funcRegion> \
+--member=allUsers \
+--role=roles/cloudfunctions.invoker
 ```
 
-! Deploy all functions in the same way as above.
+! Deploy and make public invoking all functions in the same way as above.
+
+### Google Cloud Run
+
+We are going to use Cloud Run service create Websoket Server.
+Build and deploy container from source folder:
+
+```sh
+cd websocketServer
+
+gcloud run deploy <serviceName> --timeout=3600 --allow-unauthenticated \
+--set-env-vars WS_PORT=<websocketPort> \
+--set-env-vars REDIS_HOST=<redisHost> \
+--set-env-vars REDIS_PORT=<redisPort> \
+--set-env-vars REDIS_PASSWORD=<redisPassword> \
+--port <containerPort> --source .
+```
+
+After the deployment is complete, use the following command to retrieve the websocket URL string:
+
+```sh
+gcloud run services describe <serviceName> --region <serviceRegion>
+```
 
 <!-- ### Frontend Service
 
