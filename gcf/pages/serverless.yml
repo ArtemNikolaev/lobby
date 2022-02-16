@@ -1,0 +1,40 @@
+service: lobby-rest-pages
+frameworkVersion: "^2.71.0"
+
+plugins:
+  - serverless-google-cloudfunctions
+
+provider:
+  name: google
+  runtime: nodejs14
+  memorySize: 1024
+  stage: ${opt:stage, "dev"}
+  region: ${opt:region, "europe-central2"}
+  project: lobby-serverless
+  credentials: C:\Users\andrei.rylkou\.gcloud\lobby-serverless-6b57ae19aea6.json
+
+package:
+  exclude:
+    - node_modules/**
+    - .gitignore
+    - .git/**
+
+custom:
+  timeout: 90s
+  functions:
+    memorySize: 1024
+
+functions:
+  lobby-pages:
+    name: pages
+    handler: pages
+    memorySize: ${self:custom.functions.memorySize}
+    environment:
+      ACCESS_SECRET: ${file(../../env.${opt:stage, self:provider.stage}.json):ACCESS_SECRET}
+      MONGODB_NAME: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_NAME}
+      MONGODB_COLLECTION_USERS: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_USERS}
+      MONGODB_COLLECTION_GAMES: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_GAMES}
+      MONGODB_COLLECTION_TABLES: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_COLLECTION_TABLES}
+      MONGODB_URI: ${file(../../env.${opt:stage, self:provider.stage}.json):MONGODB_URI}
+    events:
+      - http: pages

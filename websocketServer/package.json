@@ -1,0 +1,17 @@
+{
+  "name": "lobby-websocket-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "redis": "^3.1.2",
+    "ws": "^8.5.0"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "CLIENT_HOST": "https://<staticWebsiteBucketName>.storage.googleapis.com",
+  "ACCESS_SECRET": "__________",
+  "ACCESS_TOKEN_TTL": "24h",
+  "RESET_LINK_TTL": "15m",
+  "MONGODB_NAME": "lobby",
+  "MONGODB_COLLECTION_USERS": "users",
+  "MONGODB_COLLECTION_GAMES": "games",
+  "MONGODB_COLLECTION_TABLES": "tables",
+  "MONGODB_URI": "__________",
+  "BUCKET_NAME": "lobby-image-uploads",
+  "REDIS_HOST": "__________",
+  "REDIS_PASSWORD": "__________",
+  "REDIS_PORT": "6379",
+  "API_URL": "https://<region>-<projectName>.cloudfunctions.net"
+}

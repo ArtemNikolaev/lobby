@@ -1,0 +1,13 @@
+{
+  "name": "lobby-gcf-auth",
+  "version": "1.0.0",
+  "license": "ISC",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.2.2",
+    "serverless-google-cloudfunctions": "^4.5.0"
+  },
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^2.1.1"
+  }
+}
