@@ -60,7 +60,7 @@ class Controller {
       const [_, id, token] = req.params["0"].split("/");
       await service.verifyLink({ id, token });
 
-      res.setHeader("Location", `${clientHost}/reset-password`);
+      res.setHeader("Location", `${clientHost}/reset-password/index.html`);
       res.status(302).send();
     } catch (error) {
       responseError(res, error);

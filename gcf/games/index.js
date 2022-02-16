@@ -4,8 +4,8 @@ exports.games = async (req, res) => {
   res.set("Access-Control-Allow-Origin", "*");
 
   if (req.method === "OPTIONS") {
-    res.set("Access-Control-Allow-Methods", "POST", "DELETE");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.set("Access-Control-Allow-Methods", "POST, DELETE");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.status(204).send();
     return;
   }

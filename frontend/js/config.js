@@ -1,19 +1,20 @@
 export const app = {
-  url: "https://8lquunx1g9.execute-api.eu-central-1.amazonaws.com/dev",
-  s3StaticURL: "http://lobby.com.s3-website.eu-central-1.amazonaws.com",
+  url: "https://<region>-<projectName>.cloudfunctions.net",
+  startPageURL:
+    "https://<staticWebsiteBucketName>.storage.googleapis.com/index.html",
   token: "game-lobby-token",
   gameIdKey: "gameId",
   tableIdKey: "tableId",
   userDataKey: "userData",
-  userPage: "/profile",
-  adminPage: "/admin",
-  loginPage: "/signin",
-  lobbyPage: "/lobby",
-  tablePage: "/table",
+  userPage: "/profile/index.html",
+  adminPage: "/admin/index.html",
+  loginPage: "/signin/index.html",
+  lobbyPage: "/lobby/index.html",
+  tablePage: "/table/index.html",
 };
 
 export const webSocket = {
-  url: "wss://h7srn172jl.execute-api.eu-central-1.amazonaws.com/dev",
+  url: "websocketUrlString",
   chatHistoryEvent: "chatHistory",
   chatMessageEvent: "chatMessage",
   deleteTableEvent: "deleteTable",

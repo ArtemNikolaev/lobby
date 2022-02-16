@@ -49,24 +49,24 @@ After the deployment is complete, use the following command to retrieve the webs
 gcloud run services describe <serviceName> --region <serviceRegion>
 ```
 
-<!-- ### Frontend Service
+### Frontend
 
-1. Fill `config.js` in frontend part using backend services output keys:
+Host a static website to Google Cloud Storage.
 
-   `ServiceEndpoint` -- restService API URL.
-   `ServiceEndpointWebsocket` -- websocketService API URL.
-
-2. Then install plugin `serverless-s3-sync` and deploy service:
+1. Fill `config.js` in frontend directory.
+2. Create bucket and load static files:
 
 ```sh
-cd frontendService
-npm install serverless-s3-sync
+cd frontend
 
-sls deploy
+gsutil mb gs://<staticWebsiteBucketName> # create bucket
+gsutil cp -r . gs://<staticWebsiteBucketName> # load files
+gsutil iam ch allUsers:objectViewer gs://<staticWebsiteBucketName> # share files
+gsutil web set -m index.html -e 404.html gs://<staticWebsiteBucketName> # assigning specialty pages
 ```
 
-Use the `StaticSiteS3BucketWebsiteURL` output key of the frontendService to test the app.
-Use `sls s3sync` command to sync local files with s3 bucket. -->
+The app will be available at the following address:
+`https://<staticWebsiteBucketName>.storage.googleapis.com/index.html`
 
 [sign up]: https://www.serverless.com/framework/docs/providers/google/guide/credentials
 [guide]: https://medium.com/@olamilekan001/image-upload-with-google-cloud-storage-and-node-js-a1cf9baa1876

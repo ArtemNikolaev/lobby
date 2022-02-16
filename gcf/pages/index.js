@@ -5,7 +5,7 @@ exports.pages = async (req, res) => {
 
   if (req.method === "OPTIONS") {
     res.set("Access-Control-Allow-Methods", "GET");
-    res.set("Access-Control-Allow-Headers", "Content-Type");
+    res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     res.status(204).send();
     return;
   }

@@ -6,7 +6,7 @@ export default async (path, jwt, id) => {
 
   const resource = id ? `${path}/${id}` : path;
 
-  const response = await fetch(`${app.url}/${resource}`, {
+  const response = await fetch(`${app.url}/pages/${resource}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${jwt}`,

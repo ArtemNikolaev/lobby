@@ -10,7 +10,7 @@
       rel="stylesheet"
       id="bootstrap-css"
     />
-    <title>SignUp</title>
+    <title>SignIn</title>
   </head>
   <style>
     body {
@@ -22,7 +22,8 @@
         rgba(247, 254, 255, 1) 100%
       );
     }
-    .register {
+
+    .login {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -31,53 +32,67 @@
     .nav {
       display: flex;
       justify-content: flex-end;
-      margin: 4rem 8rem;
+      align-items: end;
+      margin: 4rem;
+    }
+    .register,
+    .profile {
+      margin-right: 1rem;
+    }
+    .reset-pw-link {
+      margin-left: 23rem;
+      margin-top: 0.5rem;
+      font-size: small;
+    }
+    .check-message {
+      display: none;
+    }
+    .check-message {
+      color: red;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 
   <body>
     <div class="nav">
-      <div class="">
-        <div>
-          <a href="/signin"><button class="btn btn-info">SignIn</button></a>
-        </div>
+      <div class="register">
+        <a href="/signup/index.html"
+          ><button class="btn btn-info">SignUp</button></a
+        >
+      </div>
+
+      <div class="profile">
+        <a href="/profile/index.html"
+          ><button class="btn btn-info">User Profile</button></a
+        >
+      </div>
+      <div>
+        <a href="/admin/index.html"
+          ><button class="btn btn-info">Admin Profile</button></a
+        >
       </div>
     </div>
 
-    <div class="register">
+    <div class="login">
       <div style="color: red; display: none" class="fail-msg"></div>
-      <form class="form-horizontal register-form" action="" method="POST">
+      <form class="form-horizontal login-form" action="" method="POST">
         <fieldset>
           <div id="legend">
-            <legend class="">Register</legend>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="name">Username</label>
-            <div class="controls">
-              <input
-                type="text"
-                id="name"
-                name="username"
-                class="input-xlarge"
-                required
-              />
-              <p class="help-block">
-                Username must be unique, at least 6 characters
-              </p>
-            </div>
+            <legend class="">Log In</legend>
           </div>
 
           <div class="control-group">
-            <label class="control-label" for="email">E-mail</label>
+            <label class="control-label" for="login">E-mail or Username</label>
             <div class="controls">
               <input
                 type="text"
-                id="email"
-                name="email"
+                id="login"
+                name="login"
                 class="input-xlarge"
                 required
               />
-              <p class="help-block">Please provide your E-mail</p>
             </div>
           </div>
 
@@ -91,35 +106,45 @@
                 class="input-xlarge"
                 required
               />
-              <p class="help-block">Password should be at least 6 characters</p>
+            </div>
+            <div class="reset-pw-link">
+              <a href="">Reset password</a>
             </div>
           </div>
 
-          <div class="control-group">
-            <label class="control-label" for="password_confirm"
-              >Confirm password</label
-            >
+          <div class="control-group login-btn">
             <div class="controls">
-              <input
-                type="password"
-                id="password_confirm"
-                name="confirm-password"
-                class="input-xlarge"
-                required
-              />
-              <p class="help-block confirm-message">Please confirm password</p>
-            </div>
-          </div>
-
-          <div class="control-group">
-            <div class="controls">
-              <button class="btn btn-info">Register</button>
+              <button class="btn btn-info">Login</button>
             </div>
           </div>
         </fieldset>
       </form>
+
+      <div class="reset-pw-div hidden">
+        <form class="form-horizontal pw-reset-form" action="">
+          <div class="control-group">
+            <div class="control-label">Your register email</div>
+            <div class="controls">
+              <input
+                type="text"
+                id="pw-reset-input"
+                name="email"
+                class="input-xlarge"
+                required
+              />
+              <p class="help-block check-message"></p>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button class="btn btn-info">Send</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
-    <script type="module" src="../js/authPages/register.js"></script>
+    <script type="module" src="../js/authPages/login.js"></script>
   </body>
 </html>
